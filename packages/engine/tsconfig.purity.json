@@ -1,0 +1,12 @@
+{
+  // 엔진 순수성 검증용 — PRD §11.2 "의존성 없는 순수 함수. I/O 없음"
+  //
+  // src/ 만 대상으로, Node 앰비언트 타입을 **제거한 상태로** 컴파일한다.
+  // 누군가 엔진에 console.log 나 process.env 를 넣으면 여기서 깨진다.
+  // 계약을 주석이 아니라 타입 체커로 강제하기 위한 설정이다.
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": []
+  },
+  "include": ["src/**/*.ts"]
+}

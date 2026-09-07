@@ -9,5 +9,8 @@
   },
   "scripts": {
     "test": "node --test test/*.test.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0"
   }
 }

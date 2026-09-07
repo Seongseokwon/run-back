@@ -1,0 +1,9 @@
+{
+  // tsconfig 가 TS 5.8+ 옵션(erasableSyntaxOnly)을 쓰므로
+  // 에디터 내장 버전이 아니라 워크스페이스에 설치된 TypeScript 를 쓴다
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.preferences.importModuleSpecifierEnding": "js",
+  "editor.formatOnSave": false,
+  "files.eol": "\n"
+}

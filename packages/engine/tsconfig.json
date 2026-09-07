@@ -1,4 +1,8 @@
 {
   "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    // 명시적으로 선언한다. 워크스페이스 루트에서 우연히 끌어오는 것에 기대지 않는다
+    "types": ["node"]
+  },
   "include": ["src/**/*.ts", "test/**/*.ts", "scripts/**/*.ts"]
 }

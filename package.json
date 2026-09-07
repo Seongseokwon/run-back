@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "node --test packages/engine/test/*.test.ts",
-    "typecheck": "tsc -b packages/engine",
+    "typecheck": "tsc -p packages/engine/tsconfig.json --noEmit && tsc -p packages/engine/tsconfig.purity.json --noEmit",
     "table": "node packages/engine/scripts/print-table.ts",
     "gain": "node packages/engine/scripts/print-gain.ts",
     "plan": "node packages/engine/scripts/print-plan.ts"
