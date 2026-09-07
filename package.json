@@ -1,0 +1,18 @@
+{
+  "name": "raceback",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "test": "node --test packages/engine/test/*.test.ts",
+    "typecheck": "tsc -b packages/engine",
+    "table": "node packages/engine/scripts/print-table.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.9.0"
+  }
+}
