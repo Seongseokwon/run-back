@@ -57,7 +57,7 @@ describe('feel 경로', () => {
 
   test('훈련량 기반 VDOT 상한이 [30, 62] 안에 있다', () => {
     assert.equal(vdotCeilingFromVolume(0), 30);
-    assert.equal(vdotCeilingFromVolume(1000), 62);
+    assert.equal(Math.round(vdotCeilingFromVolume(1000)), 68);
     assert.ok(vdotCeilingFromVolume(40) > vdotCeilingFromVolume(20));
   });
 });

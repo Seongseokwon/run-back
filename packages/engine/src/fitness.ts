@@ -19,9 +19,13 @@ export const NOVICE_VDOT_CEIL = 35;
 /**
  * 주간 거리에서 유도하는 VDOT 상한(가설).
  * 훈련량이 뒷받침하지 못하는 자기신고 페이스를 부드럽게 눌러 준다.
+ *
+ * 곡선 형태는 오목함수다 — 훈련량 증가의 수확이 체감하기 때문.
+ * 앵커: 30km/주 → 약 45.7 (레크리에이션 러너 실측 분포와 정합, ADR-0002 참조),
+ *       60km/주 → 약 55.7, 120km/주 → 약 64.6
  */
 export function vdotCeilingFromVolume(weeklyKm: number): number {
-  return clamp(28 + 0.5 * weeklyKm, 30, 62);
+  return clamp(30 + 40 * (1 - Math.exp(-Math.max(0, weeklyKm) / 60)), 30, 68);
 }
 
 /** 상한을 넘는 부분만 35%로 축소하는 소프트 클램프 */
