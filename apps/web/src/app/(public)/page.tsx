@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { upcomingRaces } from '@raceback/races';
+import { GOALS } from '@/lib/goals';
 import { ButtonLink } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Illustration } from '@/components/ui/illustration';
@@ -60,6 +61,23 @@ export default function HomePage() {
                     {formatDday(daysBetween(today, race.date))}
                   </span>
                 </Card>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section>
+        <h2 className="text-[20px] font-bold text-ink">목표 기록별로 보기</h2>
+        <p className="mt-1 text-[14px] text-ink-muted">필요한 페이스와 훈련 방향을 먼저 확인해 보세요.</p>
+        <ul className="mt-3 flex flex-wrap gap-2">
+          {GOALS.map((goal) => (
+            <li key={goal.slug}>
+              <Link
+                href={`/goal/${goal.slug}`}
+                className="block rounded-full border border-line-strong bg-surface px-3.5 py-2 text-[14px] font-semibold text-ink"
+              >
+                {goal.label}
               </Link>
             </li>
           ))}

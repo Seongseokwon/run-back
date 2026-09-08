@@ -7,8 +7,8 @@ export const metadata: Metadata = { title: '나' };
 const MENU = [
   { href: '/me', label: '내 보관함' },
   { href: '/me', label: '데이터 내보내기' },
-  { href: '/me', label: '개인정보처리방침' },
-  { href: '/me', label: '이용약관' },
+  { href: '/privacy', label: '개인정보처리방침' },
+  { href: '/terms', label: '이용약관' },
 ] as const;
 
 export default function MePage() {

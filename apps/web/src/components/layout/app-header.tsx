@@ -34,3 +34,21 @@ export function PublicHeader() {
     </header>
   );
 }
+
+/** 공개 페이지 푸터. 방침 링크는 항상 접근 가능해야 한다 */
+export function PublicFooter() {
+  return (
+    <footer className="mt-12 border-t border-line px-5 py-6">
+      <nav className="flex flex-wrap gap-x-4 gap-y-2 text-[13px] text-ink-muted">
+        <Link href="/privacy" className="font-semibold text-ink">
+          개인정보처리방침
+        </Link>
+        <Link href="/terms">이용약관</Link>
+        <Link href="/plan/new">플랜 만들기</Link>
+      </nav>
+      <p className="mt-3 text-[12px] leading-relaxed text-ink-faint">
+        {SITE_NAME}이 제공하는 훈련 플랜은 일반적인 훈련 정보이며 의학적 조언이 아닙니다.
+      </p>
+    </footer>
+  );
+}

@@ -1,4 +1,4 @@
-import { PublicHeader } from '@/components/layout/app-header';
+import { PublicFooter, PublicHeader } from '@/components/layout/app-header';
 
 /**
  * 공개 레이아웃 — 검색 유입과 게스트 경로.
@@ -8,7 +8,8 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
   return (
     <>
       <PublicHeader />
-      <main className="px-5 pb-16">{children}</main>
+      <main className="px-5">{children}</main>
+      <PublicFooter />
     </>
   );
 }
