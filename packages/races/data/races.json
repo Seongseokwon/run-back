@@ -1,0 +1,1305 @@
+[
+  {
+    "slug": "greenumbrella-runway-marathon-2026",
+    "nameKo": "제2회 초록우산 런웨이 마라톤",
+    "date": "2026-09-12",
+    "region": "대전",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "yangyang-riverside-marathon-2026",
+    "nameKo": "2026 양양 강변 전국마라톤",
+    "date": "2026-09-12",
+    "region": "강원 양양군",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "ganghwa-beach-marathon-2026",
+    "nameKo": "제26회 강화해변마라톤",
+    "date": "2026-09-13",
+    "region": "인천 강화군",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "pohang-battery-marathon-2026",
+    "nameKo": "2026 포항이차전지전국마라톤",
+    "date": "2026-09-13",
+    "region": "경북 포항시",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "run-seoul-run-2026",
+    "nameKo": "2026 런서울런",
+    "date": "2026-09-13",
+    "region": "서울",
+    "distances": [
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "smile-run-festival-2026",
+    "nameKo": "제16회 스마일 런 페스티벌",
+    "date": "2026-09-13",
+    "region": "서울",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "uljin-geumgangsong-marathon-2026",
+    "nameKo": "2026 울진 금강송배 힐링마라톤",
+    "date": "2026-09-13",
+    "region": "경북 울진군",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "anyangcheon-half-marathon-2026",
+    "nameKo": "2026 안양천 하프 마라톤",
+    "date": "2026-09-19",
+    "region": "서울 양천구",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "geumsan-insam-marathon-2026",
+    "nameKo": "2026 금산인삼축제 마라톤",
+    "date": "2026-09-19",
+    "region": "충남 금산군",
+    "distances": [
+      4,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "gyeonggi-seaside-marathon-2026",
+    "nameKo": "제2회 경기신문 씨사이드 마라톤",
+    "date": "2026-09-19",
+    "region": "인천",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "run-in-gyeongju-2026",
+    "nameKo": "2026 무한도전 Run in 경주",
+    "date": "2026-09-19",
+    "region": "경북 경주시",
+    "distances": [
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "ansan-marathon-2026",
+    "nameKo": "2026 안산마라톤",
+    "date": "2026-09-20",
+    "region": "경기 안산시",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "dongdaemun-marathon-2026",
+    "nameKo": "2026 동대문마라톤",
+    "date": "2026-09-20",
+    "region": "서울 동대문구",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "gapyeong-jaraseom-marathon-2026",
+    "nameKo": "제19회 가평자라섬 전국마라톤",
+    "date": "2026-09-20",
+    "region": "경기 가평군",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "gongju-baekje-marathon-2026",
+    "nameKo": "2026 공주마라톤",
+    "date": "2026-09-20",
+    "region": "충남 공주시",
+    "distances": [
+      5,
+      10,
+      21.0975,
+      32,
+      42.195
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://www.contestkorea.com/sub/view.php?Txt_gbn=1&Txt_bcode=030810001&str_no=202505270046",
+    "updatedAt": "2026-09-07",
+    "officialUrl": "https://www.gongjumarathon.com/",
+    "courseProfile": "flat",
+    "courseNote": "금강변 백제큰길을 왕복하는 평탄 코스. 고도 부담은 없고 더위가 최대 변수다",
+    "weatherNote": "9월 하순 09시 출발. 인근 대전 9월 평년 최고 26.8도로 더위 대비가 필수다",
+    "cutoffHours": 5
+  },
+  {
+    "slug": "seonsa-marathon-2026",
+    "nameKo": "제20회 선사마라톤 축제",
+    "date": "2026-09-20",
+    "region": "서울 강동구",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "songdo-international-marathon-2026",
+    "nameKo": "제26회 인천송도국제마라톤",
+    "date": "2026-09-20",
+    "region": "인천 연수구",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "high",
+    "sourceUrl": "https://www.songdorun.net/outline.php",
+    "updatedAt": "2026-09-07",
+    "officialUrl": "https://www.songdorun.net/",
+    "courseProfile": "flat",
+    "courseNote": "송도 계획도시 도로를 반환점 세 곳으로 접어 도는 평탄한 코스라 페이스 유지가 쉽다",
+    "weatherNote": "9월 하순 인천은 낮 25도 안팎까지 올라 늦더위와 습도가 변수다",
+    "cutoffHours": 3
+  },
+  {
+    "slug": "chuncheon-union-marathon-2026",
+    "nameKo": "2026 춘천연합마라톤",
+    "date": "2026-10-03",
+    "region": "강원 춘천시",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "gimje-jipyeongseon-marathon-2026",
+    "nameKo": "제25회 김제새만금 지평선 전국마라톤",
+    "date": "2026-10-03",
+    "region": "전북 김제시",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "masters-half-marathon-2026",
+    "nameKo": "2026 마스터즈 하프 마라톤",
+    "date": "2026-10-03",
+    "region": "서울",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "seosan-cosmos-marathon-2026",
+    "nameKo": "2026 서산 코스모스 황금들녘 마라톤",
+    "date": "2026-10-03",
+    "region": "충남 서산시",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "andong-marathon-2026",
+    "nameKo": "2026 안동마라톤",
+    "date": "2026-10-04",
+    "region": "경북 안동시",
+    "distances": [
+      5,
+      10,
+      21.0975,
+      42.195
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://www.imaeil.com/page/view/2025092209015080538",
+    "updatedAt": "2026-09-07",
+    "officialUrl": "https://www.admarathon.kr/andong/",
+    "courseProfile": "hilly",
+    "courseNote": "안동호를 따라 7~8km부터 오르막이 시작돼 풀코스 누적고도가 700m대에 이른다",
+    "weatherNote": "10월 초 안동은 내륙 분지라 아침 6도대까지 떨어지고 안개가 잦다",
+    "cutoffHours": 5
+  },
+  {
+    "slug": "dalseo-half-marathon-2026",
+    "nameKo": "제20회 달서하프마라톤",
+    "date": "2026-10-04",
+    "region": "대구 달서구",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "hongcheon-marathon-2026",
+    "nameKo": "2026 홍천사랑마라톤",
+    "date": "2026-10-04",
+    "region": "강원 홍천군",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "soil-marathon-2026",
+    "nameKo": "S-OIL과 함께하는 감동의 마라톤",
+    "date": "2026-10-04",
+    "region": "서울",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "gangnam-peace-marathon-2026",
+    "nameKo": "제23회 강남국제평화마라톤",
+    "date": "2026-10-05",
+    "region": "서울 강남구",
+    "distances": [
+      5,
+      10,
+      21.0975,
+      42.195
+    ],
+    "status": "scheduled",
+    "confidence": "high",
+    "sourceUrl": "https://peacemarathon.co.kr/info/outline.php",
+    "updatedAt": "2026-09-07",
+    "officialUrl": "https://peacemarathon.co.kr/",
+    "courseProfile": "flat",
+    "courseNote": "전 구간이 자전거도로라 노폭이 좁고 대회 중에도 자전거 통행에 주의해야 한다",
+    "weatherNote": "10월 초 서울은 일평균 15도, 아침 최저 11도 안팎으로 달리기 좋은 시기다",
+    "cutoffHours": 5
+  },
+  {
+    "slug": "hankyung-seoul-marathon-2026",
+    "nameKo": "2026 한경서울마라톤",
+    "date": "2026-10-05",
+    "region": "서울",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "seoul-open-marathon-2026",
+    "nameKo": "2026 서울오픈마라톤",
+    "date": "2026-10-05",
+    "region": "서울",
+    "distances": [
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "siheung-half-marathon-2026",
+    "nameKo": "제12회 시흥시 전국하프마라톤",
+    "date": "2026-10-05",
+    "region": "경기 시흥시",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "goheung-marathon-2026",
+    "nameKo": "2026 고흥우주항공배 마라톤",
+    "date": "2026-10-09",
+    "region": "전남 고흥군",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "hongseong-marathon-2026",
+    "nameKo": "제26회 홍성마라톤",
+    "date": "2026-10-09",
+    "region": "충남 홍성군",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "gyeongpo-marathon-2026",
+    "nameKo": "2026 경포마라톤",
+    "date": "2026-10-10",
+    "region": "강원 강릉시",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "mudeungsan-geo-marathon-2026",
+    "nameKo": "제5회 무등산지오마라톤",
+    "date": "2026-10-10",
+    "region": "전남 화순군",
+    "distances": [
+      5,
+      10,
+      21.0975,
+      30
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "cheonan-leebongju-marathon-2026",
+    "nameKo": "2026 천안 이봉주 마라톤",
+    "date": "2026-10-11",
+    "region": "충남 천안시",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "dangjin-marathon-2026",
+    "nameKo": "2026 당진황금들녘 건강마라톤",
+    "date": "2026-10-11",
+    "region": "충남 당진시",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "mbn-naju-marathon-2026",
+    "nameKo": "2026 MBN 전국 나주 마라톤",
+    "date": "2026-10-11",
+    "region": "전남 나주시",
+    "distances": [
+      5,
+      10,
+      21.0975,
+      42.195
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "mungyeong-omija-half-2026",
+    "nameKo": "2026 문경 오미자 하프마라톤",
+    "date": "2026-10-11",
+    "region": "경북 문경시",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "pyeongtaek-port-marathon-2026",
+    "nameKo": "2026 평택항마라톤",
+    "date": "2026-10-11",
+    "region": "경기 평택시",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "seoul-race-2026",
+    "nameKo": "2026 서울레이스",
+    "date": "2026-10-11",
+    "region": "서울",
+    "distances": [
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "ulsan-marathon-2026",
+    "nameKo": "2026 울산마라톤",
+    "date": "2026-10-11",
+    "region": "울산",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "daecheongho-cheongwon-marathon-2026",
+    "nameKo": "제24회 청원생명쌀 대청호마라톤",
+    "date": "2026-10-17",
+    "region": "충북 청주시",
+    "distances": [
+      5,
+      10,
+      21.0975,
+      42.195
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://www.jbnews.com/news/articleView.html?idxno=1474998",
+    "updatedAt": "2026-09-07",
+    "officialUrl": "https://www.dcmarathon.or.kr/",
+    "courseProfile": "hilly",
+    "courseNote": "대청호반 도로에 8~10% 경사 오르막과 7%대 내리막이 반복되는 낙타등 코스다",
+    "weatherNote": "10월 중순 청주는 아침 최저 9도, 낮 20도 안팎으로 일교차가 10도를 넘는다",
+    "cutoffHours": 5
+  },
+  {
+    "slug": "gyeongju-marathon-2026",
+    "nameKo": "2026 경주마라톤",
+    "date": "2026-10-17",
+    "region": "경북 경주시",
+    "distances": [
+      10,
+      21.0975,
+      42.195
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceDetail/domestic/2026-gyeongju-marathon",
+    "updatedAt": "2026-09-07",
+    "officialUrl": "https://www.gyeongjumarathon.com/",
+    "courseProfile": "rolling",
+    "courseNote": "누적 상승 150m 안팎 완만한 순환 코스, 16~24km 북천변 연속 오르막이 유일한 고비",
+    "weatherNote": "10월 중순 경주는 평년 최고 20.9도 최저 11.3도. 08시 출발로 후반 기온이 오른다"
+  },
+  {
+    "slug": "jeongseon-donggang-marathon-2026",
+    "nameKo": "2026 정선동강 마라톤",
+    "date": "2026-10-17",
+    "region": "강원 정선군",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "uijeongbu-mulgil-marathon-2026",
+    "nameKo": "2026 의정부시 물길마라톤",
+    "date": "2026-10-17",
+    "region": "경기 의정부시",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "asia-open-marathon-2026",
+    "nameKo": "2026 아시아 오픈 마라톤",
+    "date": "2026-10-18",
+    "region": "서울",
+    "distances": [
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "daejeon-daecheongho-marathon-2026",
+    "nameKo": "제25회 대청호마라톤",
+    "date": "2026-10-18",
+    "region": "대전",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "jungnang-rose-marathon-2026",
+    "nameKo": "제19회 중랑구청장배 장미 마라톤",
+    "date": "2026-10-18",
+    "region": "서울 중랑구",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "yeoju-sejong-marathon-2026",
+    "nameKo": "제23회 여주 세종대왕 마라톤",
+    "date": "2026-10-18",
+    "region": "경기 여주시",
+    "distances": [
+      4,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "newsis-sea-marathon-2026",
+    "nameKo": "2026 뉴시스 바다마라톤",
+    "date": "2026-10-24",
+    "region": "인천",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "busan-sea-marathon-2026",
+    "nameKo": "2026 부산바다마라톤",
+    "date": "2026-10-25",
+    "region": "부산",
+    "distances": [
+      5,
+      10,
+      15
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "cheongdo-bansi-marathon-2026",
+    "nameKo": "제19회 청도반시 전국마라톤",
+    "date": "2026-10-25",
+    "region": "경북 청도군",
+    "distances": [
+      5.9,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "chuncheon-marathon-2026",
+    "nameKo": "2026 춘천마라톤",
+    "date": "2026-10-25",
+    "region": "강원 춘천시",
+    "distances": [
+      10,
+      42.195
+    ],
+    "status": "scheduled",
+    "confidence": "high",
+    "sourceUrl": "https://www.chuncheonmarathon.com/",
+    "updatedAt": "2026-09-07",
+    "officialUrl": "https://www.chuncheonmarathon.com/",
+    "courseProfile": "rolling",
+    "courseNote": "후반 25~30km 서상대교~춘천댐 오르막이 최대 고비, 댐을 넘으면 대부분 내리막이다",
+    "weatherNote": "10월 하순 춘천은 평년 최고 19.6도 최저 7.5도. 09시 출발이라 초반이 서늘하다",
+    "cutoffHours": 5.5
+  },
+  {
+    "slug": "gwangmyeong-peace-marathon-2026",
+    "nameKo": "2026 광명평화마라톤",
+    "date": "2026-10-25",
+    "region": "경기 광명시",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "jeongseojin-marathon-2026",
+    "nameKo": "제14회 정서진아라뱃길 마라톤",
+    "date": "2026-10-25",
+    "region": "인천 서구",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "ulsan-run-festa-2026",
+    "nameKo": "2026 울산 런 페스타 U-RUN",
+    "date": "2026-10-25",
+    "region": "울산",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://marathongo.co.kr/raceSchedule/domestic",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "daejeon-shinchaeho-marathon-2026",
+    "nameKo": "제2회 대전 신채호 마라톤",
+    "date": "2026-11-01",
+    "region": "대전",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://www.kormarathon.com/ko/marathons/2026/11",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "gimcheon-marathon-2026",
+    "nameKo": "2026 김천 전국마라톤",
+    "date": "2026-11-01",
+    "region": "경북 김천시",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://www.kormarathon.com/ko/marathons/2026/11",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "jtbc-seoul-marathon-2026",
+    "nameKo": "2026 JTBC 서울마라톤",
+    "date": "2026-11-01",
+    "region": "서울",
+    "distances": [
+      10,
+      42.195
+    ],
+    "status": "uncertain",
+    "confidence": "low",
+    "sourceUrl": "https://www.kormarathon.com/ko/marathons/2026/11",
+    "updatedAt": "2026-09-07",
+    "officialUrl": "https://marathon.jtbc.com/",
+    "courseProfile": "rolling",
+    "courseNote": "상암에서 올림픽공원까지 서울을 가로지르며 업다운이 반복돼 동아보다 기록이 잘 안 나온다",
+    "weatherNote": "11월 초 서울은 평년 최고 12도 최저 3.5도. 이른 출발이라 대기 시간이 춥다",
+    "cutoffHours": 5,
+    "statusNote": "주최사 사정으로 2026년 개최 여부가 불투명하다는 보도가 있다. 목표 대회로 정하기 전 공식 공지를 확인할 것"
+  },
+  {
+    "slug": "ulsan-humanrights-marathon-2026",
+    "nameKo": "제21회 울산 인권마라톤",
+    "date": "2026-11-01",
+    "region": "울산",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://www.kormarathon.com/ko/marathons/2026/11",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "buyeo-gutdrae-marathon-2026",
+    "nameKo": "제15회 부여 굿뜨래 마라톤",
+    "date": "2026-11-07",
+    "region": "충남 부여군",
+    "distances": [
+      5,
+      10,
+      21.0975,
+      42.195
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://www.kormarathon.com/ko/marathons/2026/11",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "haenam-ttangkkeut-marathon-2026",
+    "nameKo": "2026 해남땅끝 전국마라톤",
+    "date": "2026-11-08",
+    "region": "전남 해남군",
+    "distances": [
+      5,
+      10,
+      21.0975,
+      42.195
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://www.kormarathon.com/ko/marathons/2026/11",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "roundlab-run-2026",
+    "nameKo": "2026 라운드랩 RUN",
+    "date": "2026-11-08",
+    "region": "강원 춘천시",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://www.kormarathon.com/ko/marathons/2026/11",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "anyangcheon-maple-marathon-2026",
+    "nameKo": "제2회 안양천 단풍길 마라톤",
+    "date": "2026-11-14",
+    "region": "서울 양천구",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://www.kormarathon.com/ko/marathons/2026/11",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "suncheon-namseungryong-marathon-2026",
+    "nameKo": "제26회 순천남승룡마라톤",
+    "date": "2026-11-14",
+    "region": "전남 순천시",
+    "distances": [
+      5,
+      10,
+      21.0975,
+      42.195
+    ],
+    "status": "scheduled",
+    "confidence": "high",
+    "sourceUrl": "https://www.kormarathon.com/ko/marathons/2026/11",
+    "updatedAt": "2026-09-07",
+    "officialUrl": "http://sc-marathon.kr/",
+    "courseNote": "팔마운동장에서 동천 강변로를 따라 순천만 습지로 나가 풀코스만 화포항까지 더 간다",
+    "weatherNote": "11월 중순 순천은 아침 최저 2도 안팎, 낮 15도까지 올라 일교차가 크다"
+  },
+  {
+    "slug": "yeongjong-skyway-marathon-2026",
+    "nameKo": "2026 영종 하늘길 마라톤",
+    "date": "2026-11-14",
+    "region": "인천 중구",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://www.kormarathon.com/ko/marathons/2026/11",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "busan-international-marathon-2026",
+    "nameKo": "제28회 국제신문 부산국제마라톤",
+    "date": "2026-11-15",
+    "region": "부산 사하구",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "high",
+    "sourceUrl": "https://www.kjmarathon.com/ko/sub1_1.html",
+    "updatedAt": "2026-09-07",
+    "officialUrl": "https://www.kjmarathon.com/",
+    "courseProfile": "flat",
+    "courseNote": "다대포에서 장림포구·낙동강 하굿둑까지 두 번 반환하는 해안 왕복이라 바람 방향이 구간마다 뒤바뀐다",
+    "weatherNote": "11월 중순 부산은 평균 12도, 아침 최저 8도 안팎으로 가을 대회 중 온화한 편이다",
+    "cutoffHours": 3
+  },
+  {
+    "slug": "garmin-run-korea-2026",
+    "nameKo": "2026 가민런 코리아",
+    "date": "2026-11-15",
+    "region": "경기 고양시",
+    "distances": [
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://www.kormarathon.com/ko/marathons/2026/11",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "gochang-goindol-marathon-2026",
+    "nameKo": "제24회 고창고인돌마라톤",
+    "date": "2026-11-15",
+    "region": "전북 고창군",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://www.kormarathon.com/ko/marathons/2026/11",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "jeju-citrus-marathon-2026",
+    "nameKo": "2026 제주감귤국제마라톤",
+    "date": "2026-11-15",
+    "region": "제주 제주시",
+    "distances": [
+      10,
+      21.0975,
+      42.195
+    ],
+    "status": "scheduled",
+    "confidence": "high",
+    "sourceUrl": "https://marathon.ihalla.com/information/outline.html",
+    "updatedAt": "2026-09-07",
+    "officialUrl": "https://marathon.ihalla.com/",
+    "courseNote": "조천운동장에서 월정까지 해안도로를 달린다. 바람에 노출된 구간이 길다",
+    "weatherNote": "11월 중순 제주시는 평년 최고 16.4도 최저 10.4도로 가을 대회 중 가장 온화하다",
+    "cutoffHours": 5
+  },
+  {
+    "slug": "mbn-seoul-marathon-2026",
+    "nameKo": "2026 MBN 서울마라톤",
+    "date": "2026-11-15",
+    "region": "서울",
+    "distances": [
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "high",
+    "sourceUrl": "https://www.mbn-seoulmarathon.com/",
+    "updatedAt": "2026-09-07",
+    "officialUrl": "https://www.mbn-seoulmarathon.com/",
+    "courseProfile": "flat",
+    "courseNote": "동아 후반부와 겹치는 단방향 도심 하프. 평탄하지만 잠실대교가 마지막 관문이다",
+    "weatherNote": "11월 중순 서울은 평년 최고 12도 최저 3.5도. 출발 대기 중 추위 대비가 필요하다",
+    "cutoffHours": 2.5
+  },
+  {
+    "slug": "sangju-gotgam-marathon-2026",
+    "nameKo": "제24회 상주 곶감 마라톤",
+    "date": "2026-11-15",
+    "region": "경북 상주시",
+    "distances": [
+      10,
+      21.0975,
+      42.195
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://www.kormarathon.com/ko/marathons/2026/11",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "sonkeechung-peace-marathon-2026",
+    "nameKo": "2026 손기정평화마라톤",
+    "date": "2026-11-15",
+    "region": "경기 파주시",
+    "distances": [
+      6,
+      10,
+      21.0975,
+      42.195
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://www.starnewskorea.com/sports/2026/08/09/2026080915021667159",
+    "updatedAt": "2026-09-07",
+    "officialUrl": "https://www.sonkeechungrun.com/",
+    "courseNote": "2026년부터 고양 제2자유로를 떠나 파주 임진각 민통선 구간으로 코스가 바뀌어 과거 기록은 참고가 어렵다",
+    "weatherNote": "11월 중순 파주는 일평균 5도, 아침 최저는 영하로 내려간다"
+  },
+  {
+    "slug": "yeongnam-alps-half-2026",
+    "nameKo": "제4회 영남알프스 전국 하프마라톤",
+    "date": "2026-11-15",
+    "region": "울산 울주군",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://www.kormarathon.com/ko/marathons/2026/11",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "incheon-marathon-2026",
+    "nameKo": "2026 인천마라톤",
+    "date": "2026-11-22",
+    "region": "인천",
+    "distances": [
+      5,
+      10,
+      42.195
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://www.incheontoday.com/news/articleView.html?idxno=323207",
+    "updatedAt": "2026-09-07",
+    "officialUrl": "https://incheonmarathon.or.kr/",
+    "courseNote": "풀코스는 영종에서 출발해 청라하늘대교를 건너 아시아드주경기장으로 들어오는 편도 코스다",
+    "weatherNote": "11월 하순 인천은 일평균 8도, 해안이라 바람이 강해 체감온도가 더 낮다"
+  },
+  {
+    "slug": "namwon-chunhyang-marathon-2026",
+    "nameKo": "2026 남원춘향 전국마라톤",
+    "date": "2026-11-28",
+    "region": "전북 남원시",
+    "distances": [
+      5,
+      10,
+      21.0975,
+      42.195
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://www.kormarathon.com/ko/marathons/2026/11",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "gimhae-eoullim-marathon-2026",
+    "nameKo": "가야왕도 김해 전국어울림 마라톤",
+    "date": "2026-11-29",
+    "region": "경남 김해시",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://www.kormarathon.com/ko/marathons/2026/11",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "hangang-citizen-marathon-2026",
+    "nameKo": "제23회 한강시민마라톤",
+    "date": "2026-12-05",
+    "region": "서울 영등포구",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://www.kormarathon.com/ko/marathons/2026/12",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "busan-bridge-marathon-2026",
+    "nameKo": "2026 부산브릿지마라톤",
+    "date": "2026-12-06",
+    "region": "부산",
+    "distances": [
+      10,
+      42.195
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://www.kormarathon.com/ko/marathons/2026/12",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "bamseom-marathon-2026",
+    "nameKo": "제5회 밤섬 마라톤",
+    "date": "2026-12-13",
+    "region": "서울 마포구",
+    "distances": [
+      5,
+      10,
+      21.0975
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://www.kormarathon.com/ko/marathons/2026/12",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "jinju-marathon-2026",
+    "nameKo": "제36회 진주마라톤",
+    "date": "2026-12-13",
+    "region": "경남 진주시",
+    "distances": [
+      5,
+      10,
+      21.0975,
+      42.195
+    ],
+    "status": "scheduled",
+    "confidence": "medium",
+    "sourceUrl": "https://www.kormarathon.com/ko/marathons/2026/12",
+    "updatedAt": "2026-09-07"
+  },
+  {
+    "slug": "daegu-marathon-2027",
+    "nameKo": "2027 대구마라톤",
+    "date": "2027-02-28",
+    "region": "대구",
+    "distances": [
+      5.3,
+      10.9,
+      42.195
+    ],
+    "status": "scheduled",
+    "confidence": "low",
+    "sourceUrl": "https://www.kormarathon.com/en/races/daegu-marathon-2027",
+    "updatedAt": "2026-09-07",
+    "officialUrl": "https://daegumarathon.daegu.go.kr/",
+    "courseNote": "2026년까지는 후반 연호네거리~라이온즈파크 오르막이 악명 높았고 2027년 도심 코스로 개편 중이다",
+    "weatherNote": "2월 하순 대구는 평년 최고 8.8도 최저 -1.1도로 국내 주요 대회 중 가장 춥다"
+  },
+  {
+    "slug": "seoul-marathon-2027",
+    "nameKo": "2027 서울마라톤 겸 제97회 동아마라톤",
+    "date": "2027-03-21",
+    "region": "서울",
+    "distances": [
+      10,
+      42.195
+    ],
+    "status": "scheduled",
+    "confidence": "high",
+    "sourceUrl": "https://www.kormarathon.com/en/races/2027-seoul-marathon",
+    "updatedAt": "2026-09-07",
+    "officialUrl": "https://seoul-marathon.com/",
+    "courseProfile": "flat",
+    "courseNote": "도심 평지 코스지만 출발 직후 혼잡이 심하고 막판 잠실대교 오르내림이 마지막 변수다",
+    "weatherNote": "3월 중순 서울은 평년 최고 11도 최저 2도. 07:30 출발이라 초반이 춥다",
+    "cutoffHours": 5
+  }
+]

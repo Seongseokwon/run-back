@@ -7,11 +7,12 @@
     "node": ">=22.18"
   },
   "scripts": {
-    "test": "node --test packages/engine/test/*.test.ts",
-    "typecheck": "tsc -p packages/engine/tsconfig.json --noEmit && tsc -p packages/engine/tsconfig.purity.json --noEmit",
+    "test": "node --test packages/engine/test/*.test.ts packages/races/test/*.test.ts test/*.test.ts",
+    "typecheck": "tsc -p packages/engine/tsconfig.json --noEmit && tsc -p packages/engine/tsconfig.purity.json --noEmit && tsc -p packages/races/tsconfig.json --noEmit && tsc -p tsconfig.json --noEmit",
     "table": "node packages/engine/scripts/print-table.ts",
     "gain": "node packages/engine/scripts/print-gain.ts",
-    "plan": "node packages/engine/scripts/print-plan.ts"
+    "plan": "node packages/engine/scripts/print-plan.ts",
+    "races": "node scripts/check-races.ts"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

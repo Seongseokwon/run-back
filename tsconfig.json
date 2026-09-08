@@ -1,0 +1,9 @@
+{
+  // 루트의 통합 테스트와 운영 스크립트용. 패키지별 tsconfig 는 각 패키지 안에 있다
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "resolveJsonModule": true
+  },
+  "include": ["test/**/*.ts", "scripts/**/*.ts"]
+}

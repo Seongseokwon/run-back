@@ -1,0 +1,17 @@
+{
+  "name": "@raceback/races",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "국내 대회 큐레이션 데이터 — 수동 관리, 빌드 타임 로드",
+  "exports": {
+    ".": "./src/index.ts",
+    "./data": "./data/races.json"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0"
+  }
+}

@@ -1,0 +1,80 @@
+import Link from 'next/link';
+import { upcomingRaces } from '@raceback/races';
+import { ButtonLink } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Illustration } from '@/components/ui/illustration';
+import { distanceLabel, formatDday, formatRaceDate, todayKst } from '@/lib/format';
+import { daysBetween } from '@/lib/plan-view';
+
+/** 홈 — PRD §10.1. 검색 유입의 착지점이자 내부 링크 허브 */
+// D-day 가 매일 바뀐다. 정적으로 굳히면 안 되고, 매 요청 렌더할 이유도 없다 → ISR
+export const revalidate = 3600;
+
+export default function HomePage() {
+  const today = todayKst();
+  const featured = upcomingRaces(today).slice(0, 6);
+
+  return (
+    <div className="space-y-8 pt-2">
+      <section className="flex items-start justify-between gap-2">
+        <div>
+          {/* GEO/AEO 대비 — 질문형 H1 + 2~3문장 직답 (PRD §13.3) */}
+          <h1 className="text-[32px] leading-[1.2] font-extrabold tracking-tight text-ink">
+            대회까지 남은 기간에
+            <br />
+            뭘 해야 할까요?
+          </h1>
+          <p className="mt-3 text-[16px] leading-relaxed text-ink-muted">
+            대회 날짜를 넣으면 오늘부터 대회 당일까지 주차별로 무엇을 달릴지 만들어 드립니다. 남은 기간에
+            무리인 목표라면 그것도 말씀드립니다.
+          </p>
+        </div>
+        <Illustration name="heroShoe" width={120} className="mt-1" />
+      </section>
+
+      <ButtonLink href="/plan/new">내 대회로 플랜 만들기</ButtonLink>
+
+      <section>
+        <div className="flex items-baseline justify-between">
+          <h2 className="text-[20px] font-bold text-ink">다가오는 대회</h2>
+          <Link href="/races" className="text-[14px] font-semibold text-brand">
+            전체 보기
+          </Link>
+        </div>
+
+        <ul className="mt-3 space-y-3">
+          {featured.map((race) => (
+            <li key={race.slug}>
+              <Link href={`/race/${race.slug}`}>
+                <Card className="flex items-center gap-3 px-4 py-4">
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-[16px] font-bold text-ink">{race.nameKo}</p>
+                    <p className="mt-0.5 text-[13px] text-ink-muted">
+                      {formatRaceDate(race.date)} · {race.region}
+                    </p>
+                    <p className="mt-1 text-[13px] text-ink-faint">
+                      {race.distances.map(distanceLabel).join(' · ')}
+                    </p>
+                  </div>
+                  <span className="tabular shrink-0 text-[16px] font-bold text-brand">
+                    {formatDday(daysBetween(today, race.date))}
+                  </span>
+                </Card>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section className="rounded-card bg-surface-sunken px-5 py-5">
+        <h2 className="text-[16px] font-bold text-ink">대회가 목록에 없나요?</h2>
+        <p className="mt-1 text-[14px] leading-relaxed text-ink-muted">
+          날짜를 직접 입력해도 플랜을 만들 수 있습니다.
+        </p>
+        <Link href="/plan/new" className="mt-3 inline-block text-[15px] font-bold text-brand">
+          날짜 직접 입력하기
+        </Link>
+      </section>
+    </div>
+  );
+}

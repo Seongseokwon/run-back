@@ -10,7 +10,11 @@
 
 ```
 packages/engine/     플랜 생성 엔진. 순수 함수, 런타임 의존성 0
-apps/                (예정) Next.js 웹앱
+packages/races/      국내 대회 큐레이션 데이터 + 검증
+apps/web/            Next.js 웹앱
+  src/app/(public)/  공개·SEO 라우트. 하단 탭 없음
+  src/app/(app)/     로그인 사용자 앱 셸. 하단 탭 있음
+test/                패키지를 가로지르는 통합 테스트
 docs/adr/            설계 결정 기록
 ```
 
@@ -27,6 +31,8 @@ npm test                # 엔진 테스트 (node:test) — 99건
 npm run table           # VDOT 구간별 예상 기록·페이스표 (눈 검증용)
 npm run gain            # 향상률 모델을 PRD 초기값과 나란히 출력
 npm run plan            # 플랜 한 건 생성해서 출력 (도그푸딩 케이스)
+npm run races           # 대회 데이터 점검 리포트
+pnpm --filter @raceback/web dev    # 웹앱 개발 서버
 npm run typecheck       # tsc·@types/node 필요 (`pnpm install` 후)
 ```
 
@@ -36,8 +42,21 @@ npm run typecheck       # tsc·@types/node 필요 (`pnpm install` 후)
 |---|---|---|
 | W1 | VDOT 코어, Riegel 환산, 페이스표 | ✅ 완료 — [ADR-0001](./docs/adr/0001-vdot-model.md) 로 O3 해소 |
 | W2 | 타당성 판정, 페이즈 배분, ACWR 볼륨 곡선, 세션 배치 | ✅ 완료 — [ADR-0002](./docs/adr/0002-vdot-gain-rate.md) 로 O2 해소. §11.3 불변식 전 항목 통과 |
-| W3 | 대회 데이터 50개 + 입력 스텝 UI | 다음 |
+| W3 | 대회 데이터 + 앱 스캐폴딩 | 🔶 데이터 82개 ([운영 문서](./docs/race-data-operations.md)) · 앱 구조·디자인 토큰 완료 · 입력 위젯(F-01~03) 남음 |
 | W4~ | 판정 화면, 결과 뷰, SEO, 인증 | |
+
+### 웹앱 구조
+
+레이아웃이 둘이다. `(public)` 은 검색 유입과 게스트 경로라 하단 탭이 없고,
+`(app)` 은 반복 방문하는 로그인 사용자용이라 탭바가 붙는다.
+크롤러와 첫 방문자에게 누를 수 없는 탭을 보여주지 않기 위한 분리다.
+
+디자인 토큰은 `src/app/globals.css` 의 `@theme` 한 곳에만 있다.
+컴포넌트는 리터럴 색상값을 쓰지 않는다.
+
+일러스트는 `src/lib/illustrations.ts` 의 슬롯 레지스트리로 관리한다.
+그림이 없으면 같은 비율의 플레이스홀더가 뜨고, `public/illustrations/` 에 파일을 넣고
+`src` 만 채우면 컴포넌트 수정 없이 반영된다 (비율을 고정해 두어 CLS 가 생기지 않는다).
 
 `generatePlan(input)` 하나로 PlanInput → Plan 이 완성된다. 엔진은 이제 기능적으로 완결이며,
 남은 것은 데이터와 UI다.
