@@ -27,7 +27,8 @@ Node **22.18 이상**이 필요하다. 엔진은 Node 내장 타입 스트리핑
 **설치할 의존성이 없다.**
 
 ```bash
-npm test                # 엔진 테스트 (node:test) — 99건
+npm test                # 엔진·대회 데이터·통합 테스트 (node:test)
+npm run test:all        # 위 + 웹앱 테스트 (pnpm install 후)
 npm run table           # VDOT 구간별 예상 기록·페이스표 (눈 검증용)
 npm run gain            # 향상률 모델을 PRD 초기값과 나란히 출력
 npm run plan            # 플랜 한 건 생성해서 출력 (도그푸딩 케이스)
@@ -42,8 +43,25 @@ npm run typecheck       # tsc·@types/node 필요 (`pnpm install` 후)
 |---|---|---|
 | W1 | VDOT 코어, Riegel 환산, 페이스표 | ✅ 완료 — [ADR-0001](./docs/adr/0001-vdot-model.md) 로 O3 해소 |
 | W2 | 타당성 판정, 페이즈 배분, ACWR 볼륨 곡선, 세션 배치 | ✅ 완료 — [ADR-0002](./docs/adr/0002-vdot-gain-rate.md) 로 O2 해소. §11.3 불변식 전 항목 통과 |
-| W3 | 대회 데이터 + 앱 스캐폴딩 | 🔶 데이터 82개 ([운영 문서](./docs/race-data-operations.md)) · 앱 구조·디자인 토큰 완료 · 입력 위젯(F-01~03) 남음 |
-| W4~ | 판정 화면, 결과 뷰, SEO, 인증 | |
+| W3 | 대회 데이터 + 입력 스텝 UI | ✅ 완료 — 데이터 82개 ([운영 문서](./docs/race-data-operations.md)), 입력 스텝 3단계 |
+| W4 | 판정 화면 + 결과 뷰 + 페이스표 | ✅ 완료 — **게스트 전 흐름 완주** |
+| W5~ | SEO 마감, 개인정보처리방침, 카카오 심사, 인증 | 다음 |
+
+### 게스트 흐름
+
+```
+/  또는  /race/[slug]
+      ↓
+/plan/new          입력 3스텝. 뒤로가기가 이전 스텝
+      ↓
+/plan/verdict?p=   판정 + 대안. 🔴이면 대안이 주 동선
+      ↓
+/plan/result?p=    페이스표 + 주차 아코디언 + 링크 복사
+```
+
+`p` 는 PlanInput 을 base64url 로 인코딩한 값이다. 엔진이 결정론적이라
+**서버에 아무것도 저장하지 않고 링크만으로 같은 플랜이 복원된다.**
+로그인은 이 위에 얹히는 것이지 이걸 대체하지 않는다 (§9.2 저장 게이트).
 
 ### 웹앱 구조
 

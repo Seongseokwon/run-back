@@ -1,39 +1,116 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
+import { generatePlan } from '@raceback/engine';
+import { findRace } from '@raceback/races';
+import { ButtonLink } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { CopyLinkButton } from '@/components/plan/copy-link';
+import { PaceTable } from '@/components/plan/pace-table';
+import { VerdictBadge } from '@/components/plan/verdict-badge';
+import { WeekAccordion } from '@/components/plan/week-accordion';
+import { decodePlanRequest, planHref } from '@/lib/plan-url';
+import { distanceLabel, formatDday, formatDuration, formatRaceDate, todayKst } from '@/lib/format';
+import { daysBetween } from '@/lib/plan-view';
 import { SAFETY_NOTICE } from '@/lib/config';
 
-export const metadata: Metadata = { title: '내 훈련 플랜' };
+export const metadata: Metadata = { title: '내 훈련 플랜', robots: { index: false } };
+
+type Props = { searchParams: Promise<{ p?: string }> };
 
 /**
  * 플랜 결과 — PRD §10.5.
  *
- * 상태 저장(F-08): PlanInput 을 base64url 로 인코딩해 `?p=` 에 담는다.
- * 엔진이 결정론적이라 링크만 있으면 같은 플랜이 복원된다. 로그인 없이도 동작해야 한다.
+ * 서버에 아무것도 저장하지 않는다. URL 의 `p` 만으로 엔진을 다시 돌려 같은 플랜을 만든다.
+ * 결정론이 이걸 가능하게 한다 (§7 도입부).
  */
-const SECTIONS = [
-  { title: '상단 고정', todo: 'D-day · 목표 · 총 주차 · 예상 기록 범위' },
-  { title: '페이스표', todo: 'E/M/T/I/R 5개 존. 입문자에게는 E·M 만 노출하고 나머지는 접는다 (§7.8)' },
-  { title: '주차 리스트', todo: '아코디언. 현재 주차 자동 펼침 + 스크롤 앵커' },
-  { title: '주차 카드', todo: '페이즈 뱃지 · 총 거리 · 일별 세션 7칸 · LLM 코멘트' },
-  { title: 'ACWR 안내', todo: '클램프 발동 주차에 배지 (§7.10). 조용히 줄이지 않는다' },
-  { title: '하단 고정 바', todo: '저장(링크 복사) · 캘린더 추가 · 공유' },
-] as const;
+export default async function PlanResultPage({ searchParams }: Props) {
+  const { p } = await searchParams;
+  const req = decodePlanRequest(p);
 
-export default function PlanResultPage() {
+  if (!req) {
+    return (
+      <div className="space-y-4 pt-6 text-center">
+        <p className="text-[18px] font-bold text-ink">플랜 정보를 읽을 수 없습니다</p>
+        <p className="text-[15px] text-ink-muted">링크가 손상되었을 수 있습니다. 처음부터 다시 만들어 주세요.</p>
+        <ButtonLink href="/plan/new">플랜 만들기</ButtonLink>
+      </div>
+    );
+  }
+
+  const plan = generatePlan(req.input);
+  const today = todayKst();
+  const race = req.raceSlug ? findRace(req.raceSlug) : undefined;
+  const km = req.input.raceDistanceM / 1000;
+  const daysLeft = daysBetween(today, req.input.raceDate);
+  const level = req.input.fitness.kind === 'novice' ? 'novice' : 'full';
+
   return (
     <div className="space-y-6 pt-2">
-      <h1 className="text-[28px] font-extrabold tracking-tight text-ink">내 훈련 플랜</h1>
+      <section>
+        <p className="text-[14px] font-semibold text-ink-muted">
+          {race ? race.nameKo : formatRaceDate(req.input.raceDate)} · {distanceLabel(km)}
+        </p>
+        <p className="tabular mt-1 text-[44px] leading-none font-extrabold text-ink">{formatDday(daysLeft)}</p>
+        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1">
+          <VerdictBadge verdict={plan.verdict} size="sm" />
+          <p className="text-[15px] text-ink">
+            <span className="text-ink-muted">목표 </span>
+            <span className="tabular font-bold">
+              {req.input.goal.kind === 'time' ? formatDuration(req.input.goal.targetSec) : '완주'}
+            </span>
+          </p>
+          <p className="text-[15px] text-ink">
+            <span className="text-ink-muted">총 </span>
+            <span className="tabular font-bold">{plan.weeks.length}주</span>
+          </p>
+        </div>
+        {/*
+          예상 기록은 언제나 범위로 (§7.2 정직성 원칙).
+          '지금 실력 기준'을 붙이는 이유: 이 값은 훈련 전 예측이라 목표보다 느린 게 정상인데,
+          그냥 '예상 기록'이라고 쓰면 판정과 모순돼 보인다
+        */}
+        <p className="mt-2 text-[15px] text-ink-muted">
+          지금 실력 기준 예상{' '}
+          <span className="tabular">
+            {formatDuration(plan.predicted.fastSec)} ~ {formatDuration(plan.predicted.slowSec)}
+          </span>
+        </p>
+        <Link
+          href={planHref('/plan/verdict', req)}
+          className="mt-2 inline-block text-[14px] font-semibold text-brand"
+        >
+          판정 근거 다시 보기
+        </Link>
+      </section>
 
-      <div className="space-y-3">
-        {SECTIONS.map((s) => (
-          <Card key={s.title} className="px-5 py-4">
-            <p className="text-[16px] font-bold text-ink">{s.title}</p>
-            <p className="mt-1 text-[13px] text-ink-faint">TODO · {s.todo}</p>
-          </Card>
-        ))}
-      </div>
+      <PaceTable paces={plan.paces} level={level} />
 
-      <p className="text-[12px] leading-relaxed text-ink-faint">{SAFETY_NOTICE}</p>
+      <section>
+        <h2 className="text-[18px] font-bold text-ink">주차별 플랜</h2>
+        <p className="mt-1 text-[14px] text-ink-muted">
+          피크 주간 거리 {plan.peakWeeklyKm}km · 주 {req.input.daysPerWeek}일
+        </p>
+        <div className="mt-3">
+          <WeekAccordion weeks={plan.weeks} today={today} />
+        </div>
+      </section>
+
+      {/* 엔진이 안전 규칙으로 플랜을 조정했다면 반드시 알린다 (§7.10) */}
+      {plan.notices.filter((n) => n !== SAFETY_NOTICE).length > 0 ? (
+        <Card className="space-y-2 px-5 py-4">
+          {plan.notices
+            .filter((n) => n !== SAFETY_NOTICE)
+            .map((notice) => (
+              <p key={notice} className="text-[14px] leading-relaxed text-ink">
+                {notice}
+              </p>
+            ))}
+        </Card>
+      ) : null}
+
+      <CopyLinkButton />
+
+      <p className="border-t border-line pt-4 text-[12px] leading-relaxed text-ink-faint">{SAFETY_NOTICE}</p>
     </div>
   );
 }

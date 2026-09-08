@@ -12,7 +12,8 @@
     "table": "node packages/engine/scripts/print-table.ts",
     "gain": "node packages/engine/scripts/print-gain.ts",
     "plan": "node packages/engine/scripts/print-plan.ts",
-    "races": "node scripts/check-races.ts"
+    "races": "node scripts/check-races.ts",
+    "test:all": "npm test && pnpm --filter @raceback/web test"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
