@@ -38,7 +38,7 @@ export default function HomePage() {
       <section>
         <div className="flex items-baseline justify-between">
           <h2 className="text-[20px] font-bold text-ink">다가오는 대회</h2>
-          <Link href="/races" className="text-[14px] font-semibold text-brand">
+          <Link href="/races" className="text-[14px] font-semibold text-brand-ink">
             전체 보기
           </Link>
         </div>
@@ -46,18 +46,18 @@ export default function HomePage() {
         <ul className="mt-3 space-y-3">
           {featured.map((race) => (
             <li key={race.slug}>
-              <Link href={`/race/${race.slug}`}>
-                <Card className="flex items-center gap-3 px-4 py-4">
+              <Link href={`/race/${race.slug}`} className="pressable block">
+                <Card className="flex min-h-touch items-center gap-3 px-4 py-4">
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-[16px] font-bold text-ink">{race.nameKo}</p>
                     <p className="mt-0.5 text-[13px] text-ink-muted">
                       {formatRaceDate(race.date)} · {race.region}
                     </p>
-                    <p className="mt-1 text-[13px] text-ink-faint">
+                    <p className="mt-1 text-[13px] text-ink-muted">
                       {race.distances.map(distanceLabel).join(' · ')}
                     </p>
                   </div>
-                  <span className="tabular shrink-0 text-[16px] font-bold text-brand">
+                  <span className="tabular shrink-0 text-[16px] font-bold text-brand-ink">
                     {formatDday(daysBetween(today, race.date))}
                   </span>
                 </Card>
@@ -75,7 +75,7 @@ export default function HomePage() {
             <li key={goal.slug}>
               <Link
                 href={`/goal/${goal.slug}`}
-                className="block rounded-full border border-line-strong bg-surface px-3.5 py-2 text-[14px] font-semibold text-ink"
+                className="pressable block rounded-full border border-line-strong bg-surface px-3.5 py-2.5 text-[14px] font-semibold text-ink"
               >
                 {goal.label}
               </Link>
@@ -89,7 +89,7 @@ export default function HomePage() {
         <p className="mt-1 text-[14px] leading-relaxed text-ink-muted">
           날짜를 직접 입력해도 플랜을 만들 수 있습니다.
         </p>
-        <Link href="/plan/new" className="mt-3 inline-block text-[15px] font-bold text-brand">
+        <Link href="/plan/new" className="mt-3 inline-block text-[15px] font-bold text-brand-ink">
           날짜 직접 입력하기
         </Link>
       </section>

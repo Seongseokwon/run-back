@@ -11,9 +11,12 @@ export function ProgressBar({ value, label }: { value: number; label?: string })
         aria-valuemax={100}
         aria-label={label ?? '진행률'}
       >
-        <div className="h-full rounded-full bg-brand transition-[width]" style={{ width: `${pct}%` }} />
+        <div
+          className="h-full rounded-full bg-brand transition-[width] duration-500 ease-out"
+          style={{ width: `${pct}%` }}
+        />
       </div>
-      <span className="tabular text-[17px] font-bold text-brand">{pct}%</span>
+      <span className="tabular text-[17px] font-bold text-brand-ink">{pct}%</span>
     </div>
   );
 }

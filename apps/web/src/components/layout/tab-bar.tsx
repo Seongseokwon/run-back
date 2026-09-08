@@ -61,7 +61,7 @@ export function TabBar() {
   return (
     <nav
       aria-label="주요 메뉴"
-      className="fixed inset-x-0 bottom-0 z-10 mx-auto flex h-tabbar max-w-md border-t border-line bg-canvas"
+      className="safe-bottom fixed inset-x-0 bottom-0 z-10 mx-auto flex max-w-md border-t border-line bg-canvas"
     >
       {TABS.map((tab) => {
         const active = pathname === tab.href || pathname.startsWith(`${tab.href}/`);
@@ -70,8 +70,8 @@ export function TabBar() {
             key={tab.href}
             href={tab.href}
             aria-current={active ? 'page' : undefined}
-            className={`flex flex-1 flex-col items-center justify-center gap-1 ${
-              active ? 'text-brand' : 'text-ink'
+            className={`pressable flex h-tabbar flex-1 flex-col items-center justify-center gap-1 ${
+              active ? 'text-brand-ink' : 'text-ink'
             }`}
           >
             {tab.icon}

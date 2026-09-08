@@ -6,7 +6,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <AppHeader />
-      <main className="px-5 pb-[calc(var(--spacing-tabbar)+24px)]">{children}</main>
+      <main className="px-5 pb-[calc(var(--spacing-tabbar)+env(safe-area-inset-bottom)+24px)]">{children}</main>
       <TabBar />
     </>
   );

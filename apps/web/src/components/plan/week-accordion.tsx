@@ -39,7 +39,7 @@ export function WeekAccordion({ weeks, today }: { weeks: PlanWeek[]; today: stri
               </span>
               {week.clamped ? (
                 <span
-                  className="rounded-full bg-brand-soft px-2 py-0.5 text-[12px] font-semibold text-brand"
+                  className="rounded-full bg-brand-soft px-2 py-0.5 text-[12px] font-semibold text-brand-ink"
                   title="안전한 증가 폭을 넘어 거리를 줄인 주차입니다"
                 >
                   조정됨
@@ -48,7 +48,7 @@ export function WeekAccordion({ weeks, today }: { weeks: PlanWeek[]; today: stri
               <span className="tabular ml-auto text-[15px] font-bold text-ink">{week.totalKm}km</span>
               <svg
                 viewBox="0 0 20 20"
-                className={`size-4 shrink-0 text-ink-faint transition-transform ${expanded ? 'rotate-90' : ''}`}
+                className={`size-4 shrink-0 text-ink-muted transition-transform ${expanded ? 'rotate-90' : ''}`}
                 fill="none"
                 stroke="currentColor"
                 strokeWidth={2}
@@ -79,7 +79,7 @@ export function WeekAccordion({ weeks, today }: { weeks: PlanWeek[]; today: stri
                           ) : null}
                         </div>
                       ) : (
-                        <span className="flex-1 text-[15px] text-ink-faint">휴식</span>
+                        <span className="flex-1 text-[15px] text-ink-muted">휴식</span>
                       )}
                     </div>
                   );

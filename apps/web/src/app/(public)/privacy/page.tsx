@@ -40,7 +40,7 @@ export default function PrivacyPage() {
 
       {/* 개발 중에만 뜬다. 플레이스홀더인 채로 배포하면 심사에서 반려된다 */}
       {process.env.NODE_ENV !== 'production' && hasUnresolvedLegalInfo() ? (
-        <p className="mt-3 rounded-control border border-dashed border-line-strong px-4 py-3 text-[13px] leading-relaxed text-ink-faint">
+        <p className="mt-3 rounded-control border border-dashed border-line-strong px-4 py-3 text-[13px] leading-relaxed text-ink-muted">
           ⚠️ 신원 정보가 아직 플레이스홀더입니다. PRD O8·O9 결정 후 `src/lib/legal.ts` 를 채우세요.
           이 상태로는 카카오 비즈앱 심사에 제출할 수 없습니다.
         </p>

@@ -33,6 +33,7 @@ npm run table           # VDOT 구간별 예상 기록·페이스표 (눈 검증
 npm run gain            # 향상률 모델을 PRD 초기값과 나란히 출력
 npm run plan            # 플랜 한 건 생성해서 출력 (도그푸딩 케이스)
 npm run races           # 대회 데이터 점검 리포트
+npm run contrast        # 디자인 토큰 명도 대비 점검 (기준 미달이면 실패)
 pnpm --filter @raceback/web dev    # 웹앱 개발 서버
 npm run typecheck       # tsc·@types/node 필요 (`pnpm install` 후)
 ```
@@ -78,6 +79,14 @@ O9(사업자 등록 여부) 결정이 선행되어야 한다.
 
 디자인 토큰은 `src/app/globals.css` 의 `@theme` 한 곳에만 있다.
 컴포넌트는 리터럴 색상값을 쓰지 않는다.
+
+**색은 눈으로 고르지 않고 재서 정한다.** `npm run contrast` 가 토큰별 명도 대비를
+WCAG 기준과 대조하고, 미달이면 실패한다. 초기 팔레트는 안전 고지가 2.09:1 로
+거의 보이지 않았다 — 크림 배경 위 따뜻한 회색은 부드러운 만큼 대비가 쉽게 무너진다.
+
+브랜드 색은 **채움과 글자를 분리**한다. `brand` 는 버튼·진행바 채움 전용이고,
+크림 배경 위 글자에는 한 단계 어두운 `brand-ink` 를 쓴다. `ink-subtle` 은
+장식 전용이라 텍스트에 쓰지 않는다.
 
 일러스트는 `src/lib/illustrations.ts` 의 슬롯 레지스트리로 관리한다.
 그림이 없으면 같은 비율의 플레이스홀더가 뜨고, `public/illustrations/` 에 파일을 넣고

@@ -5,7 +5,7 @@ import type { ComponentProps, ReactNode } from 'react';
 export type RowStatus = 'done' | 'todo' | 'rest';
 
 function StatusMark({ status }: { status: RowStatus }) {
-  if (status === 'rest') return <span className="text-ink-faint">—</span>;
+  if (status === 'rest') return <span className="text-ink-muted">—</span>;
   if (status === 'done') {
     return (
       <span className="flex size-6 items-center justify-center rounded-full bg-brand text-white">
@@ -38,15 +38,15 @@ export function SessionRow({
       <span className={`flex-1 text-[16px] ${status === 'rest' ? 'text-ink-muted' : 'text-ink'}`}>
         {title}
       </span>
-      <svg viewBox="0 0 20 20" className="size-4 shrink-0 text-ink-faint" fill="none" stroke="currentColor" strokeWidth={2}>
+      <svg viewBox="0 0 20 20" className="size-4 shrink-0 text-ink-muted" fill="none" stroke="currentColor" strokeWidth={2}>
         <path d="M7 4l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     </>
   );
 
-  const cls = 'flex items-center gap-3 border-b border-line py-3.5 last:border-b-0';
+  const cls = 'flex min-h-touch items-center gap-3 border-b border-line py-3 last:border-b-0';
   return href ? (
-    <Link href={href} className={`${cls} -mx-1 px-1 hover:bg-surface-sunken/50`}>
+    <Link href={href} className={`${cls} pressable -mx-2 rounded-lg px-2 hover:bg-surface-sunken/50`}>
       {inner}
     </Link>
   ) : (

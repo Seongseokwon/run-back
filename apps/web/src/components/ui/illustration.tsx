@@ -27,7 +27,7 @@ export function Illustration({
         style={{ width, height }}
         className={`flex shrink-0 items-center justify-center rounded-2xl border border-dashed border-line-strong bg-surface-sunken/60 ${className}`}
       >
-        <span className="px-2 text-center text-[11px] leading-tight text-ink-faint">{slot.note}</span>
+        <span className="px-2 text-center text-[11px] leading-tight text-ink-muted">{slot.note}</span>
       </div>
     );
   }

@@ -42,7 +42,7 @@ export function LegalDocument({
               <ul className="mt-2 space-y-1.5">
                 {section.list.map((item) => (
                   <li key={item} className="flex gap-2 text-[15px] leading-relaxed text-ink-muted">
-                    <span aria-hidden className="text-ink-faint">
+                    <span aria-hidden className="text-ink-muted">
                       ·
                     </span>
                     <span>{item}</span>

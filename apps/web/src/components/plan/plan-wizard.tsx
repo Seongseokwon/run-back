@@ -207,7 +207,7 @@ export function PlanWizard({
 
           {selectedRace ? (
             <div className="rounded-control border border-brand bg-brand-soft px-4 py-3.5">
-              <p className="text-[16px] font-bold text-brand">{selectedRace.nameKo}</p>
+              <p className="text-[16px] font-bold text-brand-ink">{selectedRace.nameKo}</p>
               <p className="mt-0.5 text-[13px] text-ink-muted">
                 {formatRaceDate(selectedRace.date)} · {selectedRace.region}
               </p>
@@ -219,7 +219,7 @@ export function PlanWizard({
               <button
                 type="button"
                 onClick={() => patch({ raceSlug: null, distanceM: null })}
-                className="mt-2 text-[13px] font-semibold text-brand underline"
+                className="mt-2 text-[13px] font-semibold text-brand-ink underline"
               >
                 다른 대회 고르기
               </button>
@@ -234,7 +234,7 @@ export function PlanWizard({
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="예: 춘천, 서울, 하프"
                     autoComplete="off"
-                    className="h-12 w-full rounded-control border border-line-strong bg-surface px-4 text-[17px] text-ink placeholder:text-ink-faint focus:border-brand focus:outline-none"
+                    className="h-12 w-full rounded-control border border-line-input bg-surface px-4 text-[17px] text-ink placeholder:text-ink-muted focus:border-brand focus:outline-none"
                   />
                 )}
               </Field>
@@ -268,7 +268,7 @@ export function PlanWizard({
                     min={today}
                     value={state.customDate}
                     onChange={(e) => patch({ customDate: e.target.value })}
-                    className="h-12 w-full rounded-control border border-line-strong bg-surface px-4 text-[17px] text-ink focus:border-brand focus:outline-none"
+                    className="h-12 w-full rounded-control border border-line-input bg-surface px-4 text-[17px] text-ink focus:border-brand focus:outline-none"
                   />
                 )}
               </Field>
@@ -288,7 +288,7 @@ export function PlanWizard({
                         type="button"
                         onClick={() => patch({ distanceM: meters })}
                         className={`h-12 rounded-control border text-[16px] font-semibold ${
-                          active ? 'border-brand bg-brand-soft text-brand' : 'border-line-strong bg-surface text-ink'
+                          active ? 'border-brand bg-brand-soft text-brand-ink' : 'border-line-strong bg-surface text-ink'
                         }`}
                       >
                         {distanceLabel(km)}
@@ -428,7 +428,7 @@ export function PlanWizard({
                       type="button"
                       onClick={() => patch({ daysPerWeek: Number(opt.value) as 3 | 4 | 5 | 6 })}
                       className={`h-12 rounded-control border text-[15px] font-semibold ${
-                        active ? 'border-brand bg-brand-soft text-brand' : 'border-line-strong bg-surface text-ink'
+                        active ? 'border-brand bg-brand-soft text-brand-ink' : 'border-line-strong bg-surface text-ink'
                       }`}
                     >
                       {opt.label}

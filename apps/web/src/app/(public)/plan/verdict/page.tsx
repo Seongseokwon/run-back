@@ -121,7 +121,7 @@ export default async function VerdictPage({ searchParams }: Props) {
           <Link href={withGoal(f.achievableTimeSec)} className="block">
             <Card className="flex items-baseline justify-between px-5 py-4">
               <span className="text-[15px] font-semibold text-ink">같은 기간에 노려볼 만한 기록</span>
-              <span className="tabular text-[22px] font-extrabold text-brand">
+              <span className="tabular text-[22px] font-extrabold text-brand-ink">
                 {formatDuration(f.achievableTimeSec)}
               </span>
             </Card>

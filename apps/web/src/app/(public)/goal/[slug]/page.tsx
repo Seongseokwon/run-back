@@ -138,7 +138,7 @@ export default async function GoalPage({ params }: Props) {
                       {formatRaceDate(race.date)} · {race.region}
                     </span>
                   </span>
-                  <span className="tabular shrink-0 text-[14px] font-bold text-brand">
+                  <span className="tabular shrink-0 text-[14px] font-bold text-brand-ink">
                     {formatDday(daysBetween(today, race.date))}
                   </span>
                 </Link>
@@ -148,7 +148,7 @@ export default async function GoalPage({ params }: Props) {
         </section>
       ) : null}
 
-      <footer className="border-t border-line pt-4 text-[12px] leading-relaxed text-ink-faint">
+      <footer className="border-t border-line pt-4 text-[12px] leading-relaxed text-ink-muted">
         페이스와 환산 기록은 {SITE_NAME}의 훈련 플랜 엔진이 계산한 값입니다. 일반적인 훈련 정보이며 의학적
         조언이 아닙니다.
       </footer>

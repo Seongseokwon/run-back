@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { upcomingRaces } from '@raceback/races';
 import { distanceLabel, formatDday, formatRaceDate, todayKst } from '@/lib/format';
 import { daysBetween } from '@/lib/plan-view';
+import { ButtonLink } from '@/components/ui/button';
+import { EmptyState } from '@/components/ui/empty-state';
 
 export const metadata: Metadata = { title: '대회' };
 export const revalidate = 3600;
@@ -18,20 +20,35 @@ export default function RacesPage() {
         예정된 {races.length}개 대회. 날짜를 고르면 그날까지 역산한 플랜을 만들어 드립니다.
       </p>
 
+      {races.length === 0 ? (
+        <EmptyState
+          title="예정된 대회가 없습니다"
+          description="대회 데이터를 갱신하는 중일 수 있습니다. 날짜를 직접 넣어 플랜을 만들 수 있습니다."
+          action={
+            <ButtonLink href="/plan/new" size="md">
+              날짜 직접 입력하기
+            </ButtonLink>
+          }
+        />
+      ) : null}
+
       <ul className="divide-y divide-line">
         {races.map((race) => (
           <li key={race.slug}>
-            <Link href={`/race/${race.slug}`} className="flex items-center gap-3 py-4">
+            <Link
+              href={`/race/${race.slug}`}
+              className="pressable -mx-2 flex min-h-touch items-center gap-3 rounded-lg px-2 py-4"
+            >
               <div className="min-w-0 flex-1">
                 <p className="truncate text-[16px] font-bold text-ink">{race.nameKo}</p>
                 <p className="mt-0.5 text-[13px] text-ink-muted">
                   {formatRaceDate(race.date)} · {race.region}
                 </p>
-                <p className="mt-1 text-[13px] text-ink-faint">
+                <p className="mt-1 text-[13px] text-ink-muted">
                   {race.distances.map(distanceLabel).join(' · ')}
                 </p>
               </div>
-              <span className="tabular shrink-0 text-[15px] font-bold text-brand">
+              <span className="tabular shrink-0 text-[15px] font-bold text-brand-ink">
                 {formatDday(daysBetween(today, race.date))}
               </span>
             </Link>

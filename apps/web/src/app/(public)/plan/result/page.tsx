@@ -50,7 +50,9 @@ export default async function PlanResultPage({ searchParams }: Props) {
         <p className="text-[14px] font-semibold text-ink-muted">
           {race ? race.nameKo : formatRaceDate(req.input.raceDate)} · {distanceLabel(km)}
         </p>
-        <p className="tabular mt-1 text-[44px] leading-none font-extrabold text-ink">{formatDday(daysLeft)}</p>
+        <p className="tabular mt-1 text-[56px] leading-none font-extrabold tracking-tighter text-ink">
+          {formatDday(daysLeft)}
+        </p>
         <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1">
           <VerdictBadge verdict={plan.verdict} size="sm" />
           <p className="text-[15px] text-ink">
@@ -77,7 +79,7 @@ export default async function PlanResultPage({ searchParams }: Props) {
         </p>
         <Link
           href={planHref('/plan/verdict', req)}
-          className="mt-2 inline-block text-[14px] font-semibold text-brand"
+          className="mt-2 inline-block text-[14px] font-semibold text-brand-ink"
         >
           판정 근거 다시 보기
         </Link>
@@ -110,7 +112,7 @@ export default async function PlanResultPage({ searchParams }: Props) {
 
       <CopyLinkButton />
 
-      <p className="border-t border-line pt-4 text-[12px] leading-relaxed text-ink-faint">{SAFETY_NOTICE}</p>
+      <p className="border-t border-line pt-4 text-[12px] leading-relaxed text-ink-muted">{SAFETY_NOTICE}</p>
     </div>
   );
 }

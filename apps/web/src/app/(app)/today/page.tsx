@@ -65,6 +65,7 @@ export default function TodayPage() {
 
       <NextRaceCard
         raceName={race.nameKo}
+        distanceKm={plan.input.raceDistanceM / 1000}
         daysLeft={daysLeft}
         goalLabel={goalLabel}
         progress={planProgress(plan, today)}
@@ -98,7 +99,7 @@ export default function TodayPage() {
         </p>
       ) : null}
 
-      <p className="text-[12px] leading-relaxed text-ink-faint">{SAFETY_NOTICE}</p>
+      <p className="text-[12px] leading-relaxed text-ink-muted">{SAFETY_NOTICE}</p>
     </div>
   );
 }

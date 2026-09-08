@@ -78,7 +78,7 @@ export default async function RacePage({ params }: Props) {
         <p className="mt-2 text-[15px] text-ink-muted">
           {formatRaceDate(race.date)} · {race.region}
         </p>
-        <p className="tabular mt-3 text-[44px] leading-none font-extrabold text-brand">
+        <p className="tabular mt-3 text-[44px] leading-none font-extrabold text-brand-ink">
           {formatDday(daysLeft)}
         </p>
       </section>
@@ -124,7 +124,7 @@ export default async function RacePage({ params }: Props) {
       </div>
 
       {/* 날짜 변경·취소 리스크 대응 — 출처와 확인일을 노출한다 (§12, §17 R5) */}
-      <footer className="space-y-1 border-t border-line pt-4 text-[12px] text-ink-faint">
+      <footer className="space-y-1 border-t border-line pt-4 text-[12px] text-ink-muted">
         <p>최종 확인 {race.updatedAt}</p>
         <p>
           대회 정보는 변경될 수 있습니다.{' '}

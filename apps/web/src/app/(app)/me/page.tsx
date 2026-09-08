@@ -20,15 +20,18 @@ export default function MePage() {
         <p className="text-[16px] font-bold text-ink">플랜을 저장하고 어느 기기에서든 이어보려면</p>
         <p className="mt-1 text-[15px] text-ink-muted">로그인해 주세요</p>
         {/* §9.2 저장 게이트 — 로그인은 생성이 아니라 저장 시점에만 요구한다 */}
-        <p className="mt-4 text-[13px] text-ink-faint">로그인 없이 링크 복사로도 플랜을 보관할 수 있습니다</p>
+        <p className="mt-4 text-[13px] text-ink-muted">로그인 없이 링크 복사로도 플랜을 보관할 수 있습니다</p>
       </div>
 
       <ul className="divide-y divide-line">
         {MENU.map((item) => (
           <li key={item.label}>
-            <Link href={item.href} className="flex items-center justify-between py-4 text-[16px] text-ink">
+            <Link
+              href={item.href}
+              className="pressable -mx-2 flex min-h-touch items-center justify-between rounded-lg px-2 py-4 text-[16px] text-ink"
+            >
               {item.label}
-              <svg viewBox="0 0 20 20" className="size-4 text-ink-faint" fill="none" stroke="currentColor" strokeWidth={2}>
+              <svg viewBox="0 0 20 20" className="size-4 text-ink-muted" fill="none" stroke="currentColor" strokeWidth={2}>
                 <path d="M7 4l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </Link>
