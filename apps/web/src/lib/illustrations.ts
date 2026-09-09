@@ -43,6 +43,12 @@ export const ILLUSTRATIONS = {
     ratio: 1.2,
     note: '빈 상태 — 플랜을 아직 만들지 않은 화면',
   },
+  emptyLog: {
+    src: null,
+    alt: '아직 남긴 러닝이 없습니다',
+    ratio: 1.2,
+    note: '빈 상태 — 수행 기록이 아직 없는 화면',
+  },
 } as const satisfies Record<string, IllustrationSlot>;
 
 export type IllustrationName = keyof typeof ILLUSTRATIONS;

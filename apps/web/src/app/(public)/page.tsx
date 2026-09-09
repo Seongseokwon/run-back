@@ -38,7 +38,7 @@ export default function HomePage() {
       <section>
         <div className="flex items-baseline justify-between">
           <h2 className="text-[20px] font-bold text-ink">다가오는 대회</h2>
-          <Link href="/races" className="text-[14px] font-semibold text-brand-ink">
+          <Link href="/race" className="text-[14px] font-semibold text-brand-ink">
             전체 보기
           </Link>
         </div>

@@ -16,6 +16,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     { url: SITE_URL, changeFrequency: 'daily', priority: 1 },
+    // 대회 목록 허브. 고유 콘텐츠가 있는 대회만 링크하므로 색인해도 안전하다
+    { url: `${SITE_URL}/race`, changeFrequency: 'daily', priority: 0.8 },
     ...seoReadyRaces(today).map((race) => ({
       url: `${SITE_URL}/race/${race.slug}`,
       lastModified: new Date(race.updatedAt),

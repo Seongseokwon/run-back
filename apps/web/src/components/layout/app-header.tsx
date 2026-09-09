@@ -44,6 +44,7 @@ export function PublicFooter() {
           개인정보처리방침
         </Link>
         <Link href="/terms">이용약관</Link>
+        <Link href="/race">대회 일정</Link>
         <Link href="/plan/new">플랜 만들기</Link>
       </nav>
       <p className="mt-3 text-[12px] leading-relaxed text-ink-muted">
