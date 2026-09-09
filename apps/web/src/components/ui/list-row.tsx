@@ -4,6 +4,14 @@ import type { ComponentProps, ReactNode } from 'react';
 /** 세션 완료 상태 — PRD F-12 주차 완료 체크 */
 export type RowStatus = 'done' | 'todo' | 'rest';
 
+/**
+ * 상태 표식은 **글자보다 작아야 한다** (18px, 옆 제목은 text-body-lg 17px).
+ * 한때 24px 원에 2px 테두리였는데, 행에서 가장 정보가 적은 요소가 가장 무거워졌다 —
+ * 특히 플랜 시작 전 '첫 주'는 전부 예정이라 굵은 빈 원만 일곱 개가 쌓인다.
+ * 목업의 링도 얇다. 표식은 제목을 읽는 눈을 방해하지 않는 선까지만 있으면 된다.
+ *
+ * 뜻을 색으로만 전하지 않는다 (WCAG 1.4.1) — 형태가 갈린다: 하이픈 / 빈 링 / 채운 체크
+ */
 function StatusMark({ status }: { status: RowStatus }) {
   if (status === 'rest') {
     return <span aria-hidden className="block h-px w-3.5 rounded-full bg-ink-subtle" />;
@@ -12,15 +20,15 @@ function StatusMark({ status }: { status: RowStatus }) {
     return (
       <span
         aria-hidden
-        className="flex size-6 items-center justify-center rounded-full bg-brand text-on-brand"
+        className="flex size-4.5 items-center justify-center rounded-full bg-brand text-on-brand"
       >
-        <svg viewBox="0 0 20 20" className="size-3.5" fill="none" stroke="currentColor" strokeWidth={3}>
+        <svg viewBox="0 0 20 20" className="size-2.5" fill="none" stroke="currentColor" strokeWidth={3}>
           <path d="M4 10.5l4 4 8-8" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </span>
     );
   }
-  return <span aria-hidden className="block size-6 rounded-full border-2 border-line-input" />;
+  return <span aria-hidden className="block size-4.5 rounded-full border border-line-input" />;
 }
 
 /**

@@ -31,7 +31,11 @@ export function NextRaceCard({
 }) {
   return (
     <div className="overflow-hidden rounded-card border border-line bg-surface-raised shadow-lifted">
-      <SceneSurface name="raceScene" minHeight={300}>
+      {/*
+        이 카드는 /today 와 /races 양쪽에서 첫 화면 맨 위에 선다 — 즉 LCP 다.
+        lazy 로 두면 D-day 는 떠 있는데 바탕만 한참 비어 있다가 그림이 나중에 들어찬다.
+      */}
+      <SceneSurface name="raceScene" minHeight={300} priority>
         <div className="px-5 pt-5">
           <SectionLabel>Next race</SectionLabel>
           <h2 className="mt-1.5 line-clamp-2 text-card font-extrabold tracking-tight text-ink">

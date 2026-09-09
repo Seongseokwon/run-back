@@ -22,12 +22,15 @@ export function SceneSurface({
   children,
   className = '',
   minHeight,
+  priority = false,
 }: {
   name: IllustrationName;
   children: ReactNode;
   className?: string;
   /** px. 하늘을 얼마나 남길지 — 내용이 길수록 키운다 */
   minHeight: number;
+  /** 첫 화면에 바로 보이는 씬에만 준다. LCP 참고 */
+  priority?: boolean;
 }) {
   const slot = ILLUSTRATIONS[name];
 
@@ -46,6 +49,7 @@ export function SceneSurface({
             aria-hidden
             fill
             sizes={SIZES}
+            priority={priority}
             className="object-cover object-bottom select-none"
           />
           <div
@@ -71,12 +75,15 @@ export function SceneBand({
   className = '',
   rounded = true,
   aspect,
+  priority = false,
 }: {
   name: IllustrationName;
   className?: string;
   rounded?: boolean;
   /** width / height. 생략하면 원본 비율 */
   aspect?: number;
+  /** 첫 화면에 바로 보이는 씬에만 준다. LCP 참고 */
+  priority?: boolean;
 }) {
   const slot = ILLUSTRATIONS[name];
   const ratio = aspect ?? slot.ratio;
@@ -103,6 +110,7 @@ export function SceneBand({
         aria-hidden
         fill
         sizes={SIZES}
+        priority={priority}
         className={`object-cover select-none ${ratio > slot.ratio ? 'object-bottom' : ''}`}
       />
     </div>

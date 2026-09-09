@@ -28,7 +28,8 @@ export default function HomePage() {
           대회 날짜를 넣으면 오늘부터 대회 당일까지 주차별로 무엇을 달릴지 만들어 드립니다. 남은
           기간에 무리인 목표라면 그것도 말씀드립니다.
         </p>
-        <SceneBand name="sessionStart" className="mt-5" />
+        {/* 검색 유입의 첫 화면이자 LCP. 이 한 장만 priority 로 당긴다 */}
+        <SceneBand name="sessionStart" className="mt-5" priority />
       </section>
 
       <ButtonLink href="/plan/new">내 대회로 플랜 만들기</ButtonLink>
