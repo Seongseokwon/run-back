@@ -1,15 +1,17 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ButtonLink } from '@/components/ui/button';
-import { Illustration } from '@/components/ui/illustration';
 import { AppHeader } from '@/components/layout/app-header';
 import { AppScreen } from '@/components/layout/app-screen';
+import { Note, PageTitle, Screen } from '@/components/ui/section';
 import { NextRaceCard } from '@/components/home/next-race-card';
+import { PlanStateCard } from '@/components/home/plan-state-card';
 import { TodayTrainingCard } from '@/components/home/today-training-card';
 import { WeekList } from '@/components/home/week-list';
 import { EmptyState } from '@/components/ui/empty-state';
 import { primaryRace } from '@/lib/demo-plan';
 import { formatPace, formatRaceDate, todayKst } from '@/lib/format';
+import { sessionIllustration } from '@/lib/illustrations';
 import {
   currentWeek,
   daysBetween,
@@ -25,6 +27,11 @@ import { SAFETY_NOTICE } from '@/lib/config';
 export const metadata: Metadata = { title: '오늘' };
 // '오늘' 화면은 굳히면 안 된다. 계정이 붙으면 사용자별로도 갈린다
 export const dynamic = 'force-dynamic';
+
+/** KST 기준 시각. UTC+9 가 24를 넘어가므로 나머지를 취한다 */
+function kstHour(): number {
+  return (new Date().getUTCHours() + 9) % 24;
+}
 
 function greeting(hour: number): string {
   if (hour < 5) return '늦은 밤이에요.';
@@ -62,8 +69,8 @@ export default function TodayPage() {
   if (!mine) {
     return (
       <AppScreen header={<AppHeader />}>
-        <div className="space-y-6 pt-2">
-          <h1 className="text-[28px] font-extrabold tracking-tight text-ink">오늘</h1>
+        <Screen>
+          <PageTitle>오늘</PageTitle>
           <EmptyState
             title="아직 목표 대회가 없습니다"
             description="대회를 정하면 그날까지 역산해서 오늘 뭘 뛰어야 하는지 알려 드립니다."
@@ -73,7 +80,7 @@ export default function TodayPage() {
               </ButtonLink>
             }
           />
-        </div>
+        </Screen>
       </AppScreen>
     );
   }
@@ -89,19 +96,18 @@ export default function TodayPage() {
 
   return (
     <AppScreen header={<AppHeader />}>
-      <div className="space-y-7">
-        <section className="pt-2">
-          <p className="text-[15px] font-medium text-ink-muted">{greeting(new Date().getUTCHours() + 9)}</p>
-          <div className="mt-1 flex items-start justify-between gap-2">
-            <h1 className="text-[34px] leading-[1.15] font-extrabold tracking-tight whitespace-pre-line text-ink">
-              {headline(session?.type, status !== 'before')}
-            </h1>
-            <Illustration name="heroShoe" width={140} className="-mt-2" />
-          </div>
+      <Screen>
+        {/* 신발 그림을 여기 두지 않는다 — 바로 아래 대회 카드가 이미 큰 씬을 들고 있어서
+            둘이 나란히 있으면 그림이 두 번 나온다. 헤드라인이 폭을 다 쓰는 편이 낫다 */}
+        <section>
+          <p className="text-body font-semibold text-ink-muted">{greeting(kstHour())}</p>
+          <h1 className="mt-1 text-headline font-extrabold tracking-tight whitespace-pre-line text-ink">
+            {headline(session?.type, status !== 'before')}
+          </h1>
         </section>
 
         {/* 카드 전체가 훈련 일정 상세로 가는 입구다. D-day 를 본 다음 궁금한 건 언제나 '그래서 전체 일정은' 이다 */}
-        <Link href={scheduleHref} className="pressable block">
+        <Link href={scheduleHref} className="pressable rise block">
           <NextRaceCard
             raceName={race.nameKo}
             distanceKm={distanceKm}
@@ -112,46 +118,48 @@ export default function TodayPage() {
         </Link>
 
         {status === 'before' ? (
-          /* 대회 날짜에서 주 단위로 역산하므로 첫 주가 다음 주 월요일부터일 수 있다.
-             그 상태를 '오늘은 휴식일'이라고 하면 플랜이 이미 돌고 있는 것처럼 읽힌다 */
-          <section className="rounded-card border border-line bg-surface px-5 py-8 text-center">
-            <p className="text-[18px] font-bold text-ink">
-              플랜은 {formatRaceDate(startDate)}부터 시작합니다
-            </p>
-            <p className="tabular mt-1 text-[15px] text-ink-muted">
-              시작까지 {daysBetween(today, startDate)}일 · 그때까지는 편하게 몸을 만들어 두세요
-            </p>
-          </section>
+          <PlanStateCard
+            title={`플랜은 ${formatRaceDate(startDate)}부터 시작합니다`}
+            detail={`시작까지 ${daysBetween(today, startDate)}일 · 그때까지는 편하게 몸을 만들어 두세요`}
+            illustration={sessionIllustration(undefined, 'before')}
+          />
         ) : session && session.type !== 'rest' ? (
-          <>
+          <div className="rise space-y-5" style={{ animationDelay: '80ms' }}>
             <TodayTrainingCard
+              label="Today's training"
               typeLabel={sessionTitle(session.type)}
               distanceKm={session.distanceKm}
               paceRange={`${formatPace(pace.fastSecPerKm)} ~ ${formatPace(pace.slowSecPerKm)}`}
+              illustration={sessionIllustration(session.type)}
               {...(session.structure ? { note: session.structure } : {})}
             />
-            <ButtonLink href={scheduleHref}>훈련 일정 보기</ButtonLink>
-          </>
+            {/*
+              목업의 '오늘 달리기' 자리. 러닝 트래킹이 없어서 같은 문구를 쓸 수 없다 —
+              눌러서 아무 일도 안 일어나면 고장으로 읽힌다. 버튼의 위치·무게는 그대로 두고
+              실제로 갈 수 있는 곳(훈련 일정)으로 보낸다.
+            */}
+            <ButtonLink href={scheduleHref}>오늘 훈련 자세히 보기</ButtonLink>
+          </div>
         ) : (
-          <section className="rounded-card border border-line bg-surface px-5 py-8 text-center">
-            <p className="text-[18px] font-bold text-ink">오늘은 휴식일입니다</p>
-            <p className="mt-1 text-[15px] text-ink-muted">회복도 훈련입니다. 내일 세션을 위해 쉬어 가세요.</p>
-          </section>
+          <PlanStateCard
+            title="오늘은 휴식일입니다"
+            detail="회복도 훈련입니다. 내일 세션을 위해 쉬어 가세요."
+            illustration={sessionIllustration('rest')}
+          />
         )}
-
-        <hr className="border-line" />
 
         <WeekList items={weekItems(week, today)} title={status === 'before' ? '첫 주' : '이번 주'} />
 
         {/* ACWR 클램프 등 엔진이 조용히 줄인 게 있으면 반드시 알린다 (PRD §7.10) */}
         {week.clamped ? (
-          <p className="rounded-control bg-surface-sunken px-4 py-3 text-[13px] leading-relaxed text-ink-muted">
-            이번 주는 안전한 훈련량 증가 폭을 넘어서 거리를 줄였습니다. 부상 위험을 낮추기 위한 조정입니다.
-          </p>
+          <Note>
+            이번 주는 안전한 훈련량 증가 폭을 넘어서 거리를 줄였습니다. 부상 위험을 낮추기 위한
+            조정입니다.
+          </Note>
         ) : null}
 
-        <p className="text-[12px] leading-relaxed text-ink-muted">{SAFETY_NOTICE}</p>
-      </div>
+        <p className="border-t border-line pt-4 text-micro text-ink-muted">{SAFETY_NOTICE}</p>
+      </Screen>
     </AppScreen>
   );
 }

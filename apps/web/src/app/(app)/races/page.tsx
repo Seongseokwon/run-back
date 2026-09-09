@@ -4,37 +4,38 @@ import { ButtonLink } from '@/components/ui/button';
 import { AppHeader } from '@/components/layout/app-header';
 import { AppScreen } from '@/components/layout/app-screen';
 import { EmptyState } from '@/components/ui/empty-state';
-import { MyRaceRow } from '@/components/races/my-race-row';
+import { PageTitle, Screen, Section, SectionAction } from '@/components/ui/section';
+import { NextRaceCard } from '@/components/home/next-race-card';
+import { AddGoalSlot, MyRaceRow } from '@/components/races/my-race-row';
 import { myRaces } from '@/lib/demo-plan';
 import { todayKst } from '@/lib/format';
-import { daysBetween, planProgress, sessionProgress } from '@/lib/plan-view';
+import { daysBetween, planProgress } from '@/lib/plan-view';
 
 export const metadata: Metadata = { title: '대회' };
 // 내가 등록한 대회의 D-day 와 진행률은 매일 달라진다. 굳히면 안 된다
 export const dynamic = 'force-dynamic';
 
 /**
- * 대회 탭 = **내 대회**.
+ * 대회 탭 = **내가 준비 중인 대회**.
  *
  * 전체 대회 브라우징은 이 탭이 아니라 공개 라우트(`/race`)에 둔다.
  * 로그인 사용자가 이 탭에 오는 이유는 "내가 준비 중인 대회가 어떻게 되고 있나"이지
  * "무슨 대회가 있나"가 아니다. 둘을 한 화면에 섞으면 둘 다 잘 안 보인다.
+ *
+ * 맨 위 NEXT RACE 카드는 홈과 같은 카드다. 목표가 여럿이어도 **가장 가까운 하나**는
+ * 늘 크게 서 있어야 한다 — 목록만 있으면 어느 게 급한지 매번 날짜를 세어 봐야 한다.
  */
 export default function MyRacesPage() {
   const today = todayKst();
   const races = myRaces(today);
+  const next = races[0];
 
   return (
     <AppScreen header={<AppHeader />}>
-      <div className="space-y-5 pt-2">
-        <header className="flex items-baseline justify-between gap-2">
-          <h1 className="text-[28px] font-extrabold tracking-tight text-ink">내 대회</h1>
-          <Link href="/race" className="shrink-0 text-[14px] font-bold text-brand-ink">
-            대회 둘러보기
-          </Link>
-        </header>
+      <Screen>
+        <PageTitle>대회</PageTitle>
 
-        {races.length === 0 ? (
+        {!next ? (
           <EmptyState
             title="아직 등록한 대회가 없습니다"
             description="목표 대회를 정하면 그날까지 역산한 주차별 플랜을 만들어 드립니다."
@@ -46,43 +47,37 @@ export default function MyRacesPage() {
           />
         ) : (
           <>
-            <ul className="space-y-3">
-              {races.map((item) => {
-                const progress = sessionProgress(item.plan, today);
-                return (
+            <Link href={`/races/${next.race.slug}`} className="pressable rise block">
+              <NextRaceCard
+                raceName={next.race.nameKo}
+                distanceKm={next.distanceKm}
+                daysLeft={daysBetween(today, next.race.date)}
+                goalLabel={next.goalLabel}
+                progress={planProgress(next.plan, today)}
+              />
+            </Link>
+
+            <Section title="내 대회" action={<SectionAction href="/race">둘러보기</SectionAction>}>
+              <ul className="space-y-3">
+                {races.map((item) => (
                   <li key={item.race.slug}>
                     <MyRaceRow
                       href={`/races/${item.race.slug}`}
                       name={item.race.nameKo}
                       date={item.race.date}
                       distanceKm={item.distanceKm}
-                      daysLeft={daysBetween(today, item.race.date)}
                       goalLabel={item.goalLabel}
-                      progress={planProgress(item.plan, today)}
-                      sessionsDone={progress.done}
-                      sessionsTotal={progress.total}
                     />
                   </li>
-                );
-              })}
-            </ul>
-
-            {/*
-              목업의 "새로운 목표를 추가해보세요" 슬롯.
-              빈 상태 화면이 아니라 목록 끝에 항상 붙는 자리다 — 목표는 하나로 끝나지 않는다
-            */}
-            <Link
-              href="/plan/new"
-              className="pressable flex min-h-touch items-center justify-center gap-2 rounded-card border border-dashed border-line-strong px-4 py-6 text-[15px] font-bold text-brand-ink hover:bg-brand-soft/30"
-            >
-              <svg viewBox="0 0 20 20" className="size-5" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden>
-                <path d="M10 4v12M4 10h12" strokeLinecap="round" />
-              </svg>
-              새로운 목표를 추가해보세요
-            </Link>
+                ))}
+              </ul>
+              <div className="mt-3">
+                <AddGoalSlot />
+              </div>
+            </Section>
           </>
         )}
-      </div>
+      </Screen>
     </AppScreen>
   );
 }

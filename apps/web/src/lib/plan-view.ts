@@ -50,6 +50,19 @@ export const PHASE_LABEL: Record<PlanWeek['phase'], string> = {
 
 const DOW = ['일', '월', '화', '수', '목', '금', '토'];
 
+/** 달력 열 머리 — 월요일 시작 */
+export const DOW_MON_FIRST = ['월', '화', '수', '목', '금', '토', '일'];
+
+const MONTH_EN = [
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December',
+];
+
+/** '2026-09' → 'September 2026'. 목업이 영문 월 이름을 쓴다 */
+export function monthLabel(month: MonthKey): string {
+  return `${MONTH_EN[Number(month.slice(5, 7)) - 1]} ${month.slice(0, 4)}`;
+}
+
 /** 오늘이 속한 주차. 아직 시작 전이면 첫 주, 이미 끝났으면 마지막 주 */
 export function currentWeek(plan: Plan, today: string): PlanWeek {
   const found = plan.weeks.find((w) => today >= w.startDate && today <= addDays(w.startDate, 6));
@@ -170,8 +183,11 @@ export function planMonths(plan: Plan): MonthKey[] {
 }
 
 /**
- * 달력 격자. 일요일 시작으로 앞뒤를 채워 항상 7의 배수로 낸다.
+ * 달력 격자. **월요일 시작**으로 앞뒤를 채워 항상 7의 배수로 낸다.
  * 칸 수가 주마다 달라지면 그리드가 흔들려서 읽기 어렵다.
+ *
+ * 월요일 시작인 이유: 엔진이 주차를 월요일부터 끊는다(`week.startDate`).
+ * 달력이 일요일부터 시작하면 한 훈련 주차가 두 줄에 걸쳐 보여서 주간 볼륨이 읽히지 않는다.
  */
 export function monthGrid(plan: Plan, month: MonthKey, today: string): CalendarCell[] {
   const sessions = new Map(allSessions(plan).map((s) => [s.date, s]));
@@ -179,7 +195,8 @@ export function monthGrid(plan: Plan, month: MonthKey, today: string): CalendarC
   const planEnd = plan.input.raceDate;
   const firstOfMonth = `${month}-01`;
   const daysInMonth = new Date(Date.UTC(year(month), monthIndex(month) + 1, 0)).getUTCDate();
-  const leading = new Date(`${firstOfMonth}T00:00:00Z`).getUTCDay();
+  // 월요일=0 이 되도록 민다 (getUTCDay 는 일요일=0)
+  const leading = (new Date(`${firstOfMonth}T00:00:00Z`).getUTCDay() + 6) % 7;
 
   const start = addDays(firstOfMonth, -leading);
   const total = Math.ceil((leading + daysInMonth) / 7) * 7;

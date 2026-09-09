@@ -14,7 +14,7 @@ export default function AppError({ error, reset }: { error: Error; reset: () => 
   }, [error]);
 
   return (
-    <div className="px-5 pt-6">
+    <div className="px-gutter pt-6">
       <EmptyState
         title="화면을 불러오지 못했습니다"
         description="일시적인 문제일 수 있습니다. 다시 시도해 보세요."

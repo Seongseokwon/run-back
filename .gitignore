@@ -8,3 +8,7 @@ coverage/
 .env.*
 !.env.example
 .DS_Store
+
+# Claude Code 스킬 — 프로젝트가 아니라 사용자(~/.claude/skills)에 둔다.
+# 여기 두면 이 리포에서만 쓸 수 있는데, 범용 디자인 스킬이라 그럴 이유가 없다
+.claude/

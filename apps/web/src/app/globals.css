@@ -3,13 +3,18 @@
 /*
  * RUNBACK 디자인 토큰
  *
- * 색·반경·간격을 여기 한 곳에만 둔다. 컴포넌트는 리터럴 색상값을 쓰지 않는다.
+ * 색·활자·반경·간격을 여기 한 곳에만 둔다. 컴포넌트는 리터럴 값을 쓰지 않는다.
  * 톤: 따뜻한 크림 배경 위에 보라 액센트. 숫자는 크고 굵게, 나머지는 조용하게.
  */
 @theme {
-  /* 배경 — 흰색이 아니라 따뜻한 크림. 장시간 봐도 눈이 편하다 */
+  /* ── 표면 ──────────────────────────────────────────────────────────
+   * 흰색이 아니라 따뜻한 크림. 장시간 봐도 눈이 편하다.
+   * 네 단계인 이유: 크림 배경(canvas) 위에서 카드 하나만으로는 위계가 안 생긴다.
+   * 가라앉은 면(sunken) / 기본 카드(surface) / 떠 있는 카드(raised) 로 갈라 둔다.
+   */
   --color-canvas: #fbf7f0;
   --color-surface: #fdfcfa;
+  --color-surface-raised: #ffffff;
   --color-surface-sunken: #f5f0e8;
 
   /*
@@ -17,56 +22,93 @@
    * 크림 배경 위의 따뜻한 회색은 눈에 부드럽지만 그만큼 대비가 쉽게 무너진다.
    */
   --color-ink: #141414; /* 17.3:1 */
-  --color-ink-muted: #777167; /* 4.53:1 — 보조 본문. AA 통과 */
+  --color-ink-muted: #6e685e; /* 4.87:1 — 보조 본문. 가장 어두운 표면(sunken) 기준으로 AA 통과 */
   /* ⚠️ 2.5:1. 텍스트에 쓰지 않는다. 아이콘·플레이스홀더 아트 같은 장식 전용 */
   --color-ink-subtle: #b3ada3;
 
-  /*
-   * 브랜드 — 채움색과 글자색을 분리한다.
-   * 목업의 보라(#7c5fe0)는 흰 글씨를 얹으면 4.6:1 로 충분하지만,
-   * 크림 배경 위 글자색으로 쓰면 4.3:1 이라 본문 기준에 못 미친다.
-   * 그래서 버튼·진행바는 원래 색을 유지하고, 글자만 한 단계 어둡게 쓴다.
+  /* ── 브랜드 ────────────────────────────────────────────────────────
+   * 역할별로 쪼개 둔다. 하나의 보라로 채움과 글자를 겸하면 반드시 어느 한쪽이 깨진다.
+   *
+   *   brand        버튼·진행바·체크 채움. 흰 글씨 4.59:1
+   *   brand-ink    크림/흰 배경 위 글자. 5.37:1 (brand 를 글자로 쓰면 4.30:1 로 미달)
+   *   on-brand     보라 채움 위에 얹는 글자 (주 버튼 라벨, 완료 체크)
    */
-  --color-brand: #7c5fe0; /* 채움 전용. 흰 글씨 4.59:1 */
-  --color-brand-ink: #6c53c3; /* 글자 전용. 배경 5.37:1 / brand-soft 위 4.52:1 */
+  --color-brand: #7c5fe0;
   --color-brand-strong: #6a4dd0;
+  --color-brand-ink: #6c53c3;
   --color-brand-soft: #e7e1fa;
+  /* ⚠️ 1.66:1. 장식 테두리 전용 — 텍스트도, 뜻을 지닌 경계선도 아니다 */
+  --color-brand-line: #c9bbf2;
+  --color-on-brand: #ffffff;
 
   /* 보조 액센트 — 페이스·시간처럼 '주의해서 볼 값' */
   --color-accent: #e36d37; /* 3.02:1 — 비텍스트 최소 기준 */
 
   /*
    * 판정 배지 (PRD §7.3 안정권 / 도전적 / 비현실적).
-   * 결과 화면에서 15px 로도 쓰이므로 본문 기준(4.5:1)을 맞춘다.
+   * 결과 화면에서 작게도 쓰이므로 본문 기준(4.5:1)을 맞춘다.
    * 색만으로 뜻을 전하지는 않는다 — 이모지와 한글 라벨이 항상 함께 간다 (WCAG 1.4.1)
    */
   --color-verdict-safe: #338056;
   --color-verdict-challenging: #986817;
   --color-verdict-unrealistic: #bf4d39;
 
-  --color-line: #ede8e0; /* 구분선 — 장식. 없어도 목록을 읽을 수 있다 */
+  --color-line: #e8e2d8; /* 구분선 — 장식. 없어도 목록을 읽을 수 있다 */
   --color-line-strong: #ded6ca;
   /* 입력·컨트롤 테두리. WCAG 1.4.11 이 비텍스트 UI 에 3:1 을 요구한다 */
   --color-line-input: #979289;
 
-  --radius-card: 20px;
+  /* ── 활자 ──────────────────────────────────────────────────────────
+   * 이전에는 11~64px 사이 19개 크기가 화면마다 제각각 쓰였다.
+   * 15·16·17px 이 한 화면에 섞이면 위계가 아니라 흔들림으로 읽힌다.
+   * 열한 단계로 고정하고, 컴포넌트는 px 를 직접 쓰지 않는다.
+   */
+  --text-micro: 11px; /* 탭 라벨·범례 */
+  --text-micro--line-height: 1.45;
+  --text-label: 13px; /* 캡션·고지·메타 */
+  --text-label--line-height: 1.5;
+  --text-body: 15px; /* 보조 본문 */
+  --text-body--line-height: 1.6;
+  --text-body-lg: 17px; /* 주 본문·목록 제목 */
+  --text-body-lg--line-height: 1.55;
+  --text-section: 19px; /* 섹션 제목 */
+  --text-section--line-height: 1.4;
+  --text-card: 22px; /* 카드 제목 */
+  --text-card--line-height: 1.25;
+  --text-title: 27px; /* 화면 제목 */
+  --text-title--line-height: 1.2;
+  --text-headline: 33px; /* 오늘 화면 헤드라인 — 화면당 하나 */
+  --text-headline--line-height: 1.18;
+  /* 숫자 세 단계. 이 제품 화면의 시각적 중심이다 */
+  --text-figure-sm: 40px;
+  --text-figure-sm--line-height: 1;
+  --text-figure: 56px;
+  --text-figure--line-height: 1;
+  --text-hero: 68px;
+  --text-hero--line-height: 0.95;
+
+  /* 그림이 들어오면서 모서리를 한 단계 키웠다 — 씬이 카드 안에 부드럽게 앉는다 */
+  --radius-card: 24px;
   --radius-control: 16px;
 
-  /* 그림자는 거의 안 쓴다. 크림 배경 위에서는 테두리 한 줄이 더 깔끔하고,
-     그림자를 얹는 순간 카드가 배경에서 떠 보여 톤이 무거워진다.
-     '지금 봐야 할 것' 하나에만 쓴다 */
-  --shadow-lifted: 0 2px 12px -4px rgb(20 20 20 / 0.08), 0 1px 3px -1px rgb(20 20 20 / 0.04);
+  /* 그림자는 하나뿐이다 — 크림 배경 위에 얹히는 카드용.
+     회색이 아니라 따뜻한 갈색 기가 도는 그림자다. 크림 위에 중성 회색을 깔면
+     그늘이 파랗게 떠 보여서 종이 느낌이 깨진다 */
+  --shadow-lifted: 0 6px 20px -8px rgb(80 62 40 / 0.14), 0 1px 3px -1px rgb(80 62 40 / 0.06);
 
   /* 터치 타깃 최소 크기. 손가락은 커서보다 크다 */
   --spacing-touch: 44px;
+  /* 화면 좌우 여백. 헤더와 본문이 같은 축에 서야 한다 */
+  --spacing-gutter: 20px;
+  /* 하단 탭바 높이. 스크롤 영역 패딩 계산에 쓴다 */
+  --spacing-tabbar: 64px;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 
   /* 시스템 폰트 우선 — 웹폰트는 subset 만 (PRD §10.9) */
   --font-sans:
     -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Pretendard Variable', Pretendard,
     'Noto Sans KR', 'Malgun Gothic', system-ui, sans-serif;
-
-  /* 하단 탭바 높이. 스크롤 영역 패딩 계산에 쓴다 */
-  --spacing-tabbar: 64px;
 }
 
 @layer base {
@@ -88,6 +130,14 @@
     font-family: var(--font-sans);
     /* 모바일 우선 — 가로 스크롤 금지 (PRD §10) */
     overflow-x: hidden;
+    /*
+     * 한글은 어절 중간에서 끊으면 안 된다. 기본값(break-word)이면
+     * '남은 기간에'가 '기간' / '에' 로 갈라져서 읽는 속도가 눈에 띄게 떨어진다.
+     * 좁은 화면에서 줄 끝이 조금 들쭉날쭉해지는 편이 낫다.
+     */
+    word-break: keep-all;
+    /* 끊을 데가 없는 긴 문자열(URL 등)은 예외로 둔다 — 안 그러면 가로로 삐져나간다 */
+    overflow-wrap: break-word;
   }
 
   /* 숫자를 표에서 세로로 맞춘다. 페이스·거리·시간에 전부 적용 */
@@ -95,15 +145,41 @@
     font-variant-numeric: tabular-nums;
   }
 
+  /* 큰 숫자 전용. 기본 자간이면 두 자리 수가 떨어져 보인다 */
+  .figure {
+    font-variant-numeric: tabular-nums;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+  }
+
   /* 누를 수 있는 것에는 눌리는 느낌을 준다. 모바일에서 반응이 없으면 먹통처럼 느껴진다 */
   .pressable {
     transition:
-      transform 120ms ease,
-      background-color 120ms ease;
+      transform 140ms var(--ease-out-soft),
+      background-color 140ms var(--ease-out-soft),
+      border-color 140ms var(--ease-out-soft);
     -webkit-tap-highlight-color: transparent;
   }
   .pressable:active {
     transform: scale(0.985);
+  }
+
+  /*
+   * 진입 모션. 화면이 통째로 튀어나오지 않게 아주 짧고 작게만 준다.
+   * 순서를 주고 싶으면 style={{ animationDelay }} 로 지연을 얹는다.
+   */
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  .rise {
+    animation: rise 420ms var(--ease-out-soft) both;
   }
 
   /* 홈 인디케이터가 있는 기기에서 하단 고정 요소가 가려지지 않게 한다 */
@@ -117,6 +193,9 @@
     }
     .pressable:active {
       transform: none;
+    }
+    .rise {
+      animation: none;
     }
     *,
     *::before,

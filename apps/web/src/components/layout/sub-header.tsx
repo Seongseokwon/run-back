@@ -10,18 +10,20 @@ import type { ReactNode } from 'react';
 export function SubHeader({ title, action }: { title: string; action?: ReactNode }) {
   const router = useRouter();
   return (
-    <header className="flex items-center gap-2 px-5 pt-6 pb-3">
+    <header className="flex items-center gap-1 px-gutter pt-5 pb-3">
       <button
         type="button"
         onClick={() => router.back()}
         aria-label="뒤로"
-        className="pressable -ml-2 flex size-touch items-center justify-center text-ink"
+        className="pressable -ml-3 flex size-touch shrink-0 items-center justify-center rounded-full text-ink"
       >
         <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth={2}>
           <path d="M15 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
-      <h1 className="flex-1 text-[20px] font-extrabold tracking-tight text-ink">{title}</h1>
+      <h1 className="min-w-0 flex-1 truncate text-section font-extrabold tracking-tight text-ink">
+        {title}
+      </h1>
       {action}
     </header>
   );

@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { findRace, seoReadyRaces } from '@raceback/races';
 import { ButtonLink } from '@/components/ui/button';
 import { Card, SectionLabel } from '@/components/ui/card';
-import { Illustration } from '@/components/ui/illustration';
+import { SceneBand } from '@/components/ui/scene';
 import { SITE_NAME, SITE_URL } from '@/lib/config';
 import { distanceLabel, formatCutoff, formatDday, formatRaceDate, splitRegion, todayKst } from '@/lib/format';
 import { daysBetween } from '@/lib/plan-view';
@@ -72,19 +72,19 @@ export default async function RacePage({ params }: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <section>
-        <h1 className="text-[28px] leading-tight font-extrabold tracking-tight text-ink">
+        <h1 className="text-title leading-tight font-extrabold tracking-tight text-ink">
           {race.nameKo}
         </h1>
-        <p className="mt-2 text-[15px] text-ink-muted">
+        <p className="mt-2 text-body text-ink-muted">
           {formatRaceDate(race.date)} · {race.region}
         </p>
-        <p className="tabular mt-3 text-[44px] leading-none font-extrabold text-brand-ink">
+        <p className="tabular mt-3 text-figure-sm leading-none font-extrabold text-brand-ink">
           {formatDday(daysLeft)}
         </p>
       </section>
 
       {race.status === 'uncertain' && race.statusNote ? (
-        <p className="rounded-control border border-line-strong bg-surface-sunken px-4 py-3 text-[14px] leading-relaxed text-ink">
+        <p className="rounded-control border border-line-strong bg-surface-sunken px-4 py-3 text-label leading-relaxed text-ink">
           ⚠️ {race.statusNote}
         </p>
       ) : null}
@@ -93,18 +93,18 @@ export default async function RacePage({ params }: Props) {
       {race.courseNote || race.weatherNote ? (
         <Card className="space-y-3 px-5 py-5">
           <SectionLabel>코스와 날씨</SectionLabel>
-          {race.courseNote ? <p className="text-[15px] leading-relaxed text-ink">{race.courseNote}</p> : null}
+          {race.courseNote ? <p className="text-body leading-relaxed text-ink">{race.courseNote}</p> : null}
           {race.weatherNote ? (
-            <p className="text-[15px] leading-relaxed text-ink-muted">{race.weatherNote}</p>
+            <p className="text-body leading-relaxed text-ink-muted">{race.weatherNote}</p>
           ) : null}
           {race.cutoffHours ? (
-            <p className="text-[14px] text-ink-muted">제한시간 {formatCutoff(race.cutoffHours)}</p>
+            <p className="text-label text-ink-muted">제한시간 {formatCutoff(race.cutoffHours)}</p>
           ) : null}
         </Card>
       ) : null}
 
       <section>
-        <h2 className="text-[18px] font-bold text-ink">종목별 플랜 만들기</h2>
+        <h2 className="text-section font-bold text-ink">종목별 플랜 만들기</h2>
         <div className="mt-3 space-y-2">
           {standard.map((km) => (
             <ButtonLink
@@ -119,12 +119,10 @@ export default async function RacePage({ params }: Props) {
         </div>
       </section>
 
-      <div className="flex justify-center">
-        <Illustration name="raceScene" width={280} />
-      </div>
+      <SceneBand name="raceScene" aspect={2.4} />
 
       {/* 날짜 변경·취소 리스크 대응 — 출처와 확인일을 노출한다 (§12, §17 R5) */}
-      <footer className="space-y-1 border-t border-line pt-4 text-[12px] text-ink-muted">
+      <footer className="space-y-1 border-t border-line pt-4 text-micro text-ink-muted">
         <p>최종 확인 {race.updatedAt}</p>
         <p>
           대회 정보는 변경될 수 있습니다.{' '}

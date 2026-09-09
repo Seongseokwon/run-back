@@ -29,8 +29,8 @@ export default async function VerdictPage({ searchParams }: Props) {
   if (!req) {
     return (
       <div className="space-y-4 pt-6 text-center">
-        <p className="text-[18px] font-bold text-ink">플랜 정보를 읽을 수 없습니다</p>
-        <p className="text-[15px] text-ink-muted">링크가 손상되었을 수 있습니다. 처음부터 다시 만들어 주세요.</p>
+        <p className="text-section font-bold text-ink">플랜 정보를 읽을 수 없습니다</p>
+        <p className="text-body text-ink-muted">링크가 손상되었을 수 있습니다. 처음부터 다시 만들어 주세요.</p>
         <ButtonLink href="/plan/new">플랜 만들기</ButtonLink>
       </div>
     );
@@ -65,7 +65,7 @@ export default async function VerdictPage({ searchParams }: Props) {
   return (
     <div className="space-y-6 pt-2">
       <section>
-        <p className="text-[14px] font-semibold text-ink-muted">
+        <p className="text-label font-semibold text-ink-muted">
           {race ? race.nameKo : formatRaceDate(req.input.raceDate)} · {distanceLabel(km)}
         </p>
         <div className="mt-2">
@@ -73,7 +73,7 @@ export default async function VerdictPage({ searchParams }: Props) {
         </div>
         <ul className="mt-3 space-y-1.5">
           {f.reasons.map((reason) => (
-            <li key={reason} className="text-[16px] leading-relaxed text-ink">
+            <li key={reason} className="text-body leading-relaxed text-ink">
               {reason}
             </li>
           ))}
@@ -83,28 +83,28 @@ export default async function VerdictPage({ searchParams }: Props) {
       {/* 남은 주차와 실력 차이를 숫자로 보여준다. 판정을 믿으려면 근거가 보여야 한다 */}
       <Card className="grid grid-cols-3 divide-x divide-line px-2 py-4 text-center">
         <div>
-          <p className="text-[12px] font-semibold text-ink-muted">남은 기간</p>
-          <p className="tabular mt-1 text-[20px] font-extrabold text-ink">{f.weeksAvailable}주</p>
+          <p className="text-micro font-semibold text-ink-muted">남은 기간</p>
+          <p className="tabular mt-1 text-section font-extrabold text-ink">{f.weeksAvailable}주</p>
         </div>
         <div>
-          <p className="text-[12px] font-semibold text-ink-muted">최소 권장</p>
-          <p className="tabular mt-1 text-[20px] font-extrabold text-ink">{f.minWeeksRecommended}주</p>
+          <p className="text-micro font-semibold text-ink-muted">최소 권장</p>
+          <p className="tabular mt-1 text-section font-extrabold text-ink">{f.minWeeksRecommended}주</p>
         </div>
         <div>
-          <p className="text-[12px] font-semibold text-ink-muted">주당 훈련</p>
-          <p className="tabular mt-1 text-[20px] font-extrabold text-ink">{req.input.daysPerWeek}일</p>
+          <p className="text-micro font-semibold text-ink-muted">주당 훈련</p>
+          <p className="tabular mt-1 text-section font-extrabold text-ink">{req.input.daysPerWeek}일</p>
         </div>
       </Card>
 
       {plan.verdict === 'unrealistic' ? (
         <section className="space-y-3">
-          <h2 className="text-[18px] font-bold text-ink">이 기간에 현실적인 목표</h2>
+          <h2 className="text-section font-bold text-ink">이 기간에 현실적인 목표</h2>
           <div className="space-y-2">
             {alternatives.map((alt) => (
               <Link key={alt.label} href={withGoal(alt.sec)} className="block">
                 <Card className="flex items-baseline justify-between px-5 py-4">
-                  <span className="text-[15px] font-semibold text-ink">{alt.label}</span>
-                  <span className="tabular text-[22px] font-extrabold text-ink">{formatDuration(alt.sec)}</span>
+                  <span className="text-body font-semibold text-ink">{alt.label}</span>
+                  <span className="tabular text-card font-extrabold text-ink">{formatDuration(alt.sec)}</span>
                 </Card>
               </Link>
             ))}
@@ -117,11 +117,11 @@ export default async function VerdictPage({ searchParams }: Props) {
 
       {plan.verdict === 'safe' && req.input.goal.kind === 'time' ? (
         <section className="space-y-2">
-          <h2 className="text-[18px] font-bold text-ink">목표를 높여 볼까요?</h2>
+          <h2 className="text-section font-bold text-ink">목표를 높여 볼까요?</h2>
           <Link href={withGoal(f.achievableTimeSec)} className="block">
             <Card className="flex items-baseline justify-between px-5 py-4">
-              <span className="text-[15px] font-semibold text-ink">같은 기간에 노려볼 만한 기록</span>
-              <span className="tabular text-[22px] font-extrabold text-brand-ink">
+              <span className="text-body font-semibold text-ink">같은 기간에 노려볼 만한 기록</span>
+              <span className="tabular text-card font-extrabold text-brand-ink">
                 {formatDuration(f.achievableTimeSec)}
               </span>
             </Card>
@@ -138,18 +138,18 @@ export default async function VerdictPage({ searchParams }: Props) {
           <>
             <Link
               href={planHref('/plan/result', req)}
-              className="block py-2 text-center text-[15px] font-semibold text-ink-muted underline"
+              className="block py-2 text-center text-body font-semibold text-ink-muted underline"
             >
               그래도 원래 목표로 플랜 보기
             </Link>
-            <Link href="/plan/new" className="block py-2 text-center text-[15px] font-semibold text-ink-muted">
+            <Link href="/plan/new" className="block py-2 text-center text-body font-semibold text-ink-muted">
               입력 다시 하기
             </Link>
           </>
         ) : (
           <>
             <ButtonLink href={planHref('/plan/result', req)}>이 플랜으로 시작하기</ButtonLink>
-            <Link href="/plan/new" className="block py-2 text-center text-[15px] font-semibold text-ink-muted">
+            <Link href="/plan/new" className="block py-2 text-center text-body font-semibold text-ink-muted">
               입력 다시 하기
             </Link>
           </>

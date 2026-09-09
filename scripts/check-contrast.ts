@@ -42,16 +42,35 @@ export function contrast(a: string, b: string): number {
 type Role = { token: string; min: number; on: string[]; note: string };
 
 const CONTRACT: Role[] = [
-  { token: 'ink', min: 4.5, on: ['canvas', 'surface'], note: '본문·제목' },
-  { token: 'ink-muted', min: 4.5, on: ['canvas', 'surface'], note: '보조 본문 — 설명·캡션·고지' },
-  { token: 'brand-ink', min: 4.5, on: ['canvas', 'surface', 'brand-soft'], note: '브랜드 색 글자' },
+  { token: 'ink', min: 4.5, on: ['canvas', 'surface', 'surface-raised', 'surface-sunken'], note: '본문·제목' },
+  { token: 'ink-muted', min: 4.5, on: ['canvas', 'surface', 'surface-raised', 'surface-sunken'], note: '보조 본문 — 설명·캡션·고지' },
+  { token: 'brand-ink', min: 4.5, on: ['canvas', 'surface', 'surface-raised', 'brand-soft'], note: '브랜드 색 글자' },
   { token: 'verdict-safe', min: 4.5, on: ['canvas', 'surface'], note: '판정 배지' },
   { token: 'verdict-challenging', min: 4.5, on: ['canvas', 'surface'], note: '판정 배지' },
   { token: 'verdict-unrealistic', min: 4.5, on: ['canvas', 'surface'], note: '판정 배지' },
+  // 보라로 채운 버튼·체크 위의 흰 글씨. 반대 방향이라 따로 잰다
+  { token: 'on-brand', min: 4.5, on: ['brand', 'brand-strong'], note: '보라 채움 위 글자 (주 버튼)' },
   { token: 'brand', min: 3, on: ['canvas', 'surface'], note: '채움·테두리 (비텍스트)' },
   { token: 'accent', min: 3, on: ['canvas', 'surface'], note: '아이콘 (비텍스트)' },
-  { token: 'line-input', min: 3, on: ['surface'], note: '입력 테두리 (비텍스트)' },
+  { token: 'line-input', min: 3, on: ['surface', 'surface-raised'], note: '입력 테두리 (비텍스트)' },
 ];
+
+/**
+ * 대비 기준을 일부러 걸지 않는 토큰.
+ * 여기 없는 새 토큰이 생기면 아래 미등록 검사에서 걸린다 — 조용히 빠져나가지 못하게 한다.
+ */
+const DECORATIVE = new Set([
+  'canvas',
+  'surface',
+  'surface-raised',
+  'surface-sunken',
+  'brand-soft',
+  'brand-strong',
+  'ink-subtle',
+  'brand-line',
+  'line',
+  'line-strong',
+]);
 
 const tokens = parseTokens(readFileSync(CSS, 'utf8'));
 let failed = 0;
@@ -84,13 +103,15 @@ for (const role of CONTRACT) {
   );
 }
 
-// 흰 글씨를 얹는 채움색은 반대 방향으로도 확인해야 한다
-const brand = tokens.get('brand');
-if (brand) {
-  const onBrand = contrast('#ffffff', brand);
-  const ok = onBrand >= 4.5;
-  if (!ok) failed++;
-  console.log(`${ok ? '  ' : '✗ '}${'흰 글씨 on brand'.padEnd(20)}  4.5  ${onBrand.toFixed(2).padStart(6)}  ${'brand'.padEnd(11)} 주 버튼`);
+/*
+ * 새로 추가된 토큰이 아무 기준에도 걸리지 않은 채 지나가는 걸 막는다.
+ * 색을 늘릴 때 대비를 같이 정하지 않으면, 정하지 않았다는 사실 자체를 잊는다.
+ */
+const covered = new Set([...CONTRACT.map((r) => r.token), ...DECORATIVE]);
+const orphans = [...tokens.keys()].filter((t) => !covered.has(t));
+if (orphans.length > 0) {
+  failed++;
+  console.log(`✗ ${'기준 미등록'.padEnd(19)}    —       —  ${''.padEnd(11)} ${orphans.join(', ')}`);
 }
 
 console.log('─'.repeat(72));

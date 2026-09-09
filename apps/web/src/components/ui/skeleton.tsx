@@ -3,13 +3,14 @@ export function Skeleton({ className = '' }: { className?: string }) {
   return <div aria-hidden className={`animate-pulse rounded-lg bg-surface-sunken ${className}`} />;
 }
 
+/** 카드 하나. 홈의 NEXT RACE 카드와 같은 높이를 잡는다 */
 export function CardSkeleton() {
   return (
     <div className="rounded-card border border-line bg-surface px-5 py-5">
       <Skeleton className="h-4 w-24" />
       <Skeleton className="mt-3 h-6 w-2/3" />
-      <Skeleton className="mt-4 h-14 w-40" />
-      <Skeleton className="mt-5 h-2.5 w-full" />
+      <Skeleton className="mt-4 h-16 w-40" />
+      <Skeleton className="mt-5 h-12 w-full" />
     </div>
   );
 }

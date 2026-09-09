@@ -15,17 +15,17 @@ export function Field({
   const id = useId();
   return (
     <div>
-      <label htmlFor={id} className="block text-[15px] font-bold text-ink">
+      <label htmlFor={id} className="block text-body font-bold text-ink">
         {label}
       </label>
-      {hint ? <p className="mt-1 text-[13px] text-ink-muted">{hint}</p> : null}
+      {hint ? <p className="mt-1 text-label text-ink-muted">{hint}</p> : null}
       <div className="mt-2">{children(id)}</div>
     </div>
   );
 }
 
 const inputCls =
-  'h-12 w-full rounded-control border border-line-input bg-surface px-4 text-[17px] text-ink placeholder:text-ink-muted focus:border-brand focus:outline-none';
+  'h-12 w-full rounded-control border border-line-input bg-surface px-4 text-body-lg text-ink placeholder:text-ink-muted focus:border-brand focus:outline-none';
 
 export function TextInput({ className = '', ...props }: ComponentProps<'input'>) {
   return <input className={`${inputCls} ${className}`} {...props} />;
@@ -66,7 +66,7 @@ export function Segmented<T extends string>({
           role="radio"
           aria-checked={value === opt.value}
           onClick={() => onChange(opt.value)}
-          className={`h-11 flex-1 rounded-control border text-[15px] font-semibold transition-colors ${
+          className={`h-11 flex-1 rounded-control border text-body font-semibold transition-colors ${
             value === opt.value
               ? 'border-brand bg-brand-soft text-brand-ink'
               : 'border-line-strong bg-surface text-ink'
@@ -104,10 +104,10 @@ export function ChoiceList<T extends string>({
             value === opt.value ? 'border-brand bg-brand-soft' : 'border-line-strong bg-surface'
           }`}
         >
-          <span className={`block text-[16px] font-bold ${value === opt.value ? 'text-brand-ink' : 'text-ink'}`}>
+          <span className={`block text-body font-bold ${value === opt.value ? 'text-brand-ink' : 'text-ink'}`}>
             {opt.label}
           </span>
-          {opt.hint ? <span className="mt-0.5 block text-[13px] text-ink-muted">{opt.hint}</span> : null}
+          {opt.hint ? <span className="mt-0.5 block text-label text-ink-muted">{opt.hint}</span> : null}
         </button>
       ))}
     </div>

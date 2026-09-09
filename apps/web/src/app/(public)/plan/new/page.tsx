@@ -20,7 +20,7 @@ export default async function PlanNewPage({ searchParams }: Props) {
 
   return (
     <div className="space-y-6 pt-2">
-      <h1 className="text-[28px] font-extrabold tracking-tight text-ink">플랜 만들기</h1>
+      <h1 className="text-title font-extrabold tracking-tight text-ink">플랜 만들기</h1>
       <PlanWizard
         races={raceOptions(today)}
         today={today}

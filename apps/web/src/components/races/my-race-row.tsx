@@ -1,64 +1,78 @@
 import Link from 'next/link';
-import { ProgressBar } from '@/components/ui/progress-bar';
-import { distanceLabel, formatDday, formatRaceDate } from '@/lib/format';
+import { Card } from '@/components/ui/card';
+import { SceneBand } from '@/components/ui/scene';
+import { distanceLabel, formatRaceDate } from '@/lib/format';
 
 /**
- * 내 대회 한 줄 — 대회 탭의 본체.
+ * 내 대회 한 줄.
  *
- * 여기 담기는 건 '대회 정보'가 아니라 **내 목표의 상태**다.
- * 그래서 지역·종목 목록이 아니라 D-day / 목표 / 진행률을 보여 준다.
+ * 위에 이미 NEXT RACE 카드가 D-day·진행률을 크게 보여 주고 있으므로
+ * 여기서는 같은 숫자를 되풀이하지 않는다 — 목록은 '무엇을 준비 중인지'만 답한다.
+ * 목업이 이 행을 이름·날짜·목표 세 가지로만 둔 이유도 같다.
  */
 export function MyRaceRow({
   href,
   name,
   date,
   distanceKm,
-  daysLeft,
   goalLabel,
-  progress,
-  sessionsDone,
-  sessionsTotal,
 }: {
   href: string;
   name: string;
   date: string;
   distanceKm: number;
-  daysLeft: number;
   goalLabel: string;
-  progress: number;
-  sessionsDone: number;
-  sessionsTotal: number;
 }) {
   return (
-    <Link
-      href={href}
-      className="pressable block rounded-card border border-line bg-surface px-4 py-4 hover:bg-surface-sunken/40"
-    >
-      <div className="flex items-start gap-3">
+    <Link href={href} className="pressable block">
+      <Card className="flex min-h-touch items-center gap-3 px-4 py-4 hover:bg-surface-raised">
         <div className="min-w-0 flex-1">
-          <p className="truncate text-[17px] font-bold text-ink">{name}</p>
-          <p className="mt-0.5 text-[13px] text-ink-muted">
+          <p className="truncate text-body-lg font-bold text-ink">{name}</p>
+          <p className="mt-0.5 text-label text-ink-muted">
             {formatRaceDate(date)} · {distanceLabel(distanceKm)}
           </p>
         </div>
-        <span className="tabular shrink-0 text-[17px] font-extrabold text-brand-ink">
-          {formatDday(daysLeft)}
-        </span>
-      </div>
-
-      <div className="mt-3 flex items-center justify-between text-[14px]">
-        <p className="text-ink">
-          <span className="text-ink-muted">목표 </span>
+        <p className="shrink-0 text-body text-ink">
+          <span className="mr-1.5 text-ink-muted">목표</span>
           <span className="tabular font-bold">{goalLabel}</span>
         </p>
-        <p className="tabular text-ink-muted">
-          {sessionsDone} / {sessionsTotal} 세션
-        </p>
-      </div>
+        <svg
+          viewBox="0 0 20 20"
+          className="size-4 shrink-0 text-ink-subtle"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          aria-hidden
+        >
+          <path d="M7 4l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </Card>
+    </Link>
+  );
+}
 
-      <div className="mt-2">
-        <ProgressBar value={progress} label={`${name} 진행률`} />
-      </div>
+/**
+ * 목록 끝에 항상 붙는 '새 목표' 자리.
+ * 빈 상태 화면이 아니라 목록의 마지막 칸이다 — 목표는 하나로 끝나지 않는다.
+ */
+export function AddGoalSlot() {
+  return (
+    <Link
+      href="/plan/new"
+      className="pressable block overflow-hidden rounded-card border border-line bg-surface-raised hover:border-brand-line"
+    >
+      <SceneBand name="emptyPlan" rounded={false} aspect={2.8} />
+      <span className="flex items-center justify-center gap-2 px-4 py-4 text-body font-bold text-brand-ink">
+        <span
+          aria-hidden
+          className="flex size-5 items-center justify-center rounded-full bg-brand-soft"
+        >
+          <svg viewBox="0 0 20 20" className="size-3.5" fill="none" stroke="currentColor" strokeWidth={2.6}>
+            <path d="M10 4v12M4 10h12" strokeLinecap="round" />
+          </svg>
+        </span>
+        새로운 목표를 추가해보세요
+      </span>
     </Link>
   );
 }

@@ -27,16 +27,16 @@ export function PaceTable({
             return (
               <tr key={key} className="border-b border-line last:border-b-0">
                 <th scope="row" className="py-3 text-left align-top">
-                  <span className="text-[16px] font-bold text-ink">
+                  <span className="text-body font-bold text-ink">
                     {key} · {zone.nameKo}
                   </span>
-                  <span className="mt-0.5 block max-w-[11rem] text-[12px] leading-snug font-normal text-ink-muted">
+                  <span className="mt-0.5 block max-w-[11rem] text-micro leading-snug font-normal text-ink-muted">
                     {zone.purposeKo}
                   </span>
                 </th>
-                <td className="tabular py-3 text-right align-top text-[17px] font-bold whitespace-nowrap text-ink">
+                <td className="tabular py-3 text-right align-top text-body-lg font-bold whitespace-nowrap text-ink">
                   {zone.display}
-                  <span className="ml-1 text-[13px] font-medium text-ink-muted">/km</span>
+                  <span className="ml-1 text-label font-medium text-ink-muted">/km</span>
                 </td>
               </tr>
             );
@@ -44,7 +44,7 @@ export function PaceTable({
         </tbody>
       </table>
       {hidden ? (
-        <p className="mt-3 text-[13px] leading-relaxed text-ink-muted">
+        <p className="mt-3 text-label leading-relaxed text-ink-muted">
           지금은 이지와 마라톤 페이스 두 개만 챙기면 됩니다. 나머지 존은 훈련이 쌓인 뒤에 씁니다.
         </p>
       ) : null}

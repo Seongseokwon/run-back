@@ -18,19 +18,19 @@ export function LegalDocument({
 }) {
   return (
     <article className="pt-2 pb-8">
-      <h1 className="text-[26px] font-extrabold tracking-tight text-ink">{title}</h1>
-      <p className="mt-1 text-[13px] text-ink-muted">시행일 {updatedAt}</p>
+      <h1 className="text-title font-extrabold tracking-tight text-ink">{title}</h1>
+      <p className="mt-1 text-label text-ink-muted">시행일 {updatedAt}</p>
 
       <div className="mt-6 space-y-7">
         {sections.map((section) => (
           <section key={section.heading}>
-            <h2 className="text-[17px] font-bold text-ink">{section.heading}</h2>
+            <h2 className="text-body-lg font-bold text-ink">{section.heading}</h2>
             {section.paragraphs.map((text) => {
               const strong = text.startsWith('**') && text.endsWith('**');
               return (
                 <p
                   key={text}
-                  className={`mt-2 text-[15px] leading-relaxed ${
+                  className={`mt-2 text-body leading-relaxed ${
                     strong ? 'font-bold text-ink' : 'text-ink-muted'
                   }`}
                 >
@@ -41,7 +41,7 @@ export function LegalDocument({
             {section.list ? (
               <ul className="mt-2 space-y-1.5">
                 {section.list.map((item) => (
-                  <li key={item} className="flex gap-2 text-[15px] leading-relaxed text-ink-muted">
+                  <li key={item} className="flex gap-2 text-body leading-relaxed text-ink-muted">
                     <span aria-hidden className="text-ink-muted">
                       ·
                     </span>

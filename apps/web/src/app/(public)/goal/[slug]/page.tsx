@@ -74,33 +74,33 @@ export default async function GoalPage({ params }: Props) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <section>
-        <h1 className="text-[28px] leading-tight font-extrabold tracking-tight text-ink">{goal.question}</h1>
-        <p className="mt-3 text-[16px] leading-relaxed text-ink">{goal.lead}</p>
+        <h1 className="text-title leading-tight font-extrabold tracking-tight text-ink">{goal.question}</h1>
+        <p className="mt-3 text-body leading-relaxed text-ink">{goal.lead}</p>
       </section>
 
       <Card className="px-5 py-5">
         <SectionLabel>{goal.label}</SectionLabel>
         <div className="mt-3 flex items-baseline gap-3">
-          <p className="tabular text-[34px] leading-none font-extrabold text-ink">
+          <p className="tabular text-headline leading-none font-extrabold text-ink">
             {formatPace(goalPaceSec)}
           </p>
-          <p className="text-[16px] font-semibold text-ink-muted">/km</p>
+          <p className="text-body font-semibold text-ink-muted">/km</p>
         </div>
-        <p className="mt-2 text-[14px] text-ink-muted">
+        <p className="mt-2 text-label text-ink-muted">
           {distanceLabel(km)}를 {formatDuration(goal.targetSec)}에 완주하는 페이스입니다
         </p>
       </Card>
 
       <section>
-        <h2 className="text-[18px] font-bold text-ink">이 기록이면 다른 거리는</h2>
-        <p className="mt-1 text-[14px] text-ink-muted">
+        <h2 className="text-section font-bold text-ink">이 기록이면 다른 거리는</h2>
+        <p className="mt-1 text-label text-ink-muted">
           같은 실력으로 환산한 예상 기록입니다. 지금 자기 기록과 비교해 보세요.
         </p>
         <Card className="mt-3 divide-y divide-line px-5 py-1">
           {equivalents.map((e) => (
             <div key={e.key} className="flex items-baseline justify-between py-3">
-              <span className="text-[15px] font-semibold text-ink">{distanceLabel(e.distanceM / 1000)}</span>
-              <span className="tabular text-[17px] font-bold text-ink">{formatDuration(e.sec)}</span>
+              <span className="text-body font-semibold text-ink">{distanceLabel(e.distanceM / 1000)}</span>
+              <span className="tabular text-body-lg font-bold text-ink">{formatDuration(e.sec)}</span>
             </div>
           ))}
         </Card>
@@ -108,16 +108,16 @@ export default async function GoalPage({ params }: Props) {
 
       <section className="space-y-3">
         {goal.body.map((paragraph) => (
-          <p key={paragraph} className="text-[16px] leading-relaxed text-ink">
+          <p key={paragraph} className="text-body leading-relaxed text-ink">
             {paragraph}
           </p>
         ))}
       </section>
 
       <section>
-        <h2 className="mb-3 text-[18px] font-bold text-ink">이 목표의 훈련 페이스</h2>
+        <h2 className="mb-3 text-section font-bold text-ink">이 목표의 훈련 페이스</h2>
         <PaceTable paces={paces} level="full" />
-        <p className="mt-2 text-[13px] leading-relaxed text-ink-muted">
+        <p className="mt-2 text-label leading-relaxed text-ink-muted">
           목표를 이미 달성한 상태 기준입니다. 지금 실력에 맞는 페이스는 플랜을 만들면 따로 계산해 드립니다.
         </p>
       </section>
@@ -127,18 +127,18 @@ export default async function GoalPage({ params }: Props) {
       {/* 내부 링크로 크롤 경로를 만든다 (§13.1) */}
       {races.length > 0 ? (
         <section>
-          <h2 className="text-[18px] font-bold text-ink">{distanceLabel(km)} 종목이 있는 대회</h2>
+          <h2 className="text-section font-bold text-ink">{distanceLabel(km)} 종목이 있는 대회</h2>
           <ul className="mt-3 divide-y divide-line">
             {races.map((race) => (
               <li key={race.slug}>
                 <Link href={`/race/${race.slug}`} className="flex items-center gap-3 py-3">
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate text-[15px] font-semibold text-ink">{race.nameKo}</span>
-                    <span className="mt-0.5 block text-[13px] text-ink-muted">
+                    <span className="block truncate text-body font-semibold text-ink">{race.nameKo}</span>
+                    <span className="mt-0.5 block text-label text-ink-muted">
                       {formatRaceDate(race.date)} · {race.region}
                     </span>
                   </span>
-                  <span className="tabular shrink-0 text-[14px] font-bold text-brand-ink">
+                  <span className="tabular shrink-0 text-label font-bold text-brand-ink">
                     {formatDday(daysBetween(today, race.date))}
                   </span>
                 </Link>
@@ -148,7 +148,7 @@ export default async function GoalPage({ params }: Props) {
         </section>
       ) : null}
 
-      <footer className="border-t border-line pt-4 text-[12px] leading-relaxed text-ink-muted">
+      <footer className="border-t border-line pt-4 text-micro leading-relaxed text-ink-muted">
         페이스와 환산 기록은 {SITE_NAME}의 훈련 플랜 엔진이 계산한 값입니다. 일반적인 훈련 정보이며 의학적
         조언이 아닙니다.
       </footer>

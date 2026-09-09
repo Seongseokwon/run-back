@@ -203,23 +203,23 @@ export function PlanWizard({
 
       {step === 1 ? (
         <section className="space-y-5">
-          <h2 className="text-[24px] font-extrabold tracking-tight text-ink">어느 대회인가요?</h2>
+          <h2 className="text-card font-extrabold tracking-tight text-ink">어느 대회인가요?</h2>
 
           {selectedRace ? (
             <div className="rounded-control border border-brand bg-brand-soft px-4 py-3.5">
-              <p className="text-[16px] font-bold text-brand-ink">{selectedRace.nameKo}</p>
-              <p className="mt-0.5 text-[13px] text-ink-muted">
+              <p className="text-body font-bold text-brand-ink">{selectedRace.nameKo}</p>
+              <p className="mt-0.5 text-label text-ink-muted">
                 {formatRaceDate(selectedRace.date)} · {selectedRace.region}
               </p>
               {selectedRace.uncertain ? (
-                <p className="mt-2 text-[13px] leading-relaxed text-ink">
+                <p className="mt-2 text-label leading-relaxed text-ink">
                   ⚠️ 개최 여부가 불투명한 대회입니다. 공식 공지를 확인하세요.
                 </p>
               ) : null}
               <button
                 type="button"
                 onClick={() => patch({ raceSlug: null, distanceM: null })}
-                className="mt-2 text-[13px] font-semibold text-brand-ink underline"
+                className="mt-2 text-label font-semibold text-brand-ink underline"
               >
                 다른 대회 고르기
               </button>
@@ -234,7 +234,7 @@ export function PlanWizard({
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="예: 춘천, 서울, 하프"
                     autoComplete="off"
-                    className="h-12 w-full rounded-control border border-line-input bg-surface px-4 text-[17px] text-ink placeholder:text-ink-muted focus:border-brand focus:outline-none"
+                    className="h-12 w-full rounded-control border border-line-input bg-surface px-4 text-body-lg text-ink placeholder:text-ink-muted focus:border-brand focus:outline-none"
                   />
                 )}
               </Field>
@@ -247,15 +247,15 @@ export function PlanWizard({
                       onClick={() => patch({ raceSlug: race.slug, distanceM: null, customDate: '' })}
                       className="w-full py-3 text-left"
                     >
-                      <span className="block text-[16px] font-semibold text-ink">{race.nameKo}</span>
-                      <span className="mt-0.5 block text-[13px] text-ink-muted">
+                      <span className="block text-body font-semibold text-ink">{race.nameKo}</span>
+                      <span className="mt-0.5 block text-label text-ink-muted">
                         {formatRaceDate(race.date)} · {race.region}
                       </span>
                     </button>
                   </li>
                 ))}
                 {filtered.length === 0 ? (
-                  <li className="py-4 text-[14px] text-ink-muted">검색 결과가 없습니다</li>
+                  <li className="py-4 text-label text-ink-muted">검색 결과가 없습니다</li>
                 ) : null}
               </ul>
 
@@ -268,7 +268,7 @@ export function PlanWizard({
                     min={today}
                     value={state.customDate}
                     onChange={(e) => patch({ customDate: e.target.value })}
-                    className="h-12 w-full rounded-control border border-line-input bg-surface px-4 text-[17px] text-ink focus:border-brand focus:outline-none"
+                    className="h-12 w-full rounded-control border border-line-input bg-surface px-4 text-body-lg text-ink focus:border-brand focus:outline-none"
                   />
                 )}
               </Field>
@@ -287,7 +287,7 @@ export function PlanWizard({
                         key={km}
                         type="button"
                         onClick={() => patch({ distanceM: meters })}
-                        className={`h-12 rounded-control border text-[16px] font-semibold ${
+                        className={`h-12 rounded-control border text-body font-semibold ${
                           active ? 'border-brand bg-brand-soft text-brand-ink' : 'border-line-strong bg-surface text-ink'
                         }`}
                       >
@@ -308,7 +308,7 @@ export function PlanWizard({
 
       {step === 2 ? (
         <section className="space-y-5">
-          <h2 className="text-[24px] font-extrabold tracking-tight text-ink">지금 실력이 어느 정도인가요?</h2>
+          <h2 className="text-card font-extrabold tracking-tight text-ink">지금 실력이 어느 정도인가요?</h2>
 
           <ChoiceList
             options={FITNESS_OPTIONS}
@@ -388,7 +388,7 @@ export function PlanWizard({
 
       {step === 3 ? (
         <section className="space-y-5">
-          <h2 className="text-[24px] font-extrabold tracking-tight text-ink">목표와 훈련 가능 일수</h2>
+          <h2 className="text-card font-extrabold tracking-tight text-ink">목표와 훈련 가능 일수</h2>
 
           <Field label="목표">
             {() => (
@@ -427,7 +427,7 @@ export function PlanWizard({
                       key={opt.value}
                       type="button"
                       onClick={() => patch({ daysPerWeek: Number(opt.value) as 3 | 4 | 5 | 6 })}
-                      className={`h-12 rounded-control border text-[15px] font-semibold ${
+                      className={`h-12 rounded-control border text-body font-semibold ${
                         active ? 'border-brand bg-brand-soft text-brand-ink' : 'border-line-strong bg-surface text-ink'
                       }`}
                     >

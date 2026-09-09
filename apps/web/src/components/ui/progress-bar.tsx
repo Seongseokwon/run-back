@@ -12,11 +12,11 @@ export function ProgressBar({ value, label }: { value: number; label?: string })
         aria-label={label ?? '진행률'}
       >
         <div
-          className="h-full rounded-full bg-brand transition-[width] duration-500 ease-out"
+          className="h-full rounded-full bg-brand transition-[width] duration-700 ease-out"
           style={{ width: `${pct}%` }}
         />
       </div>
-      <span className="tabular text-[17px] font-bold text-brand-ink">{pct}%</span>
+      <span className="tabular shrink-0 text-body-lg font-bold text-brand-ink">{pct}%</span>
     </div>
   );
 }

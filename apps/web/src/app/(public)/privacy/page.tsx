@@ -22,16 +22,16 @@ export default function PrivacyPage() {
       sections={PRIVACY_SECTIONS}
     >
       <dl className="mt-3 space-y-1.5 rounded-control bg-surface-sunken px-4 py-3.5">
-        <div className="flex gap-3 text-[15px]">
+        <div className="flex gap-3 text-body">
           <dt className="w-24 shrink-0 font-semibold text-ink">보호책임자</dt>
           <dd className="text-ink-muted">{LEGAL.privacyOfficerName}</dd>
         </div>
-        <div className="flex gap-3 text-[15px]">
+        <div className="flex gap-3 text-body">
           <dt className="w-24 shrink-0 font-semibold text-ink">연락처</dt>
           <dd className="break-all text-ink-muted">{LEGAL.privacyOfficerContact}</dd>
         </div>
         {LEGAL.businessNumber ? (
-          <div className="flex gap-3 text-[15px]">
+          <div className="flex gap-3 text-body">
             <dt className="w-24 shrink-0 font-semibold text-ink">사업자번호</dt>
             <dd className="text-ink-muted">{LEGAL.businessNumber}</dd>
           </div>
@@ -40,7 +40,7 @@ export default function PrivacyPage() {
 
       {/* 개발 중에만 뜬다. 플레이스홀더인 채로 배포하면 심사에서 반려된다 */}
       {process.env.NODE_ENV !== 'production' && hasUnresolvedLegalInfo() ? (
-        <p className="mt-3 rounded-control border border-dashed border-line-strong px-4 py-3 text-[13px] leading-relaxed text-ink-muted">
+        <p className="mt-3 rounded-control border border-dashed border-line-strong px-4 py-3 text-label leading-relaxed text-ink-muted">
           ⚠️ 신원 정보가 아직 플레이스홀더입니다. PRD O8·O9 결정 후 `src/lib/legal.ts` 를 채우세요.
           이 상태로는 카카오 비즈앱 심사에 제출할 수 없습니다.
         </p>

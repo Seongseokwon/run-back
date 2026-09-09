@@ -30,8 +30,8 @@ export default async function PlanResultPage({ searchParams }: Props) {
   if (!req) {
     return (
       <div className="space-y-4 pt-6 text-center">
-        <p className="text-[18px] font-bold text-ink">플랜 정보를 읽을 수 없습니다</p>
-        <p className="text-[15px] text-ink-muted">링크가 손상되었을 수 있습니다. 처음부터 다시 만들어 주세요.</p>
+        <p className="text-section font-bold text-ink">플랜 정보를 읽을 수 없습니다</p>
+        <p className="text-body text-ink-muted">링크가 손상되었을 수 있습니다. 처음부터 다시 만들어 주세요.</p>
         <ButtonLink href="/plan/new">플랜 만들기</ButtonLink>
       </div>
     );
@@ -47,21 +47,21 @@ export default async function PlanResultPage({ searchParams }: Props) {
   return (
     <div className="space-y-6 pt-2">
       <section>
-        <p className="text-[14px] font-semibold text-ink-muted">
+        <p className="text-label font-semibold text-ink-muted">
           {race ? race.nameKo : formatRaceDate(req.input.raceDate)} · {distanceLabel(km)}
         </p>
-        <p className="tabular mt-1 text-[56px] leading-none font-extrabold tracking-tighter text-ink">
+        <p className="tabular mt-1 text-figure leading-none font-extrabold tracking-tighter text-ink">
           {formatDday(daysLeft)}
         </p>
         <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1">
           <VerdictBadge verdict={plan.verdict} size="sm" />
-          <p className="text-[15px] text-ink">
+          <p className="text-body text-ink">
             <span className="text-ink-muted">목표 </span>
             <span className="tabular font-bold">
               {req.input.goal.kind === 'time' ? formatDuration(req.input.goal.targetSec) : '완주'}
             </span>
           </p>
-          <p className="text-[15px] text-ink">
+          <p className="text-body text-ink">
             <span className="text-ink-muted">총 </span>
             <span className="tabular font-bold">{plan.weeks.length}주</span>
           </p>
@@ -71,7 +71,7 @@ export default async function PlanResultPage({ searchParams }: Props) {
           '지금 실력 기준'을 붙이는 이유: 이 값은 훈련 전 예측이라 목표보다 느린 게 정상인데,
           그냥 '예상 기록'이라고 쓰면 판정과 모순돼 보인다
         */}
-        <p className="mt-2 text-[15px] text-ink-muted">
+        <p className="mt-2 text-body text-ink-muted">
           지금 실력 기준 예상{' '}
           <span className="tabular">
             {formatDuration(plan.predicted.fastSec)} ~ {formatDuration(plan.predicted.slowSec)}
@@ -79,7 +79,7 @@ export default async function PlanResultPage({ searchParams }: Props) {
         </p>
         <Link
           href={planHref('/plan/verdict', req)}
-          className="mt-2 inline-block text-[14px] font-semibold text-brand-ink"
+          className="mt-2 inline-block text-label font-semibold text-brand-ink"
         >
           판정 근거 다시 보기
         </Link>
@@ -88,8 +88,8 @@ export default async function PlanResultPage({ searchParams }: Props) {
       <PaceTable paces={plan.paces} level={level} />
 
       <section>
-        <h2 className="text-[18px] font-bold text-ink">주차별 플랜</h2>
-        <p className="mt-1 text-[14px] text-ink-muted">
+        <h2 className="text-section font-bold text-ink">주차별 플랜</h2>
+        <p className="mt-1 text-label text-ink-muted">
           피크 주간 거리 {plan.peakWeeklyKm}km · 주 {req.input.daysPerWeek}일
         </p>
         <div className="mt-3">
@@ -103,7 +103,7 @@ export default async function PlanResultPage({ searchParams }: Props) {
           {plan.notices
             .filter((n) => n !== SAFETY_NOTICE)
             .map((notice) => (
-              <p key={notice} className="text-[14px] leading-relaxed text-ink">
+              <p key={notice} className="text-label leading-relaxed text-ink">
                 {notice}
               </p>
             ))}
@@ -112,7 +112,7 @@ export default async function PlanResultPage({ searchParams }: Props) {
 
       <CopyLinkButton />
 
-      <p className="border-t border-line pt-4 text-[12px] leading-relaxed text-ink-muted">{SAFETY_NOTICE}</p>
+      <p className="border-t border-line pt-4 text-micro leading-relaxed text-ink-muted">{SAFETY_NOTICE}</p>
     </div>
   );
 }

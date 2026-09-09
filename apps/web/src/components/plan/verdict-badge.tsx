@@ -9,7 +9,7 @@ const STYLE: Record<Verdict, { emoji: string; label: string; className: string }
 export function VerdictBadge({ verdict, size = 'lg' }: { verdict: Verdict; size?: 'sm' | 'lg' }) {
   const s = STYLE[verdict];
   return (
-    <p className={`font-extrabold ${s.className} ${size === 'lg' ? 'text-[26px]' : 'text-[15px]'}`}>
+    <p className={`font-extrabold ${s.className} ${size === 'lg' ? 'text-title' : 'text-body'}`}>
       {s.emoji} {s.label}
     </p>
   );

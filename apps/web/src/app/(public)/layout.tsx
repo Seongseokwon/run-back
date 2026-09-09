@@ -8,7 +8,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
   return (
     <>
       <PublicHeader />
-      <main className="px-5">{children}</main>
+      <main className="px-gutter">{children}</main>
       <PublicFooter />
     </>
   );

@@ -1,15 +1,18 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { AppScreen } from '@/components/layout/app-screen';
 import { SubHeader } from '@/components/layout/sub-header';
+import { PlanStateCard } from '@/components/home/plan-state-card';
 import { TodayTrainingCard } from '@/components/home/today-training-card';
 import { WeekList } from '@/components/home/week-list';
 import { WeekAccordion } from '@/components/plan/week-accordion';
 import { Button } from '@/components/ui/button';
-import { ProgressBar } from '@/components/ui/progress-bar';
-import { SectionLabel } from '@/components/ui/card';
+import { BigStat } from '@/components/ui/stat';
+import { Screen, Section } from '@/components/ui/section';
 import { findMyRace } from '@/lib/demo-plan';
 import { distanceLabel, formatDday, formatPace, formatRaceDate, todayKst } from '@/lib/format';
+import { sessionIllustration } from '@/lib/illustrations';
 import {
   PHASE_LABEL,
   currentWeek,
@@ -52,92 +55,137 @@ export default async function RaceSchedulePage({ params }: Props) {
   const progress = sessionProgress(plan, today);
 
   return (
-    <AppScreen header={<SubHeader title="훈련 일정" />}>
-      <div className="space-y-7">
+    <AppScreen header={<SubHeader title="훈련 일정" action={<CalendarLink />} />}>
+      <Screen>
+        {/* 히어로는 카드가 아니다 — 아래 '오늘의 훈련' 카드가 이 화면의 주인공이라
+            여기서 카드를 한 번 더 쓰면 둘이 같은 무게로 경쟁한다 */}
         <section>
-          <p className="text-[15px] font-semibold text-ink-muted">
+          <p className="truncate text-body font-semibold text-ink-muted">
             {race.nameKo} · {distanceLabel(distanceKm)}
           </p>
-          <p className="tabular mt-1 text-[56px] leading-none font-extrabold tracking-tighter text-ink">
-            {formatDday(daysLeft)}
-          </p>
-          <p className="mt-2 text-[15px] text-ink">
+          <div className="mt-1">
+            <BigStat value={formatDday(daysLeft)} size="lg" />
+          </div>
+          <p className="mt-2 text-body text-ink">
             <span className="text-ink-muted">{formatRaceDate(race.date)} · 목표 </span>
             <span className="tabular font-bold">{goalLabel}</span>
           </p>
         </section>
 
-        {/* 세션 카운터 — 목업의 `12 / 15 sessions`. 며칠 지났는지가 아니라 몇 번 뛰었는지로 센다 */}
-        <section className="rounded-card border border-line bg-surface px-5 py-4">
-          <div className="flex items-baseline justify-between">
-            <SectionLabel>Sessions</SectionLabel>
-            <p className="tabular text-[17px] font-bold text-ink">
-              {progress.done} <span className="text-ink-muted">/ {progress.total}</span>
-            </p>
-          </div>
-          <div className="mt-3">
-            <ProgressBar value={progress.ratio} label="세션 진행률" />
-          </div>
-          <p className="mt-2 text-[13px] leading-relaxed text-ink-muted">
-            총 {plan.weeks.length}주 · 주 {plan.input.daysPerWeek}일 · 피크 주간 {plan.peakWeeklyKm}km
-          </p>
-        </section>
-
         {status === 'before' ? (
-          <section className="rounded-card border border-line bg-surface px-5 py-8 text-center">
-            <p className="text-[18px] font-bold text-ink">
-              플랜은 {formatRaceDate(startDate)}부터 시작합니다
-            </p>
-            <p className="tabular mt-1 text-[15px] text-ink-muted">
-              시작까지 {daysBetween(today, startDate)}일
-            </p>
-          </section>
+          <PlanStateCard
+            title={`플랜은 ${formatRaceDate(startDate)}부터 시작합니다`}
+            detail={`시작까지 ${daysBetween(today, startDate)}일`}
+            illustration={sessionIllustration(undefined, 'before')}
+          />
         ) : session && session.type !== 'rest' ? (
-          <section className="space-y-4">
-            <TodayTrainingCard
-              typeLabel={sessionTitle(session.type)}
-              distanceKm={session.distanceKm}
-              paceRange={`${formatPace(pace.fastSecPerKm)} ~ ${formatPace(pace.slowSecPerKm)}`}
-              {...(session.structure ? { note: session.structure } : {})}
-            />
-            {/*
-              목업의 '훈련 기록하기'. 지금은 누를 수 없다 —
-              수행 로그 저장(F-12)이 아직 없는데 버튼만 살려 두면 눌러 보고 아무 일도 안 일어난다.
-              눌리지 않는 이유를 옆에 적어 두는 편이 낫다.
-            */}
-            <div>
-              <Button variant="outline" disabled>
-                훈련 기록하기
-              </Button>
-              <p className="mt-2 text-center text-[13px] text-ink-muted">
-                수행 기록 저장은 아직 준비 중입니다
-              </p>
-            </div>
-          </section>
+          <TodayTrainingCard
+            variant="card"
+            label="오늘의 훈련"
+            typeLabel={sessionTitle(session.type)}
+            distanceKm={session.distanceKm}
+            paceRange={`${formatPace(pace.fastSecPerKm)} ~ ${formatPace(pace.slowSecPerKm)}`}
+            illustration={sessionIllustration(session.type)}
+            {...(session.structure ? { note: session.structure } : {})}
+            action={
+              /*
+                목업의 '훈련 기록하기'. 지금은 누를 수 없다 —
+                수행 로그 저장(F-12)이 아직 없는데 버튼만 살려 두면 눌러 보고 아무 일도 안 일어난다.
+                눌리지 않는 이유를 옆에 적어 두는 편이 낫다.
+              */
+              <div>
+                <Button variant="outline" size="md" disabled>
+                  훈련 기록하기
+                </Button>
+                <p className="mt-2 text-center text-label text-ink-muted">
+                  수행 기록 저장은 아직 준비 중입니다
+                </p>
+              </div>
+            }
+          />
         ) : (
-          <section className="rounded-card border border-line bg-surface px-5 py-8 text-center">
-            <p className="text-[18px] font-bold text-ink">오늘은 휴식일입니다</p>
-            <p className="mt-1 text-[15px] text-ink-muted">회복도 훈련입니다.</p>
-          </section>
+          <PlanStateCard
+            title="오늘은 휴식일입니다"
+            detail="회복도 훈련입니다."
+            illustration={sessionIllustration('rest')}
+          />
         )}
 
-        <hr className="border-line" />
+        <div>
+          <WeekList
+            items={weekItems(week, today)}
+            title={`이번 주 훈련 · ${week.index + 1}주차 ${PHASE_LABEL[week.phase]}`}
+          />
+          <WeekDots
+            current={week.index}
+            total={plan.weeks.length}
+            done={progress.done}
+            sessions={progress.total}
+          />
+        </div>
 
-        <WeekList
-          items={weekItems(week, today)}
-          title={`${status === 'before' ? '첫 주' : '이번 주'} · ${week.index + 1}주차 ${PHASE_LABEL[week.phase]}`}
-        />
+        <Section title="전체 주차" description="주차를 누르면 그 주의 세션이 펼쳐집니다.">
+          <WeekAccordion weeks={plan.weeks} today={today} />
+        </Section>
 
-        <section>
-          <h3 className="text-[18px] font-bold text-ink">전체 주차</h3>
-          <p className="mt-1 text-[14px] text-ink-muted">주차를 누르면 그 주의 세션이 펼쳐집니다.</p>
-          <div className="mt-3">
-            <WeekAccordion weeks={plan.weeks} today={today} />
-          </div>
-        </section>
-
-        <p className="border-t border-line pt-4 text-[12px] leading-relaxed text-ink-muted">{SAFETY_NOTICE}</p>
-      </div>
+        <p className="border-t border-line pt-4 text-micro text-ink-muted">{SAFETY_NOTICE}</p>
+      </Screen>
     </AppScreen>
+  );
+}
+
+/** 헤더 우측 — 달력으로. 이 화면이 '이번 주'라면 달력은 '전체 기간'이다 */
+function CalendarLink() {
+  return (
+    <Link
+      href="/log"
+      aria-label="훈련 달력"
+      className="pressable -mr-2 flex size-touch shrink-0 items-center justify-center rounded-full text-ink"
+    >
+      <svg viewBox="0 0 24 24" className="size-6" fill="none" stroke="currentColor" strokeWidth={1.8}>
+        <rect x="3" y="5" width="18" height="16" rx="2" />
+        <path d="M3 10h18M8 3v4M16 3v4" strokeLinecap="round" />
+      </svg>
+    </Link>
+  );
+}
+
+/**
+ * 주차 점 인디케이터 + 세션 카운터.
+ *
+ * 점 하나가 한 주다. 진행률 막대 대신 점을 쓰는 이유는 이 플랜이 **주 단위로 역산된 것**이라
+ * '몇 퍼센트'보다 '몇 주째'가 러너가 실제로 세는 단위이기 때문이다.
+ */
+function WeekDots({
+  current,
+  total,
+  done,
+  sessions,
+}: {
+  current: number;
+  total: number;
+  done: number;
+  sessions: number;
+}) {
+  return (
+    <div className="mt-4 flex items-center justify-between gap-3">
+      <span
+        className="flex flex-wrap items-center gap-1.5"
+        role="img"
+        aria-label={`총 ${total}주 중 ${current + 1}주차`}
+      >
+        {Array.from({ length: total }, (_, i) => (
+          <span
+            key={i}
+            className={`block size-2 rounded-full ${
+              i < current ? 'bg-brand-line' : i === current ? 'bg-brand' : 'bg-line-strong'
+            }`}
+          />
+        ))}
+      </span>
+      <p className="tabular shrink-0 text-body text-ink-muted">
+        <span className="font-extrabold text-brand-ink">{done}</span> / {sessions} sessions
+      </p>
+    </div>
   );
 }
