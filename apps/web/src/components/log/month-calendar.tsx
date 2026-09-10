@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { TrackOnSubmit } from '@/components/analytics/track-on-submit';
+import { TrackOnClick } from '@/components/analytics/track-on-click';
 import { EVENTS } from '@/lib/analytics-events';
 import { Card } from '@/components/ui/card';
 import { ZoneBadge } from '@/components/ui/badge';
@@ -214,7 +214,7 @@ export function MonthCalendar({
             ) : null}
             {onToggle ? (
               <form action={onToggle.bind(null, selectedCell.date)} className="mt-3">
-                <TrackOnSubmit
+                <TrackOnClick
                   name={EVENTS.weekChecked}
                   params={{
                     status: selectedCell.status === 'done' ? 'undone' : 'done',
@@ -228,7 +228,7 @@ export function MonthCalendar({
                   >
                     {selectedCell.status === 'done' ? '✓ 완료함 — 취소하기' : '완료로 기록하기'}
                   </Button>
-                </TrackOnSubmit>
+                </TrackOnClick>
               </form>
             ) : null}
           </>

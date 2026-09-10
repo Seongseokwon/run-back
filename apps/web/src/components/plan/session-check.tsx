@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { setSessionStatus, toggleSessionDone } from '@/lib/log-actions';
-import { TrackOnSubmit } from '@/components/analytics/track-on-submit';
+import { TrackOnClick } from '@/components/analytics/track-on-click';
 import { EVENTS } from '@/lib/analytics-events';
 
 /**
@@ -35,14 +35,14 @@ export function SessionCheck({
         }}
       >
         {/* §15 week_checked — 저장 플랜당 체크 발생률(목표 30%)의 분자다 */}
-        <TrackOnSubmit
+        <TrackOnClick
           name={EVENTS.weekChecked}
           params={{ status: done ? 'undone' : 'done', source: 'session_card' }}
         >
           <Button type="submit" size="md" variant={done ? 'soft' : 'outline'}>
             {done ? '✓ 완료함 — 취소하기' : '훈련 완료로 기록하기'}
           </Button>
-        </TrackOnSubmit>
+        </TrackOnClick>
       </form>
 
       {/* 완료한 날에는 '건너뜀'을 보여 주지 않는다. 서로 배타적인 상태다 */}
@@ -53,14 +53,14 @@ export function SessionCheck({
             await setSessionStatus(planId, date, 'skipped');
           }}
         >
-          <TrackOnSubmit
+          <TrackOnClick
             name={EVENTS.weekChecked}
             params={{ status: skipped ? 'unskipped' : 'skipped', source: 'session_card' }}
           >
             <Button type="submit" size="sm" variant="ghost">
               {skipped ? '건너뜀 취소' : '오늘은 건너뜁니다'}
             </Button>
-          </TrackOnSubmit>
+          </TrackOnClick>
         </form>
       )}
     </div>

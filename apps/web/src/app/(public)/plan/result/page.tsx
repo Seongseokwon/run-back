@@ -6,6 +6,7 @@ import { ButtonLink } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { CopyLinkButton } from '@/components/plan/copy-link';
 import { SavePlanButton } from '@/components/plan/save-plan-button';
+import { currentUserId } from '@/lib/session';
 import { CalendarExportButton } from '@/components/plan/calendar-export';
 import { TrackEvent } from '@/components/analytics/track-event';
 import { EVENTS, distanceLabel as gaDistance, elapsedBucket } from '@/lib/analytics-events';
@@ -141,7 +142,7 @@ export default async function PlanResultPage({ searchParams }: Props) {
       {/* F-11 — 로그인 없이도 받는다. 캘린더는 앱을 열지 않아도 먼저 말을 건다 (§3.2 H1) */}
       <CalendarExportButton href={`/api/calendar?p=${p}`} />
 
-      <CopyLinkButton />
+      <CopyLinkButton signedIn={Boolean(await currentUserId())} />
 
       <p className="border-t border-line pt-4 text-micro leading-relaxed text-ink-muted">{SAFETY_NOTICE}</p>
     </div>

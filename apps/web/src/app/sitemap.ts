@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { seoReadyRaces } from '@runback/races';
 import { GOALS } from '@/lib/goals';
+import { TOOLS } from '@/lib/tools';
 import { SITE_URL } from '@/lib/config';
 import { todayKst } from '@/lib/format';
 
@@ -28,6 +29,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${SITE_URL}/goal/${goal.slug}`,
       changeFrequency: 'monthly' as const,
       priority: 0.7,
+    })),
+    // 계산기는 페이지마다 고유한 기능과 문장이 있다 (§13.2 규칙 2·3)
+    ...TOOLS.map((tool) => ({
+      url: `${SITE_URL}/tools/${tool.slug}`,
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
     })),
     { url: `${SITE_URL}/privacy`, changeFrequency: 'yearly', priority: 0.2 },
     { url: `${SITE_URL}/terms`, changeFrequency: 'yearly', priority: 0.2 },

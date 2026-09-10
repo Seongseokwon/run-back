@@ -8,6 +8,8 @@ import { ChoiceList, Field, NumberInput, Segmented, StepIndicator, type Option }
 import { distanceLabel, formatRaceDate } from '@/lib/format';
 import { maskClock, parseClock } from '@/lib/time-input';
 import { planHref } from '@/lib/plan-url';
+import { track } from '@/lib/analytics';
+import { EVENTS } from '@/lib/analytics-events';
 import type { RaceOption } from '@/lib/race-options';
 
 /**
@@ -127,6 +129,20 @@ export function PlanWizard({
 
   const advance = () => {
     const next = step + 1;
+
+    /*
+     * §15 fitness_input — 세 입력 경로(대회기록/편한페이스/잘모름) 중 무엇이 실제로
+     * 쓰이는지 본다. §7.2 가 세 경로를 만든 판단이 맞았는지의 근거가 된다.
+     *
+     * 스텝 2 를 **떠날 때** 쏜다 — 선택만 하고 되돌아가는 경우까지 세면 분모가 부푼다.
+     */
+    if (step === 2 && state.fitnessKind) {
+      track(EVENTS.fitnessInput, {
+        method: state.fitnessKind,
+        weekly_km_entered: state.fitnessKind === 'feel' && state.weeklyKm !== '',
+      });
+    }
+
     window.history.pushState({ ...window.history.state, rbStep: next }, '');
     setStep(next);
     window.scrollTo({ top: 0 });

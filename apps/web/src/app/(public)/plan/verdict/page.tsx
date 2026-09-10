@@ -6,6 +6,7 @@ import { ButtonLink } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { VerdictBadge } from '@/components/plan/verdict-badge';
 import { TrackEvent } from '@/components/analytics/track-event';
+import { TrackOnClick } from '@/components/analytics/track-on-click';
 import { EVENTS, distanceLabel as gaDistance } from '@/lib/analytics-events';
 import { decodePlanRequest, planHref } from '@/lib/plan-url';
 import { formatDuration, formatRaceDate } from '@/lib/format';
@@ -42,6 +43,15 @@ export default async function VerdictPage({ searchParams }: Props) {
   const f = plan.feasibility;
   const race = req.raceSlug ? findRace(req.raceSlug) : undefined;
   const km = req.input.raceDistanceM / 1000;
+
+  /*
+   * 화면은 **엔진이 실제로 쓴 목표**를 기준으로 갈린다 (`effectiveGoal`), 사용자가 적어 낸
+   * 목표가 아니다. 풀코스 기간 미달이면 엔진이 기록 목표를 완주로 바꿔 버리는데(§7.3),
+   * 그때도 `req.input.goal` 을 보면 화면이 "완주 목표로 전환했습니다"라고 말해 놓고
+   * 바로 아래에서 "4:28:35 를 노려보라"고 권한다 — 그리고 그 링크를 누르면
+   * 목표만 바뀐 채 같은 🔴 화면으로 돌아온다. 빠져나갈 수 없는 고리였다.
+   */
+  const goalKind = f.effectiveGoal.kind;
 
   /** 목표만 바꿔 다시 판정받는 링크 */
   const withGoal = (targetSec: number | null): Route =>
@@ -116,26 +126,48 @@ export default async function VerdictPage({ searchParams }: Props) {
         이미 완주 목표라면 더 낮출 목표가 없다 — 그때 대안 기록을 들이미는 건 모순이다.
         "완주가 어렵다"고 말해 놓고 "2:32 는 노려볼 만하다"고 하면 사용자는 뭘 믿어야 할지 모른다.
       */}
-      {plan.verdict === 'unrealistic' && req.input.goal.kind === 'time' ? (
+      {plan.verdict === 'unrealistic' && goalKind === 'time' ? (
         <section className="space-y-3">
           <h2 className="text-section font-bold text-ink">이 기간에 현실적인 목표</h2>
           <div className="space-y-2">
             {alternatives.map((alt) => (
-              <Link key={alt.label} href={withGoal(alt.sec)} className="block">
-                <Card className="flex items-baseline justify-between px-5 py-4">
-                  <span className="text-body font-semibold text-ink">{alt.label}</span>
-                  <span className="tabular text-card font-extrabold text-ink">{formatDuration(alt.sec)}</span>
-                </Card>
-              </Link>
+              /* §15 goal_adjusted — 🔴 이후 재조정률이 H3 가설의 검증 수단이다 */
+              <TrackOnClick
+                key={alt.label}
+                name={EVENTS.goalAdjusted}
+                params={{
+                  from_verdict: plan.verdict,
+                  to: 'time',
+                  distance: gaDistance(req.input.raceDistanceM),
+                  weeks_available: plan.weeks.length,
+                }}
+              >
+                <Link href={withGoal(alt.sec)} className="block">
+                  <Card className="flex items-baseline justify-between px-5 py-4">
+                    <span className="text-body font-semibold text-ink">{alt.label}</span>
+                    <span className="tabular text-card font-extrabold text-ink">{formatDuration(alt.sec)}</span>
+                  </Card>
+                </Link>
+              </TrackOnClick>
             ))}
           </div>
-          <ButtonLink href={withGoal(null)} variant="soft">
-            완주 목표로 바꾸기
-          </ButtonLink>
+          <TrackOnClick
+            name={EVENTS.goalAdjusted}
+            params={{
+              from_verdict: plan.verdict,
+              to: 'finish',
+              distance: gaDistance(req.input.raceDistanceM),
+              weeks_available: plan.weeks.length,
+            }}
+          >
+            <ButtonLink href={withGoal(null)} variant="soft">
+              완주 목표로 바꾸기
+            </ButtonLink>
+          </TrackOnClick>
         </section>
       ) : null}
 
-      {plan.verdict === 'unrealistic' && req.input.goal.kind === 'finish' ? (
+      {plan.verdict === 'unrealistic' && goalKind === 'finish' ? (
         <section className="space-y-3">
           <h2 className="text-section font-bold text-ink">무엇을 바꿀 수 있나요</h2>
           <Card tone="sunken">
@@ -152,9 +184,13 @@ export default async function VerdictPage({ searchParams }: Props) {
         </section>
       ) : null}
 
-      {plan.verdict === 'safe' && req.input.goal.kind === 'time' ? (
+      {plan.verdict === 'safe' && goalKind === 'time' ? (
         <section className="space-y-2">
           <h2 className="text-section font-bold text-ink">목표를 높여 볼까요?</h2>
+          <TrackOnClick
+            name={EVENTS.goalAdjusted}
+            params={{ from_verdict: plan.verdict, to: 'harder', distance: gaDistance(req.input.raceDistanceM) }}
+          >
           <Link href={withGoal(f.achievableTimeSec)} className="block">
             <Card className="flex items-baseline justify-between px-5 py-4">
               <span className="text-body font-semibold text-ink">같은 기간에 노려볼 만한 기록</span>
@@ -163,6 +199,7 @@ export default async function VerdictPage({ searchParams }: Props) {
               </span>
             </Card>
           </Link>
+          </TrackOnClick>
         </section>
       ) : null}
 
@@ -178,7 +215,7 @@ export default async function VerdictPage({ searchParams }: Props) {
         {plan.verdict === 'unrealistic' ? (
           <>
             <ButtonLink href={planHref('/plan/result', req)} variant="ghost" size="md">
-              {req.input.goal.kind === 'finish'
+              {goalKind === 'finish'
                 ? '그래도 완주 목표로 플랜 보기'
                 : '그래도 이 목표로 플랜 보기'}
             </ButtonLink>

@@ -66,6 +66,8 @@ export function PublicFooter() {
         <Link href="/terms">이용약관</Link>
         <Link href="/race">대회 일정</Link>
         <Link href="/plan/new">플랜 만들기</Link>
+        <Link href="/tools/pace">페이스 계산기</Link>
+        <Link href="/tools/vdot">VDOT 계산기</Link>
       </nav>
       <p className="mt-3 text-micro text-ink-muted">
         {SITE_NAME}이 제공하는 훈련 플랜은 일반적인 훈련 정보이며 의학적 조언이 아닙니다.
