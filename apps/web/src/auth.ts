@@ -43,6 +43,8 @@ declare module 'next-auth' {
       /** 수집하지 않으므로(§9.4) 대개 null 이다 */
       nickname: string | null;
     } & DefaultSession['user'];
+    /** 탈퇴 시 연동 해제에만 쓴다. DB 에 저장하지 않는다 — auth.ts 의 jwt 콜백 주석 참조 */
+    kakaoAccessToken?: string;
   }
 }
 
@@ -96,6 +98,18 @@ export const authConfig = {
         });
         token.userId = record.id;
         token.nickname = record.nickname;
+
+        /*
+         * 탈퇴 시 카카오 연동 해제(§9.6)에 쓰려고 액세스 토큰을 **세션 쿠키에만** 둔다.
+         * DB 에 넣지 않는 이유: 저장하는 순간 유출 대상이 하나 늘어난다.
+         *
+         * 한계를 알고 쓴다 — 카카오 액세스 토큰은 몇 시간이면 만료되는데 세션은 30일이라
+         * 대부분의 탈퇴 시점엔 이미 죽어 있다. 그래서 연동 해제는 **best-effort** 이고,
+         * 실패해도 데이터 삭제는 그대로 진행한다 (아래 unlinkKakao 주석 참조).
+         */
+        if (typeof account.access_token === 'string') {
+          token.kakaoAccessToken = account.access_token;
+        }
       } else if (account?.provider === 'password' && user?.id) {
         // authorize 가 검증을 끝냈다. 여기서 다시 DB 를 보지 않는다
         token.userId = user.id;
@@ -105,6 +119,9 @@ export const authConfig = {
     },
 
     async session({ session, token }) {
+      if (typeof token.kakaoAccessToken === 'string') {
+        session.kakaoAccessToken = token.kakaoAccessToken;
+      }
       session.user = {
         ...session.user,
         id: typeof token.userId === 'string' ? token.userId : '',

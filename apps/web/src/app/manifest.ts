@@ -12,8 +12,8 @@ import { SITE_NAME, SITE_TAGLINE } from '@/lib/config';
  * 그래서 background_color 를 앱 캔버스와 같은 크림으로 맞춘다 — 다르면 앱이 열리는 순간
  * 배경색이 한 번 바뀌어 깜빡임으로 보인다.
  *
- * ⚠️ 아이콘은 임시다. docs/brand-logo-brief.md 로 의뢰 중이고, 납품되면
- * public/brand/ 의 같은 이름 파일을 덮어쓰면 된다 — 이 파일은 고칠 필요가 없다.
+ * 아이콘은 납품된 정식 자산이다 (public/brand/pwa/). 원본 보드와 로고 변형은
+ * public/brand/ 아래 icons/ · logos/ 에 함께 있다.
  */
 export default function manifest(): MetadataRoute.Manifest {
   return {
@@ -30,10 +30,10 @@ export default function manifest(): MetadataRoute.Manifest {
     theme_color: '#fbf7f0',
     categories: ['health', 'fitness', 'sports'],
     icons: [
-      { src: '/brand/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
-      { src: '/brand/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+      { src: '/brand/pwa/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+      { src: '/brand/pwa/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
       // 안드로이드가 바깥 10% 를 잘라내므로 안전 영역을 반영한 별도 파일이다
-      { src: '/brand/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+      { src: '/brand/pwa/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
     ],
   };
 }

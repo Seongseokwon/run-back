@@ -102,6 +102,7 @@ export function MenuRow({
   value,
   trailing,
   disabled,
+  external,
 }: {
   href?: ComponentProps<typeof Link>['href'];
   /** 왼쪽 보라 아이콘. 24×24 뷰박스 path 하나 */
@@ -112,6 +113,12 @@ export function MenuRow({
   /** 값 대신 넣을 것 (배지 등). 없으면 화살표가 들어간다 */
   trailing?: ReactNode;
   disabled?: boolean;
+  /**
+   * next/link 가 아니라 평범한 `<a>` 로 그린다.
+   * 파일 다운로드처럼 **브라우저가 직접 처리해야 하는 응답**에 쓴다 —
+   * Link 는 클라이언트 내비게이션을 시도해서 다운로드가 시작되지 않는다.
+   */
+  external?: boolean;
 }) {
   const content = (
     <>
@@ -141,7 +148,11 @@ export function MenuRow({
 
   return (
     <li>
-      {href && !disabled ? (
+      {href && !disabled && external ? (
+        <a href={String(href)} className={`${cls} pressable text-ink hover:bg-surface-sunken/60`}>
+          {content}
+        </a>
+      ) : href && !disabled ? (
         <Link href={href} className={`${cls} pressable text-ink hover:bg-surface-sunken/60`}>
           {content}
         </Link>

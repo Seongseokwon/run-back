@@ -9,12 +9,15 @@ export const metadata: Metadata = {
   openGraph: { siteName: SITE_NAME, locale: 'ko_KR', type: 'website' },
   manifest: '/manifest.webmanifest',
   icons: {
+    // 16 을 함께 주는 이유: 브라우저가 32 를 줄이면 얇은 획이 뭉갠다.
+    // 납품 세트에 16 전용 렌더가 있으므로 그걸 쓴다 (의뢰서 §5)
     icon: [
-      { url: '/brand/favicon-32.png', sizes: '32x32', type: 'image/png' },
-      { url: '/brand/logo-mark.svg', type: 'image/svg+xml' },
+      { url: '/brand/pwa/favicon-16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/brand/pwa/favicon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/brand/pwa/favicon-48.png', sizes: '48x48', type: 'image/png' },
     ],
-    // 투명 배경 불가 — 크림을 깔아 둔 파일이다 (의뢰서 §6)
-    apple: '/brand/apple-touch-icon.png',
+    // 투명 배경 불가 — 크림이 깔린 파일이다 (의뢰서 §6)
+    apple: '/brand/pwa/apple-touch-icon.png',
   },
   appleWebApp: { capable: true, title: SITE_NAME, statusBarStyle: 'default' },
 };

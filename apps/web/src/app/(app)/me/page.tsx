@@ -96,11 +96,13 @@ export default async function MePage() {
 
         <Card>
           <ul>
+            {/* F-19 정보주체 열람권. 파일 응답이라 Link 가 아니라 평범한 <a> 여야 한다 */}
             <MenuRow
+              href="/api/me/export"
+              external
               icon={<Icon path="M12 4v11M8 11l4 4 4-4M5 19h14" />}
               label="데이터 내보내기"
-              disabled
-              trailing={<Badge>준비 중</Badge>}
+              {...(user ? {} : { disabled: true, trailing: <Badge>로그인 필요</Badge> })}
             />
             <MenuRow
               href="/privacy"
@@ -112,6 +114,17 @@ export default async function MePage() {
               icon={<Icon path="M6 3h9l4 4v14H6zM14 3v5h5" />}
               label="이용약관"
             />
+            {/*
+              F-18. 설정 안에 평범한 한 줄로 둔다 — 찾기 어렵게 숨기는 것이
+              §9.6 이 금지한 다크패턴이다. 색으로 겁주지도 않는다
+            */}
+            {user ? (
+              <MenuRow
+                href="/me/withdraw"
+                icon={<Icon path="M15 4h3a1 1 0 011 1v14a1 1 0 01-1 1h-3M10 8l-4 4 4 4M6 12h9" />}
+                label="회원 탈퇴"
+              />
+            ) : null}
           </ul>
         </Card>
 
