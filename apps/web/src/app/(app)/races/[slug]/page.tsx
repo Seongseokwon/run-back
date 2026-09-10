@@ -10,7 +10,7 @@ import { WeekAccordion } from '@/components/plan/week-accordion';
 import { Button } from '@/components/ui/button';
 import { BigStat } from '@/components/ui/stat';
 import { Screen, Section } from '@/components/ui/section';
-import { findMyRace } from '@/lib/demo-plan';
+import { findMyRace } from '@/lib/my-races';
 import { distanceLabel, formatDday, formatPace, formatRaceDate, todayKst } from '@/lib/format';
 import { sessionIllustration } from '@/lib/illustrations';
 import {
@@ -42,7 +42,7 @@ type Props = { params: Promise<{ slug: string }> };
 export default async function RaceSchedulePage({ params }: Props) {
   const { slug } = await params;
   const today = todayKst();
-  const mine = findMyRace(slug, today);
+  const mine = await findMyRace(slug);
   if (!mine) notFound();
 
   const { plan, race, distanceKm, goalLabel } = mine;

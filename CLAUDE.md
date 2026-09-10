@@ -3,7 +3,7 @@
 이 파일 하나만 읽고 바로 이어서 작업할 수 있게 쓴 문서다.
 새 세션은 **여기 → `prd-raceback-mvp_1.md`(필요한 절만) → 해당 소스** 순서로 읽는다.
 
-마지막 갱신: 2026-09-09 (아트워크 적용 + 리포 정리)
+마지막 갱신: 2026-09-10 (도메인 확정 + 백엔드 데이터 계층 착수)
 
 ---
 
@@ -53,6 +53,7 @@ PRD 에서 자주 쓰는 절: §7(엔진 명세) · §9(계정·개인정보) ·
 ```
 packages/engine/     플랜 생성 엔진. 순수 함수, 런타임 의존성 0, ENGINE_VERSION '0.2.0'
 packages/races/      국내 대회 큐레이션 82개 + 검증
+packages/db/         Prisma + Postgres. 계정·저장 플랜·수행 기록 (2026-09-10 신설)
 apps/web/            Next.js 16.3.4 / React 19.2 / Tailwind 4.3.3
 apps/web/public/illustrations/  세션 씬 아트워크 남/여 각 10장 (배포 자산)
 test/                패키지를 가로지르는 통합 테스트
@@ -75,6 +76,24 @@ pnpm 모노레포. Node **22.18 이상** 필요 (엔진이 Node 내장 타입 �
 | `sessions.ts` | 주간 세션 배치. 존별 주간 거리 상한, 고강도 간격 제약 |
 | `zones.ts` | E/M/T/I/R 페이스표. **M 은 고정 계수가 아니라 풀코스 예측시간에서 역산한다** |
 | `plan.ts` | 진입점 `generatePlan(input) → Plan` |
+
+### 저장소 (`packages/db`)
+
+경계 하나만 기억하면 된다 — **이 패키지는 엔진을 모르고, 엔진은 이 패키지를 모른다.**
+저장소는 `PlanInput` 을 JSON 으로 넣고 꺼낼 뿐 플랜을 만들지 않는다.
+둘을 잇는 건 웹 어댑터(`apps/web/src/lib/my-races.ts`)다.
+
+| 파일 | 역할 |
+|---|---|
+| `prisma/schema.prisma` | 테이블 셋 — `users` / `saved_plans` / `session_logs` |
+| `src/client.ts` | Prisma 싱글턴. dev 서버 HMR 때 커넥션이 쌓이지 않게 `globalThis` 에 붙인다 |
+| `src/users.ts` | 로그인 upsert · 해시 · 탈퇴(soft) · **하드 삭제 purge** |
+| `src/plans.ts` | 저장 플랜 CRUD. 조회에 항상 `userId` 를 건다 |
+| `src/logs.ts` | 수행 기록 (F-12). 저장소만 먼저 두고 화면은 나중 |
+| `src/seed.ts` | 도그푸딩 플랜 한 건. **수행 기록은 만들지 않는다** |
+
+`SavedPlan` 은 **플랜 본문이 아니라 `input` 만** 저장한다 (PRD §9.7).
+엔진이 결정론적이라 입력만으로 완전 복원되고, `engineVersion` 이 그 복원의 기준선이다.
 
 ### 웹앱 (`apps/web/src`)
 
@@ -261,14 +280,29 @@ ACWR 클램프나 존 상한이 발동해 플랜이 약해지면 `plan.notices` 
 작업을 끝냈다고 말하기 전에 전부 통과시킨다.
 
 ```bash
+npm run db:up                       # 로컬 Postgres (Docker). 앱 셸 화면이 이걸 읽는다
 npm test                            # 엔진·대회 데이터·통합 (125개)
-pnpm --filter @raceback/web test    # 웹 유닛 (15개)
+pnpm --filter @runback/web test    # 웹 유닛 (15개)
+npm run typecheck                   # 엔진·순수성·대회·저장소·루트
 npm run contrast                    # 명도 대비
-pnpm --filter @raceback/web build   # 프로덕션 빌드 + 타입체크
-pnpm --filter @raceback/web dev     # 로컬 확인 → http://localhost:3000/today
+pnpm --filter @runback/web build   # 프로덕션 빌드 + 타입체크
+pnpm --filter @runback/web dev     # 로컬 확인 → http://localhost:3000/today
 ```
 
-기준선 (2026-09-09): 테스트 **140개 전부 통과**, 대비 **전 항목 통과**, 빌드 **정적 페이지 40개**.
+기준선 (2026-09-10): 테스트 **140개 전부 통과**, 대비 **전 항목 통과**, 사전 렌더 **37개 라우트**.
+
+### DB 를 처음 띄울 때
+```bash
+cp .env.example .env                # DATABASE_URL·AUTH_ID_PEPPER·RUNBACK_DEV_USER_ID
+npm run db:up                       # Postgres 17 (docker compose)
+npm run db:migrate                  # 마이그레이션 적용
+npm run db:seed                     # 도그푸딩 플랜 한 건
+```
+`npm run db:studio` 로 데이터를 눈으로 본다. 스키마를 갈아엎을 땐 `docker compose down -v`.
+
+**DB 가 꺼져 있으면** 앱 셸 4개 탭은 빈 상태로 그려진다 — 게스트 경로(`/`, `/race`, `/plan/*`)는
+DB 를 전혀 쓰지 않으므로 그대로 동작한다. 이건 버그가 아니라 §9.5 설계다:
+**계정은 편의 레이어이지 단일 진실 공급원이 아니다.**
 
 보조 명령: `npm run table`(페이스표) · `npm run gain`(향상률 모델) · `npm run plan`(플랜 한 건 출력) · `npm run races`(대회 데이터 점검)
 
@@ -287,9 +321,36 @@ pnpm --filter @raceback/web dev     # 로컬 확인 → http://localhost:3000/to
 | W2 | 판정·페이즈·ACWR·세션 배치 | ✅ ADR-0002 로 O2 해소. §11.3 전 항목 통과 |
 | W3 | 대회 데이터 82개 + 입력 스텝 | ✅ |
 | W4 | 판정 화면 + 결과 뷰 + 페이스표 | ✅ **게스트 전 흐름 완주** |
-| W5 | SEO 마감 + 방침 문서 | 🔶 sitemap·robots·목표 페이지·방침 초안 완료 · **도메인(O1') 대기** |
+| W5 | SEO 마감 + 방침 문서 | ✅ **도메인 `runback.kr` 확정으로 O1' 해소.** 남은 건 시행일(인증 켜는 날) |
 | — | 앱 셸 4개 탭 화면 | ✅ 2026-09-09 완료 (아래) |
-| W6~ | 인증·보관함·수행 로그 | ⬜ 미착수 |
+| — | **BE Phase 1 — 데이터 계층** | ✅ 2026-09-10 완료 (아래) |
+| W6 | 인증(F-16) + 보관함(F-17) + 탈퇴(F-18) | ⬜ 다음 차례 |
+| W7 | 수행 체크(F-12) + 게스트→회원 이전 | ⬜ 미착수 |
+
+### 2026-09-10 에 한 것 — 도메인 확정 + 백엔드 데이터 계층
+
+**Phase 0 — 결정 (전부 종결)**
+
+| 항목 | 확정 |
+|---|---|
+| 도메인 | **runback.kr** → `SITE_URL`, `privacy@runback.kr` (O1' 종결) |
+| DB | 로컬 Docker Postgres + 프로덕션 Neon. 같은 Postgres, `DATABASE_URL` 만 다르다 |
+| ORM | **Prisma** — 스키마가 3테이블이라 ORM 간 차이가 드러나지 않는다. 기준은 "6개월 뒤 읽을 수 있는가" |
+| 인증 | **카카오 단독.** 애플은 유료 개발자 계정이 필요해 보류 (O12 종결) |
+| 탈퇴 | soft delete **15일** → 하드 삭제 (O11 종결) |
+
+**Phase 1 — 데이터 계층**
+- `packages/db` 신설. Prisma 스키마 3테이블 + 마이그레이션 2개
+- `docker-compose.yml` (Postgres 17) + `.env.example`
+- `lib/demo-plan.ts` **삭제** → `lib/my-races.ts` 가 DB 에서 읽는다. 앱 셸 5개 화면 전환 완료
+- `lib/session.ts` — 현재 사용자 한 곳. **Phase 2 는 이 파일만 고치면 된다**
+- `lib/plan-input.ts` — 임의 값을 `PlanInput` 으로 확인. URL 과 DB 두 경로가 같은 경계값을 쓴다
+- 패키지 스코프 `@raceback` → `@runback` (제품명과 어긋나 있던 마지막 표기)
+
+**방침에 반영한 것** — 결정이 바뀌면 방침도 바뀐다. 어긋나면 그게 곧 위반이다.
+- **국외 이전 조항 신설** (제7항). Vercel·Neon 이 국외 사업자라 법 제28조의8 고지 의무가 생겼다
+- 보유기간·파기절차에 **15일** 명시, 위탁에서 Apple 제거
+- 항 번호 7~13 → 8~14 로 밀고 교차 참조(제9항·제10항) 정정
 
 ### 2026-09-09 에 한 것
 - 대회 탭을 **전체 브라우징 → 내 대회**로 재정의. 브라우징은 탭바 없는 `/race` 로 분리 (**O15 해소**)
@@ -347,7 +408,8 @@ pnpm --filter @raceback/web dev     # 로컬 확인 → http://localhost:3000/to
 ### 사용자 결정 대기
 | # | 내용 | 영향 |
 |---|---|---|
-| **O1'** | **도메인 확정** | `lib/legal.ts` 의 `privacyOfficerContact` 가 `TODO_` 다. 개인정보보호법 제30조가 연락처를 요구하므로 생략 불가 → **방침 미완성 → 인증 못 켬** |
+| ~~O1'~~ | ~~도메인 확정~~ | ✅ **해소.** `runback.kr` · `privacy@runback.kr`. 남은 건 `effectiveDate` 뿐이고 이건 **인증을 켜는 날** 정해진다 |
+| **신규** | **`privacy@runback.kr` 실제 수신** | 방침에 적힌 연락처가 반송되면 연락처를 안 적은 것과 다르지 않다. 도메인 구매 후 Cloudflare Email Routing 등으로 포워딩을 걸어야 한다 |
 | O13 | 성별 수집 여부 | 받으려면 엔진이 성별을 실제로 써야 한다 (§7.4 테이퍼 차이) |
 | O14 | 디바이스 연동 | Strava(본인 데이터 읽기)만 가능성 있음 |
 | O5 | 캘린더 내보내기 MVP 포함 여부 | |
@@ -362,7 +424,11 @@ pnpm --filter @raceback/web dev     # 로컬 확인 → http://localhost:3000/to
 |---|---|
 | O16 | 여러 목표 동시 관리 — UI(`myRaces()`)는 배열로 열어 뒀지만 **엔진·URL 구조는 아직 플랜 1개 기준** |
 | O17 | 진행률 — 표시 기준은 세션 수로 바꿨으나, "완료" 판정이 아직 **날짜가 지났는지**로 대신하고 있다. F-12 가 붙으면 `sessionProgress()` 안쪽만 완료 플래그 기준으로 바꾸면 된다 (호출부는 그대로) |
-| — | `lib/demo-plan.ts` 는 **임시 데이터**다. 계정·저장(F-17)이 붙으면 이 파일을 지우고 저장된 플랜을 읽는다 |
+| — | ~~`lib/demo-plan.ts`~~ ✅ 삭제됨. 이제 `lib/my-races.ts` 가 DB 를 읽는다 |
+| — | `lib/session.ts` 가 `.env` 의 `RUNBACK_DEV_USER_ID` 를 읽는 **임시 통로**다. Phase 2 에서 Auth.js 세션으로 바꾼다 — 고칠 파일은 이것 하나 |
+| — | `hasUnresolvedLegalInfo()` 를 **아무도 호출하지 않는다.** `/privacy` 에 `TODO_YYYY-MM-DD` 가 그대로 찍힌다. 배포 전 점검 스크립트에 물리면 좋다 |
+| — | 대회를 고르지 않고 **날짜만 직접 입력한 플랜**(`raceSlug` 없음)은 앱 셸 대회 탭에 뜨지 않는다. `MyRace.race` 를 옵셔널로 바꿔야 하는데 화면 5개가 걸린다 — O16 과 함께 |
+| — | Prisma 가 `package.json#prisma` 를 **deprecated** 라고 경고한다 (Prisma 7 에서 제거). `prisma.config.ts` 로 옮길 것 |
 | — | `next.config.ts` 의 `typedRoutes` 가 꺼져 있다. 자리만 잡은 링크가 많아서다. 라우트가 확정되면 켠다 |
 
 ---
@@ -402,6 +468,11 @@ pnpm --filter @raceback/web dev     # 로컬 확인 → http://localhost:3000/to
 | 크림 배경에선 통과하던 색이 다른 표면에서 미달 | `ink-muted` 가 `canvas` 위 4.53:1 인데 `surface-sunken` 위에선 4.26:1 이었다. 대비 계약의 `on` 목록에 **텍스트가 실제로 얹히는 표면을 전부** 적을 것 |
 | 한글이 어절 중간에서 끊김 ('기간' / '에') | 브라우저 기본 줄바꿈. body 에 `word-break: keep-all` 을 건다 |
 | KST 새벽에 '좋은 저녁이에요' | `new Date().getUTCHours() + 9` 가 24를 넘는다. `% 24` 를 잊지 말 것 |
+| Next 가 `DATABASE_URL` 을 못 읽음 | Next 는 **앱 디렉터리(`apps/web`)의 `.env` 만** 읽는다. 이 리포는 루트 `.env` 한 곳에 두므로 `next.config.ts` 가 `process.loadEnvFile()` 로 루트 파일을 얹는다 |
+| 탈퇴한 사용자가 재가입을 못 함 | `providerUserIdHash` 에 **전역** 유니크를 걸면 soft delete 된 행이 남아 15일간 가입이 막힌다. 부분 유니크 인덱스(`WHERE "deletedAt" IS NULL`)여야 하고, **Prisma 스키마 문법에 없어서** 마이그레이션 SQL 로 직접 넣었다 (`20260910001600_active_provider_id_unique`) |
+| 저장된 플랜의 날짜가 하루 밀림 | `SessionLog.date` 를 `DateTime` 으로 두면 UTC 변환이 끼어든다. 이 리포의 날짜는 전부 **KST ISO 문자열**이라 `String @db.VarChar(10)` 로 저장한다 |
+| 저장된 플랜을 오늘 날짜로 다시 생성 | `generatePlan` 에 넘기는 `today` 는 **저장 시점의 `input.today`** 다. 오늘 날짜를 넣으면 플랜이 매일 달라진다 — 결정론(§4.2)이 깨진다 |
+| dev 서버에서 Postgres 커넥션 고갈 | HMR 마다 모듈이 재평가되어 `new PrismaClient()` 가 쌓인다. `globalThis` 싱글턴(`packages/db/src/client.ts`)이 처방 |
 | `next-env.d.ts` / `tsconfig.json` 이 줄바꿈만 바뀐 채 변경 목록에 뜸 | Windows 개발 서버가 남기는 것. 커밋 전에 `git checkout` 으로 되돌리면 된다 |
 
 ### 클라우드 세션(Cowork)에서 작업할 때
@@ -414,7 +485,7 @@ cd "$HOME/mnt/run-back" && tar -cf - --exclude=node_modules --exclude=.git --exc
   | (cd "$HOME/build-check" && tar -xf -)
 # build-check/package.json 에서 "packageManager" 필드를 제거
 export PATH="$HOME/pnpmbin/node_modules/.bin:$PATH" COREPACK_ENABLE_STRICT=0
-cd "$HOME/build-check" && pnpm install --no-frozen-lockfile && pnpm --filter @raceback/web build
+cd "$HOME/build-check" && pnpm install --no-frozen-lockfile && pnpm --filter @runback/web build
 ```
 
 - 마운트된 폴더에서 `rm` 은 "Operation not permitted" 로 실패한다. `mv` 는 된다.

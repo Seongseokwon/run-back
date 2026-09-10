@@ -1,5 +1,5 @@
 {
-  "name": "@raceback/web",
+  "name": "@runback/web",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,8 +10,9 @@
     "test": "node --test test/*.test.ts"
   },
   "dependencies": {
-    "@raceback/engine": "workspace:*",
-    "@raceback/races": "workspace:*",
+    "@runback/db": "workspace:*",
+    "@runback/engine": "workspace:*",
+    "@runback/races": "workspace:*",
     "next": "^16.3.4",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"

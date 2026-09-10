@@ -7,7 +7,7 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { PageTitle, Screen, Section, SectionAction } from '@/components/ui/section';
 import { NextRaceCard } from '@/components/home/next-race-card';
 import { AddGoalSlot, MyRaceRow } from '@/components/races/my-race-row';
-import { myRaces } from '@/lib/demo-plan';
+import { myRaces } from '@/lib/my-races';
 import { todayKst } from '@/lib/format';
 import { daysBetween, planProgress } from '@/lib/plan-view';
 
@@ -25,9 +25,9 @@ export const dynamic = 'force-dynamic';
  * 맨 위 NEXT RACE 카드는 홈과 같은 카드다. 목표가 여럿이어도 **가장 가까운 하나**는
  * 늘 크게 서 있어야 한다 — 목록만 있으면 어느 게 급한지 매번 날짜를 세어 봐야 한다.
  */
-export default function MyRacesPage() {
+export default async function MyRacesPage() {
   const today = todayKst();
-  const races = myRaces(today);
+  const races = await myRaces();
   const next = races[0];
 
   return (

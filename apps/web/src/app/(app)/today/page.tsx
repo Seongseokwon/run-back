@@ -9,7 +9,7 @@ import { PlanStateCard } from '@/components/home/plan-state-card';
 import { TodayTrainingCard } from '@/components/home/today-training-card';
 import { WeekList } from '@/components/home/week-list';
 import { EmptyState } from '@/components/ui/empty-state';
-import { primaryRace } from '@/lib/demo-plan';
+import { primaryRace } from '@/lib/my-races';
 import { formatPace, formatRaceDate, todayKst } from '@/lib/format';
 import { sessionIllustration } from '@/lib/illustrations';
 import {
@@ -61,9 +61,9 @@ function headline(typeLabel: string | undefined, started: boolean): string {
   }
 }
 
-export default function TodayPage() {
+export default async function TodayPage() {
   const today = todayKst();
-  const mine = primaryRace(today);
+  const mine = await primaryRace();
 
   // 목표 대회가 없으면 오늘 할 것도 없다. 빈 화면 대신 다음 할 일을 준다
   if (!mine) {

@@ -1,5 +1,5 @@
 {
-  "name": "@raceback/engine",
+  "name": "@runback/engine",
   "version": "0.2.0",
   "private": true,
   "type": "module",

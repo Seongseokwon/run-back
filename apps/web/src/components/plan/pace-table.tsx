@@ -1,4 +1,4 @@
-import { visibleZones, type ZoneKey, type ZonePace } from '@raceback/engine';
+import { visibleZones, type ZoneKey, type ZonePace } from '@runback/engine';
 import { Card, SectionLabel } from '@/components/ui/card';
 
 /**

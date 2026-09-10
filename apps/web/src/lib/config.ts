@@ -5,8 +5,8 @@ export const SITE_TAGLINE = '대회 날짜에서 역산하는 러닝 훈련 플�
 export const SITE_DESCRIPTION =
   '내가 나가는 그 대회 날짜를 기준으로 역산해서, 지금 실력과 목표 기록에 맞는 주차별 훈련 플랜을 만들어 드립니다.';
 
-/** 배포 후 실제 도메인으로 교체. 구조화 데이터와 사이트맵이 이 값을 쓴다 */
-export const SITE_URL = 'https://example.com';
+/** 구조화 데이터·사이트맵·OG 가 이 값을 쓴다. 도메인 확정 2026-09-10 (PRD O1' 종결) */
+export const SITE_URL = 'https://runback.kr';
 
 /** PRD §7.10 — 모든 플랜 화면 하단에 고정 노출 */
 export const SAFETY_NOTICE =

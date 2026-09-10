@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { findRace, seoReadyRaces } from '@raceback/races';
+import { findRace, seoReadyRaces } from '@runback/races';
 import { ButtonLink } from '@/components/ui/button';
 import { Card, SectionLabel } from '@/components/ui/card';
 import { SceneBand } from '@/components/ui/scene';

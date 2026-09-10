@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import type { FitnessInput, GoalInput, PlanInput, RaceDistanceM } from '@raceback/engine';
+import type { FitnessInput, GoalInput, PlanInput, RaceDistanceM } from '@runback/engine';
 import { Button } from '@/components/ui/button';
 import { ChoiceList, Field, NumberInput, Segmented, StepIndicator, type Option } from '@/components/ui/field';
 import { distanceLabel, formatRaceDate } from '@/lib/format';

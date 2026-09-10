@@ -1,0 +1,8 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"]
+  },
+  // generated/ 는 Prisma 산출물이라 타입체크 대상이 아니다 (커밋도 하지 않는다)
+  "include": ["src/**/*.ts"]
+}

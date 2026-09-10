@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { RACE_DISTANCE_M, paceTable, predictRaceTimeSec, vdotFromRace } from '@raceback/engine';
-import { racesWithDistance } from '@raceback/races';
+import { RACE_DISTANCE_M, paceTable, predictRaceTimeSec, vdotFromRace } from '@runback/engine';
+import { racesWithDistance } from '@runback/races';
 import { ButtonLink } from '@/components/ui/button';
 import { Card, SectionLabel } from '@/components/ui/card';
 import { PaceTable } from '@/components/plan/pace-table';

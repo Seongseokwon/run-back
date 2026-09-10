@@ -35,7 +35,7 @@ npm run gain            # 향상률 모델을 PRD 초기값과 나란히 출력
 npm run plan            # 플랜 한 건 생성해서 출력 (도그푸딩 케이스)
 npm run races           # 대회 데이터 점검 리포트
 npm run contrast        # 디자인 토큰 명도 대비 점검 (기준 미달이면 실패)
-pnpm --filter @raceback/web dev    # 웹앱 개발 서버
+pnpm --filter @runback/web dev    # 웹앱 개발 서버
 npm run typecheck       # tsc·@types/node 필요 (`pnpm install` 후)
 ```
 

@@ -3,7 +3,7 @@
  * 82개 전체를 그대로 보내면 courseNote 같은 긴 문자열까지 번들에 실린다.
  */
 
-import { upcomingRaces } from '@raceback/races';
+import { upcomingRaces } from '@runback/races';
 
 export type RaceOption = {
   slug: string;

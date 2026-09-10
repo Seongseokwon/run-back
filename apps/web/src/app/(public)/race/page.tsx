@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { upcomingRaces, type Race } from '@raceback/races';
+import { upcomingRaces, type Race } from '@runback/races';
 import { ButtonLink } from '@/components/ui/button';
 import { SITE_NAME } from '@/lib/config';
 import { distanceLabel, formatDday, formatRaceDate, todayKst } from '@/lib/format';

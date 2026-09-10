@@ -1,0 +1,126 @@
+// RUNBACK 데이터 모델 — PRD §9.7
+//
+// 테이블 셋뿐이다. 대회 데이터(82개)는 여기 들어오지 않는다 —
+// JSON 파일로 빌드 타임에 로드해서 SSG 를 만들기 때문이다 (PRD §11.1).
+// 계정 DB 와 콘텐츠 데이터를 분리해 두는 편이 백업·삭제 범위를 좁게 유지한다.
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Provider {
+  kakao
+  apple
+  google
+}
+
+enum LogStatus {
+  done
+  skipped
+  modified
+}
+
+/// 계정. 수집 항목은 §9.4 의 목록이 전부다 —
+/// 이메일·생년월일·성별·신체정보는 컬럼 자체를 만들지 않는다.
+/// 컬럼이 없으면 실수로 채울 수도 없다.
+model User {
+  id String @id @default(cuid())
+
+  provider Provider
+
+  /// 원본 식별자는 저장하지 않는다 (§9.8). AUTH_ID_PEPPER 를 섞은 단방향 해시.
+  ///
+  /// ⚠️ 여기에 @unique 를 걸지 않은 것은 의도다. 탈퇴가 soft delete(15일)라
+  /// 전역 유니크면 탈퇴한 사람이 15일 안에 재가입할 때 제약에 걸려 가입 자체가 막힌다.
+  /// 대신 마이그레이션에서 부분 유니크 인덱스를 만든다 — WHERE deleted_at IS NULL.
+  /// Prisma 스키마 문법이 부분 인덱스를 표현하지 못해 SQL 로 직접 넣는다.
+  providerUserIdHash String
+
+  /// 선택 입력. 없어도 전 기능이 동작한다 (§9.4)
+  nickname String?
+
+  createdAt   DateTime @default(now())
+  lastLoginAt DateTime @default(now())
+
+  /// 탈퇴 시각. 채워지면 즉시 서비스 접근이 막히고, 15일 뒤 Cron 이 행을 지운다.
+  /// 이 컬럼이 null 이 아닌 사용자는 어떤 조회에도 나타나면 안 된다.
+  deletedAt DateTime?
+
+  plans SavedPlan[]
+  logs  SessionLog[]
+
+  /// 하드 삭제 대상을 훑는 Cron 이 쓰는 인덱스
+  @@index([deletedAt])
+  @@map("users")
+}
+
+/// 저장된 플랜. **플랜 본문이 아니라 입력만 저장한다** (§9.7).
+/// 엔진이 결정론적이라 input 하나로 완전 복원되고, 저장 용량이 작다.
+model SavedPlan {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// PlanInput 그대로. 엔진 타입이 바뀌면 여기 형태도 바뀐다 — engineVersion 이 그 경계다.
+  input Json
+
+  /// ★ 생략 불가. 엔진을 고치면 저장된 플랜도 같이 바뀐다.
+  /// 훈련 중인 사용자의 플랜이 조용히 달라지는 것은 신뢰 훼손이라,
+  /// 저장 시점 버전으로 계속 렌더링하고 업데이트는 명시적으로 묻는다 (§9.7).
+  engineVersion String
+
+  /// 어느 대회에서 왔는지. 직접 날짜 입력이면 없다
+  raceSlug String?
+
+  /// '2026 MBN 서울마라톤 1:55' 같은 표시용 제목
+  title String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  logs SessionLog[]
+
+  @@index([userId, createdAt])
+  @@map("saved_plans")
+}
+
+/// 수행 기록 (F-12). 이게 붙어야 진행률·캘린더·'최근 러닝'이 진짜가 된다.
+model SessionLog {
+  id String @id @default(cuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  planId String
+  plan   SavedPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  /// ISO 날짜 'YYYY-MM-DD' (KST). PRD §9.7 은 weekIndex+dayOfWeek 로 적었으나
+  /// 엔진이 실제로 내주는 건 session.date 이고 화면(plan-view.ts)도 전부 날짜로 비교한다.
+  ///
+  /// DateTime 이 아니라 String 인 것도 의도다 — 이 리포의 날짜는 전부 KST 기준
+  /// ISO 문자열이고, DateTime 으로 바꾸면 UTC 변환이 끼어들어 하루가 밀린다.
+  /// (CLAUDE.md §11 의 KST 함정과 같은 자리다)
+  date String @db.VarChar(10)
+
+  status LogStatus
+
+  /// 실제로 뛴 거리·시간. 비워 둘 수 있다 — 체크만 하는 것도 유효한 기록이다.
+  /// 심박수·체중은 없다. 건강정보에 선을 긋는다 (§9.4)
+  actualDistanceKm  Float?
+  actualDurationSec Int?
+
+  note String?
+
+  loggedAt DateTime @default(now())
+
+  /// 한 플랜의 하루에 기록은 하나
+  @@unique([planId, date])
+  @@index([userId, date])
+  @@map("session_logs")
+}

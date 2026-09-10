@@ -3,7 +3,7 @@
  * 계산은 전부 엔진이 한다. 여기서는 엔진이 낸 숫자를 사람이 읽는 형태로만 바꾼다.
  */
 
-import { formatDuration, formatPace } from '@raceback/engine';
+import { formatDuration, formatPace } from '@runback/engine';
 
 export { formatDuration, formatPace };
 

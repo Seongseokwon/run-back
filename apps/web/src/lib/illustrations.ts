@@ -15,7 +15,7 @@
  * 원본을 미리 손질해서 넣을 필요는 없다.
  */
 
-import type { SessionType } from '@raceback/engine';
+import type { SessionType } from '@runback/engine';
 
 export type IllustrationSlot = {
   /** public/illustrations 아래 경로. null 이면 플레이스홀더 */

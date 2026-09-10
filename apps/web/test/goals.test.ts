@@ -1,6 +1,6 @@
 import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
-import { formatPace } from '@raceback/engine';
+import { formatPace } from '@runback/engine';
 import { GOALS, findGoal } from '../src/lib/goals.ts';
 
 describe('목표별 SEO 페이지 데이터', () => {

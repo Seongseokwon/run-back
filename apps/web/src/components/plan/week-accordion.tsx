@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import type { PlanWeek } from '@raceback/engine';
+import type { PlanWeek } from '@runback/engine';
 import { Badge, ZoneBadge } from '@/components/ui/badge';
 
 const PHASE_LABEL = { base: '기반', build: '빌드', peak: '피크', taper: '테이퍼' } as const;

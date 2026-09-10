@@ -5,7 +5,7 @@
  * 계산이 필요하면 엔진에 넣는다 (PRD §7.9 와 같은 원칙 — 경계를 흐리지 않는다).
  */
 
-import type { Plan, PlanSession, PlanWeek, SessionType } from '@raceback/engine';
+import type { Plan, PlanSession, PlanWeek, SessionType } from '@runback/engine';
 import type { WeekItem } from '@/components/home/week-list';
 import type { RowStatus } from '@/components/ui/list-row';
 

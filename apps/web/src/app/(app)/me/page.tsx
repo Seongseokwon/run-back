@@ -8,7 +8,7 @@ import { Card } from '@/components/ui/card';
 import { SceneAvatar, SceneBand } from '@/components/ui/scene';
 import { MenuRow } from '@/components/ui/list-row';
 import { Screen } from '@/components/ui/section';
-import { myRaces } from '@/lib/demo-plan';
+import { myRaces } from '@/lib/my-races';
 import { todayKst } from '@/lib/format';
 
 export const metadata: Metadata = { title: '나' };
@@ -28,9 +28,9 @@ export const dynamic = 'force-dynamic';
  *  - **디바이스 연동** — 웹에서 워치·헬스 앱 실시간 연동은 불가하다 (§3.3 Non-goal, O14)
  * 헤더의 톱니 아이콘도 뺐다 — 이 화면 자체가 설정이라 갈 곳이 없다.
  */
-export default function MePage() {
+export default async function MePage() {
   const today = todayKst();
-  const races = myRaces(today);
+  const races = await myRaces();
   const goal = races[0];
 
   return (

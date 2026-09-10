@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { generatePlan } from '@raceback/engine';
-import { findRace } from '@raceback/races';
+import { generatePlan } from '@runback/engine';
+import { findRace } from '@runback/races';
 import { ButtonLink } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { VerdictBadge } from '@/components/plan/verdict-badge';

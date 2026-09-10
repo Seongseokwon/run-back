@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next';
-import { seoReadyRaces } from '@raceback/races';
+import { seoReadyRaces } from '@runback/races';
 import { GOALS } from '@/lib/goals';
 import { SITE_URL } from '@/lib/config';
 import { todayKst } from '@/lib/format';

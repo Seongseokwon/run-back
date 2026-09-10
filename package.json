@@ -8,13 +8,18 @@
   },
   "scripts": {
     "test": "node --test packages/engine/test/*.test.ts packages/races/test/*.test.ts test/*.test.ts",
-    "typecheck": "tsc -p packages/engine/tsconfig.json --noEmit && tsc -p packages/engine/tsconfig.purity.json --noEmit && tsc -p packages/races/tsconfig.json --noEmit && tsc -p tsconfig.json --noEmit",
+    "typecheck": "tsc -p packages/engine/tsconfig.json --noEmit && tsc -p packages/engine/tsconfig.purity.json --noEmit && tsc -p packages/races/tsconfig.json --noEmit && tsc -p packages/db/tsconfig.json --noEmit && tsc -p tsconfig.json --noEmit",
     "table": "node packages/engine/scripts/print-table.ts",
     "gain": "node packages/engine/scripts/print-gain.ts",
     "plan": "node packages/engine/scripts/print-plan.ts",
     "races": "node scripts/check-races.ts",
-    "test:all": "npm test && pnpm --filter @raceback/web test",
-    "contrast": "node scripts/check-contrast.ts"
+    "test:all": "npm test && pnpm --filter @runback/web test",
+    "contrast": "node scripts/check-contrast.ts",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "db:migrate": "pnpm --filter @runback/db migrate",
+    "db:seed": "pnpm --filter @runback/db seed",
+    "db:studio": "pnpm --filter @runback/db studio"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

@@ -12,7 +12,8 @@
  * 어긋나면 null 을 낸다 — 깨진 입력으로 훈련 플랜을 만드는 것보다 안전하다.
  */
 
-import type { FitnessInput, GoalInput, PlanInput, RaceDistanceM } from '@raceback/engine';
+import type { FitnessInput, GoalInput, PlanInput, RaceDistanceM } from '@runback/engine';
+import { DAYS, DISTANCES, isNum, isValidDate } from './plan-input.ts';
 
 /** URL 에 담기는 것 — 엔진 입력 + 표시에 필요한 대회 식별자 */
 export type PlanRequest = {
@@ -20,17 +21,6 @@ export type PlanRequest = {
   /** 어느 대회에서 왔는지. 직접 입력이면 없다 */
   raceSlug?: string;
 };
-
-const DISTANCES: readonly number[] = [5000, 10000, 21097.5, 42195];
-const DAYS: readonly number[] = [3, 4, 5, 6];
-const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
-
-/** 형식뿐 아니라 실재하는 날짜인지도 본다. 2026-13-40 은 형식만 맞다 */
-function isValidDate(value: unknown): value is string {
-  if (typeof value !== 'string' || !ISO_DATE.test(value)) return false;
-  const d = new Date(`${value}T00:00:00Z`);
-  return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === value;
-}
 
 /* 키를 한 글자로 줄인다. 카카오톡 공유 시 URL 이 짧을수록 좋다 */
 type Packed = {
@@ -78,10 +68,6 @@ function unpackGoal(g: unknown): GoalInput | null {
   if (kind === 0 && isNum(a, 60, 12 * 3600)) return { kind: 'time', targetSec: a };
   if (kind === 1) return { kind: 'finish' };
   return null;
-}
-
-function isNum(v: unknown, min: number, max: number): v is number {
-  return typeof v === 'number' && Number.isFinite(v) && v >= min && v <= max;
 }
 
 function round1(n: number): number {

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { upcomingRaces } from '@raceback/races';
+import { upcomingRaces } from '@runback/races';
 import { GOALS } from '@/lib/goals';
 import { ButtonLink } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';

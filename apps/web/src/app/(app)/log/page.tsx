@@ -5,7 +5,7 @@ import { MonthCalendar, type MonthData } from '@/components/log/month-calendar';
 import { ButtonLink } from '@/components/ui/button';
 import { EmptyState } from '@/components/ui/empty-state';
 import { PageTitle, Screen, Section } from '@/components/ui/section';
-import { primaryRace } from '@/lib/demo-plan';
+import { primaryRace } from '@/lib/my-races';
 import { todayKst } from '@/lib/format';
 import { monthGrid, monthKeyOf, monthLabel, monthSummary, planMonths } from '@/lib/plan-view';
 
@@ -20,9 +20,9 @@ export const dynamic = 'force-dynamic';
  * 그래서 '최근 러닝'은 빈 상태로 둔다 — 목업에는 날짜·거리·시간·페이스·기분이 채워져 있지만,
  * 뛰지도 않은 거리를 지어내서 채우면 이 화면을 보고 판단을 할 수 없게 된다.
  */
-export default function LogPage() {
+export default async function LogPage() {
   const today = todayKst();
-  const mine = primaryRace(today);
+  const mine = await primaryRace();
 
   if (!mine) {
     return (

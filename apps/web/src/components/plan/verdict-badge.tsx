@@ -1,4 +1,4 @@
-import type { Verdict } from '@raceback/engine';
+import type { Verdict } from '@runback/engine';
 
 const STYLE: Record<Verdict, { emoji: string; label: string; className: string }> = {
   safe: { emoji: '🟢', label: '안정권', className: 'text-verdict-safe' },
