@@ -20,7 +20,8 @@
     "db:migrate": "pnpm --filter @runback/db migrate",
     "db:seed": "pnpm --filter @runback/db seed",
     "db:studio": "pnpm --filter @runback/db studio",
-    "legal": "node scripts/check-legal.ts"
+    "legal": "node scripts/check-legal.ts",
+    "art": "node scripts/optimize-illustrations.ts"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

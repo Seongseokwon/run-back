@@ -41,7 +41,12 @@ const SCENE = 1.5;
  */
 const SCENE_SET: 'female' | 'male' = 'female';
 
-const scene = (name: string): string => `/illustrations/scene-${SCENE_SET}-${name}.png`;
+/*
+ * WebP 다 (PRD O18). 납품 원본은 2304×1536 PNG 로 장당 4~5MB 였는데 1200px WebP 로
+ * 다시 뽑아 88MB → 1.3MB 가 됐다. 앱이 쓰는 최대 슬롯 폭이 448px 이라 화질 손해는 없다.
+ * 원본을 다시 받으면 `npm run art` 로 같은 처리를 한다.
+ */
+const scene = (name: string): string => `/illustrations/scene-${SCENE_SET}-${name}.webp`;
 
 /*
  * `as const` 를 붙이지 않는다. 붙이면 `src` 가 문자열 리터럴로 굳어서

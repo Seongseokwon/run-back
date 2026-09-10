@@ -8,8 +8,8 @@
 | 어디 | 무엇 | 커밋 |
 |---|---|---|
 | `docs/mockups/runback-*.png` | 화면 목업 6장. **화면 구성의 기준** | ✅ |
-| `apps/web/public/illustrations/scene-female-*.png` | 세션 씬 아트워크 (여성) 10장 | ✅ |
-| `apps/web/public/illustrations/scene-male-*.png` | 세션 씬 아트워크 (남성) 10장 | ✅ |
+| `apps/web/public/illustrations/scene-female-*.webp` | 세션 씬 아트워크 (여성) 10장 | ✅ |
+| `apps/web/public/illustrations/scene-male-*.webp` | 세션 씬 아트워크 (남성) 10장 | ✅ |
 
 **두 벌 다 리포에 둔다.** 한쪽만 남기면 나중에 성별 선택이 붙을 때 그림을 다시 만들어야 한다.
 지금 어느 벌을 쓸지는 `apps/web/src/lib/illustrations.ts` 의 `SCENE_SET` 상수 하나가 정한다 —
