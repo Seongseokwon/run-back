@@ -4,6 +4,8 @@ import { SubHeader } from '@/components/layout/sub-header';
 import { ButtonLink } from '@/components/ui/button';
 import { Screen } from '@/components/ui/section';
 import { HARD_DELETE_AFTER_DAYS } from '@runback/db';
+import { TrackEvent } from '@/components/analytics/track-event';
+import { EVENTS } from '@/lib/analytics-events';
 
 /**
  * 탈퇴 완료. 로그아웃된 뒤에 도착하므로 세션이 없다.
@@ -17,6 +19,12 @@ export default function WithdrawDonePage() {
   return (
     <AppScreen header={<SubHeader title="탈퇴 완료" />}>
       <Screen>
+        {/*
+          §15 account_deleted — 이 화면은 탈퇴가 실제로 끝난 뒤에만 도달한다.
+          가입 후 경과일은 보내지 않는다. 계정 정보는 이미 지워졌고,
+          남은 걸로 역산하면 그 자체가 식별 단서가 된다 (§9.4)
+        */}
+        <TrackEvent name={EVENTS.accountDeleted} />
         <section>
           <h1 className="text-title font-extrabold tracking-tight text-ink">
             탈퇴가 완료되었습니다.

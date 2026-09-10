@@ -12,8 +12,9 @@
 
 import { ENGINE_VERSION, generatePlan, type Plan } from '@runback/engine';
 import { findRace, type Race } from '@runback/races';
-import { listSavedPlans, type SavedPlanRecord } from '@runback/db';
+import { listLogsByUser, listSavedPlans, type SavedPlanRecord, type SessionLogRecord } from '@runback/db';
 import { parsePlanInput } from './plan-input.ts';
+import type { LogIndex } from './plan-view.ts';
 import { currentUserId } from './session.ts';
 
 export type MyRace = {
@@ -37,6 +38,8 @@ export type MyRace = {
   goalLabel: string;
   /** 저장 시점의 엔진 버전 */
   engineVersion: string;
+  /** 날짜 → 수행 기록 (F-12). 완료 판정은 전부 이걸 본다 */
+  logs: LogIndex;
   /**
    * 저장된 버전과 현재 엔진이 다르다.
    * 지금은 표시만 하고 자동 적용하지 않는다 — 훈련 중인 플랜이 조용히 달라지면 안 된다 (§9.7).
@@ -50,9 +53,18 @@ export async function myRaces(): Promise<MyRace[]> {
   const userId = await currentUserId();
   if (!userId) return [];
 
-  const records = await listSavedPlans(userId);
+  // 플랜마다 기록을 조회하면 N+1 이 된다. 한 번에 가져와 planId 로 나눈다
+  const [records, allLogs] = await Promise.all([listSavedPlans(userId), listLogsByUser(userId)]);
+
+  const byPlan = new Map<string, Map<string, SessionLogRecord>>();
+  for (const log of allLogs) {
+    let m = byPlan.get(log.planId);
+    if (!m) byPlan.set(log.planId, (m = new Map()));
+    m.set(log.date, log);
+  }
+
   return records
-    .map(toMyRace)
+    .map((r) => toMyRace(r, byPlan.get(r.id) ?? new Map()))
     .filter((r): r is MyRace => r !== null)
     .sort((a, b) => a.date.localeCompare(b.date));
 }
@@ -77,7 +89,7 @@ export async function primaryRace(): Promise<MyRace | undefined> {
  * 대회 데이터에서 빠진 옛 대회가 여기 걸린다. 사용자가 저장한 플랜이 목록에서
  * 조용히 사라지는 쪽이 훨씬 나쁘다.
  */
-function toMyRace(record: SavedPlanRecord): MyRace | null {
+function toMyRace(record: SavedPlanRecord, logs: LogIndex): MyRace | null {
   const input = parsePlanInput(record.input);
   if (!input) return null;
 
@@ -94,6 +106,7 @@ function toMyRace(record: SavedPlanRecord): MyRace | null {
     distanceKm: input.raceDistanceM / 1000,
     goalLabel: input.goal.kind === 'time' ? formatGoal(input.goal.targetSec) : '완주',
     engineVersion: record.engineVersion,
+    logs,
     outdated: record.engineVersion !== ENGINE_VERSION,
   };
 }

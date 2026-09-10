@@ -92,6 +92,28 @@ export function planStatus(plan: Plan, today: string): 'before' | 'during' | 'af
 }
 
 /** 플랜의 모든 세션. 휴식일은 애초에 세션으로 만들어지지 않는다 */
+/**
+ * 날짜 → 그날의 수행 기록 (F-12).
+ *
+ * `plan-view` 는 저장소를 모른다. 화면이 읽어 온 것을 넘겨줄 뿐이다 —
+ * 그래야 이 파일이 계속 순수 함수로 남고 테스트가 쉽다.
+ */
+export type LogIndex = ReadonlyMap<string, { status: 'done' | 'skipped' | 'modified' }>;
+
+/** 비어 있는 기록. 로그가 없는 화면(게스트 등)이 쓴다 */
+export const NO_LOGS: LogIndex = new Map();
+
+/**
+ * '완료'의 정의. `modified` 도 완료로 친다 — 계획을 조금 바꿔서라도 뛴 것은 뛴 것이다.
+ * `skipped` 만 완료가 아니다.
+ *
+ * ⚠️ **날짜가 지났다고 완료가 아니다.** 예전엔 그렇게 셌는데(O17), 그러면
+ * 일주일을 통째로 쉰 사람에게도 진행률이 올라가서 화면이 거짓말을 한다.
+ */
+export function isCompleted(log: { status: string } | undefined): boolean {
+  return log !== undefined && log.status !== 'skipped';
+}
+
 export function allSessions(plan: Plan): PlanSession[] {
   return plan.weeks.flatMap((w) => w.sessions);
 }
@@ -102,28 +124,41 @@ export function allSessions(plan: Plan): PlanSession[] {
  * 날짜 비율이 아니라 **세션 수**로 센다. 러너가 체감하는 단위가 '며칠 지났나'가
  * 아니라 '몇 번 뛰었나'이기 때문이다.
  *
- * ⚠️ 지금은 수행 로그(F-12)가 없어서 '지난 날짜의 세션'을 완료로 친다.
- * 로그가 붙으면 여기만 완료 플래그 기준으로 바꾸면 된다 — 호출부는 그대로다.
+ * 완료 판정은 **실제 수행 기록**이다 (F-12, O17 종결).
  */
-export function sessionProgress(plan: Plan, today: string): { done: number; total: number; ratio: number } {
+export function sessionProgress(
+  plan: Plan,
+  logs: LogIndex,
+): { done: number; total: number; ratio: number } {
   const sessions = allSessions(plan).filter((s) => s.type !== 'race');
-  const done = sessions.filter((s) => s.date < today).length;
+  const done = sessions.filter((s) => isCompleted(logs.get(s.date))).length;
   return { done, total: sessions.length, ratio: sessions.length === 0 ? 0 : done / sessions.length };
 }
 
 /** 플랜 전체 진행률 0~1. 세션 완료 수 기준 */
-export function planProgress(plan: Plan, today: string): number {
-  return sessionProgress(plan, today).ratio;
+export function planProgress(plan: Plan, logs: LogIndex): number {
+  return sessionProgress(plan, logs).ratio;
 }
 
 /** 한 주를 요일 7칸으로 펴서 목록에 넣는다. 세션이 없는 날은 휴식 */
-export function weekItems(week: PlanWeek, today: string): WeekItem[] {
+export function weekItems(week: PlanWeek, today: string, logs: LogIndex): WeekItem[] {
   const items: WeekItem[] = [];
   for (let i = 0; i < 7; i++) {
     const date = addDays(week.startDate, i);
     const session = week.sessions.find((s) => s.date === date);
-    const status: RowStatus = !session ? 'rest' : date < today ? 'done' : 'todo';
+    const log = logs.get(date);
+    // 기록이 있으면 그게 이긴다. 없으면 지난 날은 '놓친 것'이지 완료가 아니다
+    const status: RowStatus = !session
+      ? 'rest'
+      : log
+        ? log.status === 'skipped'
+          ? 'skipped'
+          : 'done'
+        : date < today
+          ? 'missed'
+          : 'todo';
     items.push({
+      date,
       day: DOW[new Date(`${date}T00:00:00Z`).getUTCDay()]!,
       status,
       title: session ? `${TYPE_SHORT[session.type]} ${session.distanceKm}km` : '휴식',
@@ -138,7 +173,7 @@ export function weekItems(week: PlanWeek, today: string): WeekItem[] {
  * 캘린더 한 칸의 상태.
  * 색만으로 구분하지 않는다 — 범례에 글자 라벨이 함께 간다 (WCAG 1.4.1).
  */
-export type CalendarStatus = 'none' | 'done' | 'planned';
+export type CalendarStatus = 'none' | 'done' | 'planned' | 'missed' | 'skipped';
 
 export type CalendarCell = {
   date: string;
@@ -189,7 +224,12 @@ export function planMonths(plan: Plan): MonthKey[] {
  * 월요일 시작인 이유: 엔진이 주차를 월요일부터 끊는다(`week.startDate`).
  * 달력이 일요일부터 시작하면 한 훈련 주차가 두 줄에 걸쳐 보여서 주간 볼륨이 읽히지 않는다.
  */
-export function monthGrid(plan: Plan, month: MonthKey, today: string): CalendarCell[] {
+export function monthGrid(
+  plan: Plan,
+  month: MonthKey,
+  today: string,
+  logs: LogIndex,
+): CalendarCell[] {
   const sessions = new Map(allSessions(plan).map((s) => [s.date, s]));
   const planStart = planStartDate(plan);
   const planEnd = plan.input.raceDate;
@@ -210,7 +250,7 @@ export function monthGrid(plan: Plan, month: MonthKey, today: string): CalendarC
       inMonth: date.slice(0, 7) === month,
       inPlan: date >= planStart && date <= planEnd,
       isToday: date === today,
-      status: !session ? 'none' : date < today ? 'done' : 'planned',
+      status: calendarStatus(session, date, today, logs),
       isLong: session?.type === 'long' || session?.type === 'race',
       distanceKm: session?.distanceKm ?? 0,
       ...(session ? { title: TYPE_SHORT[session.type], zone: session.targetZone } : {}),
@@ -219,20 +259,62 @@ export function monthGrid(plan: Plan, month: MonthKey, today: string): CalendarC
   });
 }
 
-/** 한 달 요약 — 캘린더 위에 붙는 숫자 */
+function calendarStatus(
+  session: PlanSession | undefined,
+  date: string,
+  today: string,
+  logs: LogIndex,
+): CalendarStatus {
+  if (!session) return 'none';
+  const log = logs.get(date);
+  if (log) return log.status === 'skipped' ? 'skipped' : 'done';
+  return date < today ? 'missed' : 'planned';
+}
+
+/** 한 달 요약 — 캘린더 위에 붙는 숫자. '완료'는 실제 기록 기준이다 */
 export function monthSummary(
   plan: Plan,
   month: MonthKey,
-  today: string,
+  logs: LogIndex,
 ): { doneCount: number; plannedCount: number; doneKm: number; plannedKm: number } {
   const inMonth = allSessions(plan).filter((s) => s.date.slice(0, 7) === month);
-  const done = inMonth.filter((s) => s.date < today);
+  const done = inMonth.filter((s) => isCompleted(logs.get(s.date)));
   return {
     doneCount: done.length,
     plannedCount: inMonth.length,
     doneKm: round1(done.reduce((sum, s) => sum + s.distanceKm, 0)),
     plannedKm: round1(inMonth.reduce((sum, s) => sum + s.distanceKm, 0)),
   };
+}
+
+/**
+ * 최근 러닝 (F-12). **실제로 기록을 남긴 세션만** 나온다 —
+ * 지나간 계획을 뛴 것처럼 보여 주지 않는다 (CLAUDE.md §0-3).
+ */
+export type RecentRun = {
+  date: string;
+  title: string;
+  plannedKm: number;
+  zone: string;
+  status: 'done' | 'skipped' | 'modified';
+};
+
+export function recentRuns(plan: Plan, logs: LogIndex, limit = 5): RecentRun[] {
+  const byDate = new Map(allSessions(plan).map((s) => [s.date, s]));
+  return [...logs.entries()]
+    .filter(([date]) => byDate.has(date))
+    .sort((a, b) => b[0].localeCompare(a[0]))
+    .slice(0, limit)
+    .map(([date, log]) => {
+      const s = byDate.get(date)!;
+      return {
+        date,
+        title: TYPE_SHORT[s.type],
+        plannedKm: s.distanceKm,
+        zone: s.targetZone,
+        status: log.status,
+      };
+    });
 }
 
 export const DOW_LABELS = DOW;

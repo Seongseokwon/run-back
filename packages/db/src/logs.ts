@@ -40,6 +40,18 @@ export type UpsertLogArgs = {
   note?: string | undefined;
 };
 
+/**
+ * 한 사용자의 모든 기록. 화면이 플랜을 여러 개 그리므로 플랜마다 조회하면 N+1 이 된다.
+ * 한 번에 가져와서 호출부가 planId 로 나눈다.
+ */
+export async function listLogsByUser(userId: string): Promise<SessionLogRecord[]> {
+  return prisma.sessionLog.findMany({
+    where: { userId },
+    orderBy: { date: 'asc' },
+    select: SELECT,
+  });
+}
+
 /** 같은 날짜에 다시 기록하면 덮어쓴다 — 체크는 토글처럼 동작해야 한다 */
 export async function upsertLog(args: UpsertLogArgs): Promise<SessionLogRecord> {
   const data = {

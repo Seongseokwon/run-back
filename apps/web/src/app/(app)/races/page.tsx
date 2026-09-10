@@ -53,7 +53,7 @@ export default async function MyRacesPage() {
                 distanceKm={next.distanceKm}
                 daysLeft={daysBetween(today, next.date)}
                 goalLabel={next.goalLabel}
-                progress={planProgress(next.plan, today)}
+                progress={planProgress(next.plan, next.logs)}
               />
             </Link>
 

@@ -6,6 +6,8 @@ import { ButtonLink } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { CopyLinkButton } from '@/components/plan/copy-link';
 import { SavePlanButton } from '@/components/plan/save-plan-button';
+import { TrackEvent } from '@/components/analytics/track-event';
+import { EVENTS, distanceLabel as gaDistance, elapsedBucket } from '@/lib/analytics-events';
 import { PaceTable } from '@/components/plan/pace-table';
 import { VerdictBadge } from '@/components/plan/verdict-badge';
 import { WeekAccordion } from '@/components/plan/week-accordion';
@@ -45,8 +47,29 @@ export default async function PlanResultPage({ searchParams }: Props) {
   const daysLeft = daysBetween(today, req.input.raceDate);
   const level = req.input.fitness.kind === 'novice' ? 'novice' : 'full';
 
+  /*
+   * §15 대시보드 1순위가 '생성일 기준 코호트별 재방문 곡선'이다.
+   * 플랜은 만든 날(input.today)을 URL 에 박아 두므로, 오늘과 다르면 **재방문**이다.
+   * 링크를 다시 연 것도 재방문으로 센다 — 그게 H1 이 묻는 행동이다.
+   */
+  const elapsedDays = daysBetween(req.input.today, today);
+  const isRevisit = elapsedDays > 0;
+
   return (
     <div className="space-y-6 pt-2">
+      <TrackEvent
+        name={isRevisit ? EVENTS.planRevisit : EVENTS.planGenerated}
+        dedupeKey={`${p}:${isRevisit}`}
+        params={{
+          distance: gaDistance(req.input.raceDistanceM),
+          verdict: plan.verdict,
+          weeks: plan.weeks.length,
+          days_per_week: req.input.daysPerWeek,
+          fitness_kind: req.input.fitness.kind,
+          from_race: Boolean(req.raceSlug),
+          ...(isRevisit ? { elapsed: elapsedBucket(elapsedDays) } : {}),
+        }}
+      />
       <section>
         <p className="text-label font-semibold text-ink-muted">
           {race ? race.nameKo : formatRaceDate(req.input.raceDate)} · {distanceLabel(km)}

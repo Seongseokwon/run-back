@@ -3,13 +3,14 @@ import type { ReactNode } from 'react';
 import { TitleHeader } from '@/components/layout/app-header';
 import { AppScreen } from '@/components/layout/app-screen';
 import { Badge } from '@/components/ui/badge';
+import { ButtonLink } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { SceneAvatar, SceneBand } from '@/components/ui/scene';
 import { MenuRow } from '@/components/ui/list-row';
 import { Screen } from '@/components/ui/section';
 import { myRaces } from '@/lib/my-races';
 import { currentUser } from '@/lib/session';
-import { KakaoSignInButton, PasswordLoginSection, SignOutButton } from '@/components/auth/auth-buttons';
+import { SignOutButton } from '@/components/auth/auth-buttons';
 import { todayKst } from '@/lib/format';
 
 export const metadata: Metadata = { title: '나' };
@@ -76,20 +77,22 @@ export default async function MePage() {
           </ul>
         </Card>
 
-        {/* §9.2 저장 게이트 — 로그인은 플랜 '생성'이 아니라 '저장' 시점에만 요구한다 */}
+        {/*
+          §9.2 저장 게이트 — 로그인은 플랜 '생성'이 아니라 '저장' 시점에만 요구한다.
+          로그인 수단을 고르는 일은 전용 화면(/login)이 맡는다. 설정 목록 한가운데
+          카카오 버튼과 이메일 폼이 끼면 무엇이 주 경로인지 안 읽힌다.
+        */}
         <section>
           {user ? (
             <SignOutButton />
           ) : (
             <>
-              <KakaoSignInButton />
+              <ButtonLink href="/login?callbackUrl=%2Fme" size="md" variant="outline">
+                로그인
+              </ButtonLink>
               <p className="mt-2 text-center text-label text-ink-muted">
                 로그인 없이도 링크를 복사해 플랜을 보관할 수 있습니다
               </p>
-              {/* 플래그가 꺼져 있으면 통째로 사라진다 (AUTH_PASSWORD_LOGIN) */}
-              <div className="mt-6">
-                <PasswordLoginSection />
-              </div>
             </>
           )}
         </section>

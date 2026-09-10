@@ -43,7 +43,32 @@ if (passwordLogin && emailListedAsNotCollected) {
   notes.push('비밀번호 로그인 꺼짐 — 방침의 이메일 미수집 표기와 일치');
 }
 
-/* 3. 국외 이전 고지 (법 제28조의8) — 호스팅·DB 가 국외 사업자다 */
+/* 3. GA4 와 방침의 일치
+ *    측정 ID 를 넣으면 Google LLC 가 수탁자로 추가된다. 위탁·국외이전·쿠키 세 조항이
+ *    모두 맞아야 한다 — 하나라도 빠지면 방침이 실제 처리와 어긋난다. */
+const gaEnabled = (process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID ?? '').length > 0;
+const gaInPolicy = {
+  위탁: /개인정보 처리의 위탁[\s\S]{0,900}?Google LLC/.test(content),
+  국외이전: /국외 이전[\s\S]{0,900}?Google LLC/.test(content),
+  쿠키: /자동 수집 장치[\s\S]{0,900}?Google Analytics/.test(content),
+};
+const gaMissing = Object.entries(gaInPolicy)
+  .filter(([, ok]) => !ok)
+  .map(([k]) => k);
+
+if (gaEnabled && gaMissing.length > 0) {
+  problems.push(
+    `GA4 측정 ID 가 설정됐는데 방침의 [${gaMissing.join(', ')}] 조항에 Google 이 없다
+` +
+      '    → legal-content.ts 에 Google LLC 를 수탁자·국외 이전받는 자·쿠키 사용처로 적을 것',
+  );
+} else if (gaEnabled) {
+  notes.push('GA4 켜짐 — 방침의 위탁·국외이전·쿠키 조항이 모두 Google 을 적고 있다');
+} else {
+  notes.push('GA4 꺼짐 (측정 ID 없음) — 스크립트가 로드되지 않는다');
+}
+
+/* 4. 국외 이전 고지 (법 제28조의8) — 호스팅·DB 가 국외 사업자다 */
 if (!content.includes('국외 이전')) {
   problems.push('국외 이전 조항이 없다. 호스팅(Vercel)·DB(Neon)가 국외 사업자다');
 }

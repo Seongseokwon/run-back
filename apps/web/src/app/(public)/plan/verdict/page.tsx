@@ -5,6 +5,8 @@ import { findRace } from '@runback/races';
 import { ButtonLink } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { VerdictBadge } from '@/components/plan/verdict-badge';
+import { TrackEvent } from '@/components/analytics/track-event';
+import { EVENTS, distanceLabel as gaDistance } from '@/lib/analytics-events';
 import { decodePlanRequest, planHref } from '@/lib/plan-url';
 import { formatDuration, formatRaceDate } from '@/lib/format';
 import { distanceLabel } from '@/lib/format';
@@ -64,6 +66,18 @@ export default async function VerdictPage({ searchParams }: Props) {
 
   return (
     <div className="space-y-6 pt-2">
+      {/* §15 verdict_shown — 🔴 이후 재조정률(H3)을 세려면 판정이 먼저 기록돼야 한다 */}
+      <TrackEvent
+        name={EVENTS.verdictShown}
+        dedupeKey={`${plan.verdict}:${req.input.raceDate}:${req.input.raceDistanceM}`}
+        params={{
+          verdict: plan.verdict,
+          distance: gaDistance(req.input.raceDistanceM),
+          weeks_available: plan.weeks.length,
+          goal_kind: req.input.goal.kind,
+          from_race: Boolean(req.raceSlug),
+        }}
+      />
       <section>
         <p className="text-label font-semibold text-ink-muted">
           {race ? race.nameKo : formatRaceDate(req.input.raceDate)} · {distanceLabel(km)}

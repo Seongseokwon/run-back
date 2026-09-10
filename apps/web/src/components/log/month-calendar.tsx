@@ -1,6 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { TrackOnSubmit } from '@/components/analytics/track-on-submit';
+import { EVENTS } from '@/lib/analytics-events';
 import { Card } from '@/components/ui/card';
 import { ZoneBadge } from '@/components/ui/badge';
 import { DOW_MON_FIRST, type CalendarCell } from '@/lib/plan-view';
@@ -17,8 +20,13 @@ export type MonthData = {
 
 const DOW = ['일', '월', '화', '수', '목', '금', '토'];
 
-/** 마커 종류. 넷 다 **모양이 다르다** — 색을 못 봐도 구분된다 (WCAG 1.4.1) */
-type Marker = 'done' | 'planned' | 'today' | 'long';
+/**
+ * 마커 종류. 여섯 다 **모양이 다르다** — 색을 못 봐도 구분된다 (WCAG 1.4.1).
+ *
+ * 'missed'(놓침)와 'skipped'(건너뜀)를 나눈 이유: 앞은 우리가 추측한 상태이고
+ * 뒤는 사용자가 직접 남긴 상태다. 합치면 "안 뛴 날"과 "안 적은 날"을 구분할 수 없다.
+ */
+type Marker = 'done' | 'planned' | 'today' | 'long' | 'missed' | 'skipped';
 
 /**
  * 캘린더 마커.
@@ -57,6 +65,31 @@ function MarkerIcon({ kind }: { kind: Marker }) {
       </svg>
     );
   }
+  if (kind === 'missed') {
+    // 점선 링 — 비어 있다는 인상. 추측한 상태라 단정적으로 그리지 않는다
+    return (
+      <svg viewBox="0 0 20 20" className="size-[18px] text-line-input" aria-hidden>
+        <circle
+          cx="10"
+          cy="10"
+          r="7"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeDasharray="2.6 2.4"
+        />
+      </svg>
+    );
+  }
+  if (kind === 'skipped') {
+    // 빗금 링 — 사용자가 '건너뜀'이라고 직접 남긴 것
+    return (
+      <svg viewBox="0 0 20 20" className="size-[18px] text-ink-muted" aria-hidden>
+        <circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" strokeWidth="1.6" />
+        <path d="M6.4 13.6l7.2-7.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      </svg>
+    );
+  }
   return (
     <svg viewBox="0 0 20 20" className="size-[18px] text-line-input" aria-hidden>
       <circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" strokeWidth="1.6" />
@@ -70,7 +103,21 @@ function MarkerIcon({ kind }: { kind: Marker }) {
  * ⚠️ 여기 표시되는 '완료'는 계획상 지나간 세션이다. 실제로 뛰었는지는 아직 모른다 —
  * 수행 로그(F-12)가 붙기 전까지는 지어내지 않는다.
  */
-export function MonthCalendar({ months, initialKey }: { months: MonthData[]; initialKey: string }) {
+export function MonthCalendar({
+  months,
+  initialKey,
+  onToggle,
+}: {
+  months: MonthData[];
+  initialKey: string;
+  /**
+   * 그날 훈련의 완료를 토글하는 서버 액션 (F-12).
+   *
+   * 여기 없으면 **당일에만 체크할 수 있다.** 하루라도 놓치면 영영 기록을 못 남기는데,
+   * 러너가 훈련 직후에 항상 폰을 여는 것도 아니다. 달력이 지난 날짜를 채우는 자리다.
+   */
+  onToggle?: (date: string) => Promise<void>;
+}) {
   const startIndex = Math.max(0, months.findIndex((m) => m.key === initialKey));
   const [index, setIndex] = useState(startIndex);
   const [selected, setSelected] = useState<string | null>(null);
@@ -88,6 +135,8 @@ export function MonthCalendar({ months, initialKey }: { months: MonthData[]; ini
       {/* 범례를 달력 위에 둔다 — 마커를 처음 만나기 전에 뜻을 알려 주는 순서다 */}
       <ul className="flex flex-wrap gap-x-4 gap-y-1.5 text-label text-ink-muted">
         <Legend kind="done" label="완료" />
+        <Legend kind="skipped" label="건너뜀" />
+        <Legend kind="missed" label="기록 없음" />
         <Legend kind="planned" label="계획" />
         <Legend kind="today" label="오늘" />
         <Legend kind="long" label="롱런" />
@@ -152,11 +201,8 @@ export function MonthCalendar({ months, initialKey }: { months: MonthData[]; ini
           <>
             <p className="text-label font-semibold text-ink-muted">
               {formatDay(selectedCell.date)}
-              {selectedCell.isToday
-                ? ' · 오늘'
-                : selectedCell.status === 'done'
-                  ? ' · 지난 세션'
-                  : ' · 예정'}
+              {selectedCell.isToday ? ' · 오늘' : ''}
+              {STATUS_LABEL[selectedCell.status]}
             </p>
             <p className="mt-1.5 flex items-center gap-2 text-body-lg font-bold text-ink">
               <span>{selectedCell.title}</span>
@@ -165,6 +211,25 @@ export function MonthCalendar({ months, initialKey }: { months: MonthData[]; ini
             </p>
             {selectedCell.structure ? (
               <p className="mt-1 text-label text-ink-muted">{selectedCell.structure}</p>
+            ) : null}
+            {onToggle ? (
+              <form action={onToggle.bind(null, selectedCell.date)} className="mt-3">
+                <TrackOnSubmit
+                  name={EVENTS.weekChecked}
+                  params={{
+                    status: selectedCell.status === 'done' ? 'undone' : 'done',
+                    source: 'calendar',
+                  }}
+                >
+                  <Button
+                    type="submit"
+                    size="sm"
+                    variant={selectedCell.status === 'done' ? 'soft' : 'outline'}
+                  >
+                    {selectedCell.status === 'done' ? '✓ 완료함 — 취소하기' : '완료로 기록하기'}
+                  </Button>
+                </TrackOnSubmit>
+              </form>
             ) : null}
           </>
         ) : (
@@ -179,6 +244,14 @@ export function MonthCalendar({ months, initialKey }: { months: MonthData[]; ini
     </section>
   );
 }
+
+const STATUS_LABEL: Record<CalendarCell['status'], string> = {
+  none: '',
+  planned: ' · 예정',
+  done: ' · 완료',
+  missed: ' · 기록 없음',
+  skipped: ' · 건너뜀',
+};
 
 /** 범례 한 칸. 마커는 장식이고 뜻은 글자가 진다 (WCAG 1.4.1) */
 function Legend({ kind, label }: { kind: Marker; label: string }) {
@@ -224,8 +297,11 @@ function NavButton({
 function markerOf(cell: CalendarCell): Marker | null {
   if (cell.isToday) return 'today';
   if (cell.status === 'none') return null;
+  // 기록이 남은 날은 롱런이라도 그 상태가 이긴다 — 뛰었는지가 롱런인지보다 중요하다
+  if (cell.status === 'done') return 'done';
+  if (cell.status === 'skipped') return 'skipped';
   if (cell.isLong) return 'long';
-  return cell.status === 'done' ? 'done' : 'planned';
+  return cell.status === 'missed' ? 'missed' : 'planned';
 }
 
 function DayCell({

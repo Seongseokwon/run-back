@@ -2,7 +2,13 @@ import Link from 'next/link';
 import type { ComponentProps, ReactNode } from 'react';
 
 /** 세션 완료 상태 — PRD F-12 주차 완료 체크 */
-export type RowStatus = 'done' | 'todo' | 'rest';
+/**
+ * 'missed' 와 'skipped' 는 다르다.
+ *  - missed  : 날짜가 지났는데 아무 기록도 없다. **우리가 추측한 상태**
+ *  - skipped : 사용자가 "건너뛰었다"고 직접 남긴 상태
+ * 둘을 합치면 "안 뛴 것"과 "안 적은 것"을 구분할 수 없어진다.
+ */
+export type RowStatus = 'done' | 'todo' | 'rest' | 'missed' | 'skipped';
 
 /**
  * 상태 표식은 **글자보다 작아야 한다** (18px, 옆 제목은 text-body-lg 17px).
@@ -10,7 +16,8 @@ export type RowStatus = 'done' | 'todo' | 'rest';
  * 특히 플랜 시작 전 '첫 주'는 전부 예정이라 굵은 빈 원만 일곱 개가 쌓인다.
  * 목업의 링도 얇다. 표식은 제목을 읽는 눈을 방해하지 않는 선까지만 있으면 된다.
  *
- * 뜻을 색으로만 전하지 않는다 (WCAG 1.4.1) — 형태가 갈린다: 하이픈 / 빈 링 / 채운 체크
+ * 뜻을 색으로만 전하지 않는다 (WCAG 1.4.1) — 다섯 상태가 전부 **형태로** 갈린다:
+ * 하이픈(휴식) / 빈 링(예정) / 채운 체크(완료) / 점선 링(놓침) / 빗금 링(건너뜀)
  */
 function StatusMark({ status }: { status: RowStatus }) {
   if (status === 'rest') {
@@ -24,6 +31,25 @@ function StatusMark({ status }: { status: RowStatus }) {
       >
         <svg viewBox="0 0 20 20" className="size-2.5" fill="none" stroke="currentColor" strokeWidth={3}>
           <path d="M4 10.5l4 4 8-8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </span>
+    );
+  }
+  if (status === 'missed') {
+    // 점선 — "비어 있다"는 인상. 우리가 추측한 상태라 단정적으로 그리지 않는다
+    return (
+      <span aria-hidden className="block size-4.5 rounded-full border border-dashed border-line-input" />
+    );
+  }
+  if (status === 'skipped') {
+    // 빗금 — 사용자가 직접 "건너뜀"이라고 남긴 것. 단정적인 표식이다
+    return (
+      <span
+        aria-hidden
+        className="flex size-4.5 items-center justify-center rounded-full border border-ink-subtle"
+      >
+        <svg viewBox="0 0 20 20" className="size-4.5 text-ink-subtle" fill="none" stroke="currentColor" strokeWidth={2}>
+          <path d="M6 14l8-8" strokeLinecap="round" />
         </svg>
       </span>
     );

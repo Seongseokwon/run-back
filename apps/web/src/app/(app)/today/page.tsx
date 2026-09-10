@@ -7,6 +7,7 @@ import { Note, PageTitle, Screen } from '@/components/ui/section';
 import { NextRaceCard } from '@/components/home/next-race-card';
 import { PlanStateCard } from '@/components/home/plan-state-card';
 import { TodayTrainingCard } from '@/components/home/today-training-card';
+import { SessionCheck } from '@/components/plan/session-check';
 import { WeekList } from '@/components/home/week-list';
 import { EmptyState } from '@/components/ui/empty-state';
 import { primaryRace } from '@/lib/my-races';
@@ -113,7 +114,7 @@ export default async function TodayPage() {
             distanceKm={distanceKm}
             daysLeft={daysLeft}
             goalLabel={goalLabel}
-            progress={planProgress(plan, today)}
+            progress={planProgress(plan, mine.logs)}
           />
         </Link>
 
@@ -134,11 +135,17 @@ export default async function TodayPage() {
               {...(session.structure ? { note: session.structure } : {})}
             />
             {/*
-              목업의 '오늘 달리기' 자리. 러닝 트래킹이 없어서 같은 문구를 쓸 수 없다 —
-              눌러서 아무 일도 안 일어나면 고장으로 읽힌다. 버튼의 위치·무게는 그대로 두고
-              실제로 갈 수 있는 곳(훈련 일정)으로 보낸다.
+              목업의 '오늘 달리기' 자리. 러닝 트래킹은 여전히 없지만, 이제 **뛴 뒤에 남길 것**은
+              있다 (F-12). 그래서 이 자리는 체크가 가져가고, 전체 일정은 아래 링크로 뺀다.
             */}
-            <ButtonLink href={scheduleHref}>오늘 훈련 자세히 보기</ButtonLink>
+            <SessionCheck
+              planId={mine.planId}
+              date={session.date}
+              status={mine.logs.get(session.date)?.status}
+            />
+            <ButtonLink href={scheduleHref} variant="ghost" size="md">
+              오늘 훈련 자세히 보기
+            </ButtonLink>
           </div>
         ) : (
           <PlanStateCard
@@ -148,7 +155,7 @@ export default async function TodayPage() {
           />
         )}
 
-        <WeekList items={weekItems(week, today)} title={status === 'before' ? '첫 주' : '이번 주'} />
+        <WeekList items={weekItems(week, today, mine.logs)} title={status === 'before' ? '첫 주' : '이번 주'} />
 
         {/* ACWR 클램프 등 엔진이 조용히 줄인 게 있으면 반드시 알린다 (PRD §7.10) */}
         {week.clamped ? (

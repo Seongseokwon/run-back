@@ -1,5 +1,4 @@
-import { signIn } from '@/auth';
-import { Button } from '@/components/ui/button';
+import { Button, ButtonLink } from '@/components/ui/button';
 import { savePlanAction } from '@/lib/plan-actions';
 import { currentUserId } from '@/lib/session';
 import { redirect } from 'next/navigation';
@@ -20,20 +19,24 @@ export async function SavePlanButton({ encoded }: { encoded: string }) {
   const userId = await currentUserId();
 
   if (!userId) {
+    /*
+     * 플랜을 **콜백 경로에 실어서** 로그인으로 보낸다.
+     *
+     * 한때 `signIn(undefined, { redirectTo })` 를 썼는데, 그러면 Auth.js 가 로그인 화면으로
+     * 보내면서 callbackUrl 을 쿼리에 다는 것까지는 맞지만 **그 화면이 값을 읽지 않으면
+     * 그대로 버려진다.** 실제로 로그인 뒤 플랜이 사라지고 있었다.
+     * 지금은 /login 이 callbackUrl 을 받아 두 제공자 모두에 전달한다 (§9.5).
+     */
+    const callbackUrl = encodeURIComponent(`/plan/save?p=${encoded}`);
     return (
-      <form
-        action={async () => {
-          'use server';
-          await signIn(undefined, { redirectTo: `/plan/save?p=${encoded}` });
-        }}
-      >
-        <Button type="submit" size="md" variant="outline">
+      <div>
+        <ButtonLink href={`/login?callbackUrl=${callbackUrl}`} size="md" variant="outline">
           로그인하고 이 플랜 저장하기
-        </Button>
+        </ButtonLink>
         <p className="mt-2 text-center text-label text-ink-muted">
           로그인하지 않아도 아래 링크를 복사해 두면 언제든 다시 열 수 있습니다
         </p>
-      </form>
+      </div>
     );
   }
 

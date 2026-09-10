@@ -131,9 +131,12 @@ export const authConfig = {
     },
   },
 
-  // 전용 로그인 화면을 따로 만들지 않는다. 제공자가 하나뿐이라 고를 것이 없고,
-  // 로그인 진입점은 '나' 탭과 저장 버튼이다
-  pages: { signIn: '/me' },
+  /*
+   * 전용 로그인 화면. 한때 '나' 탭이 이걸 겸했는데 두 가지가 어긋났다 —
+   * 설정 목록 한가운데 로그인 폼이 끼어 무엇이 주 경로인지 안 읽혔고,
+   * 저장 버튼에서 넘어온 callbackUrl 을 받아 줄 자리가 없어 **로그인 뒤 플랜이 사라졌다**.
+   */
+  pages: { signIn: '/login' },
 } satisfies NextAuthConfig;
 
 export const { handlers, signIn, signOut, auth } = NextAuth(authConfig);

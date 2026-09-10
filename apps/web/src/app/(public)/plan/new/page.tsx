@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { PlanWizard } from '@/components/plan/plan-wizard';
 import { raceOptions } from '@/lib/race-options';
 import { todayKst } from '@/lib/format';
+import { TrackEvent } from '@/components/analytics/track-event';
+import { EVENTS } from '@/lib/analytics-events';
 
 export const metadata: Metadata = {
   title: '플랜 만들기',
@@ -20,6 +22,15 @@ export default async function PlanNewPage({ searchParams }: Props) {
 
   return (
     <div className="space-y-6 pt-2">
+      {/*
+        §15 plan_start — 생성 완료율(§3.2 목표 60%)의 분모다.
+        진입 경로를 남긴다: 대회 페이지에서 왔는지, 목표 페이지에서 왔는지, 직접인지.
+      */}
+      <TrackEvent
+        name={EVENTS.planStart}
+        dedupeKey={race ?? 'direct'}
+        params={{ entry: race ? 'race' : 'direct', ...(race ? { race_slug: race } : {}) }}
+      />
       <h1 className="text-title font-extrabold tracking-tight text-ink">플랜 만들기</h1>
       <PlanWizard
         races={raceOptions(today)}

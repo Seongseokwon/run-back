@@ -14,15 +14,23 @@ import { savePlanAction } from '@/lib/plan-actions';
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 export const dynamic = 'force-dynamic';
 
-type Props = { searchParams: Promise<{ p?: string }> };
+type Props = { searchParams: Promise<{ p?: string; li?: string }> };
 
 export default async function PlanSavePage({ searchParams }: Props) {
-  const { p } = await searchParams;
+  const { p, li } = await searchParams;
   if (!p) redirect('/plan/new');
 
   const result = await savePlanAction(p);
 
-  if (result.ok) redirect('/races');
+  /*
+   * §15 plan_saved / plan_migrated — 결과가 확정된 뒤에만 마커를 붙인다.
+   * 이 화면에 도달하는 경로는 둘이다: 이미 로그인한 사람이 저장 버튼을 누른 경우와,
+   * 게스트가 로그인을 거쳐 돌아온 경우(§9.5 전환). 뒤쪽에는 로그인 마커(li)가 함께 온다.
+   */
+  if (result.ok) {
+    const migrated = typeof li === 'string' && li.length > 0;
+    redirect(`/races?saved=${migrated ? 'migrated' : 'new'}`);
+  }
   // 로그인이 안 됐거나 입력이 깨졌다. 어느 쪽이든 플랜을 보여 주는 화면으로 돌려보낸다
   redirect(`/plan/result?p=${p}`);
 }

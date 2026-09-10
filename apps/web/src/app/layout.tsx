@@ -1,4 +1,7 @@
 import type { Metadata, Viewport } from 'next';
+import { Suspense } from 'react';
+import { GoogleAnalytics } from '@/components/analytics/google-analytics';
+import { RedirectMarkers } from '@/components/analytics/redirect-markers';
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL } from '@/lib/config';
 import './globals.css';
 
@@ -32,7 +35,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ko">
       {/* 모바일 우선. 데스크톱에서도 모바일 폭을 유지하고 가운데 정렬한다 (PRD §10 기준 375px) */}
-      <body className="mx-auto min-h-dvh max-w-md">{children}</body>
+      <body className="mx-auto min-h-dvh max-w-md">
+        {children}
+        {/* 측정 ID 가 없으면 아무것도 렌더하지 않는다 (§15, PRD v1.4) */}
+        <GoogleAnalytics />
+        {/* useSearchParams 를 쓰므로 Suspense 가 필요하다 — 정적 페이지를 동적으로 만들지 않는다 */}
+        <Suspense fallback={null}>
+          <RedirectMarkers />
+        </Suspense>
+      </body>
     </html>
   );
 }

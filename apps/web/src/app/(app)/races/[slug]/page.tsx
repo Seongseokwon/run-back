@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { BigStat } from '@/components/ui/stat';
 import { Screen, Section } from '@/components/ui/section';
 import { findMyRace } from '@/lib/my-races';
+import { SessionCheck } from '@/components/plan/session-check';
 import { distanceLabel, formatDday, formatPace, formatRaceDate, todayKst } from '@/lib/format';
 import { sessionIllustration } from '@/lib/illustrations';
 import {
@@ -52,7 +53,7 @@ export default async function RaceSchedulePage({ params }: Props) {
   const session = sessionOn(plan, today);
   const daysLeft = daysBetween(today, mine.date);
   const pace = session ? plan.paces[session.targetZone] : plan.paces.E;
-  const progress = sessionProgress(plan, today);
+  const progress = sessionProgress(plan, mine.logs);
 
   return (
     <AppScreen header={<SubHeader title="훈련 일정" action={<CalendarLink />} />}>
@@ -88,19 +89,11 @@ export default async function RaceSchedulePage({ params }: Props) {
             illustration={sessionIllustration(session.type)}
             {...(session.structure ? { note: session.structure } : {})}
             action={
-              /*
-                목업의 '훈련 기록하기'. 지금은 누를 수 없다 —
-                수행 로그 저장(F-12)이 아직 없는데 버튼만 살려 두면 눌러 보고 아무 일도 안 일어난다.
-                눌리지 않는 이유를 옆에 적어 두는 편이 낫다.
-              */
-              <div>
-                <Button variant="outline" size="md" disabled>
-                  훈련 기록하기
-                </Button>
-                <p className="mt-2 text-center text-label text-ink-muted">
-                  수행 기록 저장은 아직 준비 중입니다
-                </p>
-              </div>
+              <SessionCheck
+                planId={mine.planId}
+                date={session.date}
+                status={mine.logs.get(session.date)?.status}
+              />
             }
           />
         ) : (
@@ -113,7 +106,7 @@ export default async function RaceSchedulePage({ params }: Props) {
 
         <div>
           <WeekList
-            items={weekItems(week, today)}
+            items={weekItems(week, today, mine.logs)}
             title={`이번 주 훈련 · ${week.index + 1}주차 ${PHASE_LABEL[week.phase]}`}
           />
           <WeekDots

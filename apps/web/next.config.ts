@@ -9,6 +9,17 @@ const rootEnv = join(import.meta.dirname, '..', '..', '.env');
 if (existsSync(rootEnv)) process.loadEnvFile(rootEnv);
 
 const nextConfig: NextConfig = {
+  /*
+   * Next 16 은 프로젝트당 dev 서버를 하나로 제한한다 (`.next/dev/lock`).
+   * 빌드 디렉터리를 갈라 주면 두 대를 나란히 띄울 수 있다 —
+   * 사람이 3000 을 켜 두고 보는 동안 에이전트가 다른 포트에서 검증할 때 쓴다.
+   *
+   *   NEXT_DIST_DIR=.next-agent pnpm dev --port 3100
+   *
+   * 기본값은 그대로 `.next` 라 평소 동작에는 영향이 없다.
+   */
+  distDir: process.env.NEXT_DIST_DIR ?? '.next',
+
   // 워크스페이스 패키지는 .ts 소스를 그대로 export 한다 (빌드 산출물 없음).
   // 엔진을 빌드 타임에 직접 호출해 정적 페이지를 만들기 위한 구조다 (PRD §11.2)
   transpilePackages: ['@runback/engine', '@runback/races', '@runback/db'],
