@@ -37,7 +37,13 @@ const nextConfig: NextConfig = {
     '/**': ['public/illustrations/**/*', 'public/brand/**/*'],
   },
 
-  // TODO: 라우트가 확정되면 typedRoutes 를 켠다. 지금은 자리만 잡은 링크가 많다
+  /*
+   * 라우트를 타입으로 검사한다. Next 16 에서 안정화되어 experimental 밖으로 나왔다.
+   * 이제 켜는 이유: 라우트가 확정됐고, `/races/[slug]` 처럼 **키가 slug 이거나 planId 인**
+   * 경로가 생겨서 손으로 쓴 문자열이 조용히 깨질 여지가 늘었다.
+   */
+  typedRoutes: true,
+
   experimental: {
     // 대회 데이터가 커지면 정적 생성 시간이 늘어난다. 미리 열어둔다
     staticGenerationRetryCount: 1,

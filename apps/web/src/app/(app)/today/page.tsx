@@ -93,7 +93,7 @@ export default async function TodayPage() {
   const session = sessionOn(plan, today);
   const daysLeft = daysBetween(today, plan.input.raceDate);
   const pace = session ? plan.paces[session.targetZone] : plan.paces.E;
-  const scheduleHref = `/races/${mine.key}`;
+  const scheduleHref = mine.href;
 
   return (
     <AppScreen header={<AppHeader />}>

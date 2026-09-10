@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Route } from 'next';
 import Link from 'next/link';
 import { generatePlan } from '@runback/engine';
 import { findRace } from '@runback/races';
@@ -44,7 +44,7 @@ export default async function VerdictPage({ searchParams }: Props) {
   const km = req.input.raceDistanceM / 1000;
 
   /** 목표만 바꿔 다시 판정받는 링크 */
-  const withGoal = (targetSec: number | null): string =>
+  const withGoal = (targetSec: number | null): Route =>
     planHref('/plan/verdict', {
       ...req,
       input: {

@@ -1,3 +1,4 @@
+import type { Route } from 'next';
 /**
  * 로그인·로그아웃 버튼.
  *
@@ -24,7 +25,7 @@ export function isPasswordLoginEnabled(): boolean {
  * @param redirectTo 로그인 후 돌아갈 곳. **호출부가 반드시 검증된 값을 넘긴다**
  *   (`safeCallbackUrl`). 여기서 다시 검증하지 않는 대신 기본값을 안전한 경로로 둔다.
  */
-export function KakaoSignInButton({ redirectTo = DEFAULT_AFTER_LOGIN }: { redirectTo?: string }) {
+export function KakaoSignInButton({ redirectTo = DEFAULT_AFTER_LOGIN }: { redirectTo?: Route }) {
   return (
     <form
       action={async () => {
@@ -46,7 +47,7 @@ export function KakaoSignInButton({ redirectTo = DEFAULT_AFTER_LOGIN }: { redire
  * **접어 둔 채로 시작한다.** 이건 보조 수단이고(PRD §9.3 예외), 카카오와 나란히
  * 펼쳐 두면 무엇이 주 경로인지 안 읽힌다.
  */
-export function PasswordLoginSection({ redirectTo }: { redirectTo?: string }) {
+export function PasswordLoginSection({ redirectTo }: { redirectTo?: Route }) {
   if (!isPasswordLoginEnabled()) return null;
 
   return (

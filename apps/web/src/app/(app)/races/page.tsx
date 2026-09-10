@@ -47,7 +47,7 @@ export default async function MyRacesPage() {
           />
         ) : (
           <>
-            <Link href={`/races/${next.key}`} className="pressable rise block">
+            <Link href={next.href} className="pressable rise block">
               <NextRaceCard
                 raceName={next.name}
                 distanceKm={next.distanceKm}
@@ -62,7 +62,7 @@ export default async function MyRacesPage() {
                 {races.map((item) => (
                   <li key={item.key}>
                     <MyRaceRow
-                      href={`/races/${item.key}`}
+                      href={item.href}
                       name={item.name}
                       date={item.date}
                       distanceKm={item.distanceKm}

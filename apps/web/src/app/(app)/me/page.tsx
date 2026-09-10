@@ -34,6 +34,12 @@ export default async function MePage() {
   const today = todayKst();
   const [races, user] = await Promise.all([myRaces(), currentUser()]);
   const goal = races[0];
+  /* 목표가 여럿일 수 있다 (O16). 첫 줄만 보여 주면 나머지가 없는 것처럼 읽힌다 */
+  const goalLabel = goal
+    ? races.length > 1
+      ? `${goal.name} 외 ${races.length - 1}개`
+      : goal.name
+    : null;
 
   // 닉네임은 수집하지 않으므로(§9.4) 로그인해도 대개 null 이다.
   // 카카오 회원번호를 이름 대신 보여 주지 않는다 — 그건 식별자지 이름이 아니다
@@ -50,7 +56,11 @@ export default async function MePage() {
               {user ? null : <Badge>로그인 전</Badge>}
             </p>
             <p className="mt-1 truncate text-body text-ink-muted">
-              {goal ? `${goal.name}를 준비하고 있어요.` : '아직 목표 대회가 없습니다.'}
+              {goal
+                ? races.length > 1
+                  ? `${races.length}개 목표를 준비하고 있어요.`
+                  : `${goal.name}를 준비하고 있어요.`
+                : '아직 목표 대회가 없습니다.'}
             </p>
           </div>
         </section>
@@ -61,7 +71,7 @@ export default async function MePage() {
               href="/races"
               icon={<Icon path="M12 3a9 9 0 100 18 9 9 0 000-18zm0 5a4 4 0 100 8 4 4 0 000-8z" />}
               label="러닝 목표"
-              {...(goal ? { value: goal.name } : {})}
+              {...(goalLabel ? { value: goalLabel } : {})}
             />
             <MenuRow
               href="/plan/new"

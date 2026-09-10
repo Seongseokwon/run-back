@@ -12,6 +12,7 @@
  * 어긋나면 null 을 낸다 — 깨진 입력으로 훈련 플랜을 만드는 것보다 안전하다.
  */
 
+import type { Route } from 'next';
 import type { FitnessInput, GoalInput, PlanInput, RaceDistanceM } from '@runback/engine';
 import { DAYS, DISTANCES, isNum, isValidDate } from './plan-input.ts';
 
@@ -150,7 +151,13 @@ export function decodePlanRequest(value: string | undefined): PlanRequest | null
   };
 }
 
-/** `/plan/result?p=...` 같은 경로를 만든다 */
-export function planHref(base: '/plan/result' | '/plan/verdict', req: PlanRequest): string {
-  return `${base}?p=${encodePlanRequest(req)}`;
+/**
+ * `/plan/result?p=...` 같은 경로를 만든다.
+ *
+ * `typedRoutes` 는 리터럴만 검증하고 조립한 문자열은 캐스팅을 요구한다.
+ * base 가 리터럴 유니온이라 **여기서만** 단언하면 호출부는 전부 타입 안전하다 —
+ * 캐스팅을 화면마다 흩어 두면 그게 곧 검사를 끄는 것이다.
+ */
+export function planHref(base: '/plan/result' | '/plan/verdict', req: PlanRequest): Route {
+  return `${base}?p=${encodePlanRequest(req)}` as Route;
 }

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Route } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { AppScreen } from '@/components/layout/app-screen';
@@ -56,7 +56,7 @@ export default async function RaceSchedulePage({ params }: Props) {
   const progress = sessionProgress(plan, mine.logs);
 
   return (
-    <AppScreen header={<SubHeader title="훈련 일정" action={<CalendarLink />} />}>
+    <AppScreen header={<SubHeader title="훈련 일정" action={<CalendarLink planKey={mine.key} />} />}>
       <Screen>
         {/* 히어로는 카드가 아니다 — 아래 '오늘의 훈련' 카드가 이 화면의 주인공이라
             여기서 카드를 한 번 더 쓰면 둘이 같은 무게로 경쟁한다 */}
@@ -128,10 +128,11 @@ export default async function RaceSchedulePage({ params }: Props) {
 }
 
 /** 헤더 우측 — 달력으로. 이 화면이 '이번 주'라면 달력은 '전체 기간'이다 */
-function CalendarLink() {
+/** 이 플랜의 달력으로 간다. key 를 넘기지 않으면 **가장 가까운 대회의 달력**이 열린다 (O16) */
+function CalendarLink({ planKey }: { planKey: string }) {
   return (
     <Link
-      href="/log"
+      href={`/log?plan=${planKey}` as Route}
       aria-label="훈련 달력"
       className="pressable -mr-2 flex size-touch shrink-0 items-center justify-center rounded-full text-ink"
     >

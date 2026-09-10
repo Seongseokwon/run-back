@@ -1,3 +1,4 @@
+import type { Route } from 'next';
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 import { SceneBand } from '@/components/ui/scene';
@@ -17,7 +18,7 @@ export function MyRaceRow({
   distanceKm,
   goalLabel,
 }: {
-  href: string;
+  href: Route;
   name: string;
   date: string;
   distanceKm: number;

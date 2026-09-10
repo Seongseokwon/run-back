@@ -12,8 +12,10 @@
  *  - 제어문자가 섞인 값은 브라우저마다 다르게 해석하므로 막는다
  */
 
+import type { Route } from 'next';
+
 /** 검증에 실패했을 때 돌아갈 곳 */
-export const DEFAULT_AFTER_LOGIN = '/today';
+export const DEFAULT_AFTER_LOGIN = '/today' as Route;
 
 /** 정규식 리터럴에 제어문자를 직접 적지 않는다 — 소스가 읽기 어려워진다 */
 function hasControlChar(value: string): boolean {
@@ -24,13 +26,17 @@ function hasControlChar(value: string): boolean {
   return false;
 }
 
-export function safeCallbackUrl(value: unknown): string {
+/**
+ * 통과한 값은 **같은 사이트 안의 경로**임이 보장되므로 Route 로 단언한다.
+ * (typedRoutes 는 조립된 문자열을 검증하지 못한다 — 검증은 위 규칙들이 한다)
+ */
+export function safeCallbackUrl(value: unknown): Route {
   if (typeof value !== 'string' || value.length === 0) return DEFAULT_AFTER_LOGIN;
   if (value.length > 2000) return DEFAULT_AFTER_LOGIN;
   if (!value.startsWith('/')) return DEFAULT_AFTER_LOGIN;
   if (value.startsWith('//') || value.startsWith('/\\')) return DEFAULT_AFTER_LOGIN;
   if (hasControlChar(value)) return DEFAULT_AFTER_LOGIN;
-  return value;
+  return value as Route;
 }
 
 /**
@@ -42,7 +48,7 @@ export function safeCallbackUrl(value: unknown): string {
  *
  * 이미 검증된 내부 경로에만 쓴다 — 외부 주소는 safeCallbackUrl 에서 이미 걸러진다.
  */
-export function withLoginMarker(path: string, provider: 'kakao' | 'password'): string {
+export function withLoginMarker(path: Route, provider: 'kakao' | 'password'): Route {
   const sep = path.includes('?') ? '&' : '?';
-  return `${path}${sep}li=${provider}`;
+  return `${path}${sep}li=${provider}` as Route;
 }

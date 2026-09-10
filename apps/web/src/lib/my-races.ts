@@ -10,6 +10,7 @@
  * plan-view.ts 에 today 를 넘겨서 한다.
  */
 
+import type { Route } from 'next';
 import { ENGINE_VERSION, generatePlan, type Plan } from '@runback/engine';
 import { findRace, type Race } from '@runback/races';
 import { listLogsByUser, listSavedPlans, type SavedPlanRecord, type SessionLogRecord } from '@runback/db';
@@ -33,6 +34,11 @@ export type MyRace = {
   date: string;
   /** `/races/[slug]` 의 라우팅 키. 대회가 있으면 slug, 없으면 planId */
   key: string;
+  /**
+   * 훈련 일정 상세 경로. 화면마다 `/races/${key}` 를 조립하지 않는다 —
+   * typedRoutes 는 조립한 문자열을 검증하지 못하므로 단언이 흩어진다.
+   */
+  href: Route;
   distanceKm: number;
   /** 목표 표시용. '1:55:00' 또는 '완주' */
   goalLabel: string;
@@ -103,6 +109,7 @@ function toMyRace(record: SavedPlanRecord, logs: LogIndex): MyRace | null {
     name: race?.nameKo ?? fallbackName(input.raceDate, input.raceDistanceM),
     date: race?.date ?? input.raceDate,
     key: race?.slug ?? record.id,
+    href: `/races/${race?.slug ?? record.id}` as Route,
     distanceKm: input.raceDistanceM / 1000,
     goalLabel: input.goal.kind === 'time' ? formatGoal(input.goal.targetSec) : '완주',
     engineVersion: record.engineVersion,

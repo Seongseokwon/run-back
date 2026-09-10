@@ -1,5 +1,6 @@
 'use client';
 
+import type { Route } from 'next';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -12,7 +13,7 @@ import { usePathname } from 'next/navigation';
  * 선 굵기와 라벨 굵기가 같이 바뀌어서 색을 못 봐도 어느 탭인지 알 수 있다.
  */
 
-type Tab = { href: string; label: string; path: string };
+type Tab = { href: Route; label: string; path: string };
 
 const TABS: Tab[] = [
   { href: '/today', label: '오늘', path: 'M3 10.5L12 3l9 7.5M5.5 9.5V20h13V9.5' },

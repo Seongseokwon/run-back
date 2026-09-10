@@ -15,9 +15,6 @@
     "seed": "node --env-file=../../.env src/seed.ts",
     "user:create": "node --env-file=../../.env src/cli-user.ts"
   },
-  "prisma": {
-    "schema": "prisma/schema.prisma"
-  },
   "dependencies": {
     "@prisma/client": "^6.16.0"
   },
