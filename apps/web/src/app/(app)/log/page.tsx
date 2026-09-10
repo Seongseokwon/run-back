@@ -54,7 +54,7 @@ export default async function LogPage() {
   return (
     <AppScreen header={<AppHeader />}>
       <Screen>
-        <PageTitle sub={`${mine.race.nameKo}까지의 훈련 달력입니다.`}>기록</PageTitle>
+        <PageTitle sub={`${mine.name}까지의 훈련 달력입니다.`}>기록</PageTitle>
 
         <MonthCalendar months={months} initialKey={monthKeyOf(today)} />
 

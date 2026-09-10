@@ -7,6 +7,16 @@ export const metadata: Metadata = {
   title: { default: `${SITE_NAME} — ${SITE_TAGLINE}`, template: `%s | ${SITE_NAME}` },
   description: SITE_DESCRIPTION,
   openGraph: { siteName: SITE_NAME, locale: 'ko_KR', type: 'website' },
+  manifest: '/manifest.webmanifest',
+  icons: {
+    icon: [
+      { url: '/brand/favicon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/brand/logo-mark.svg', type: 'image/svg+xml' },
+    ],
+    // 투명 배경 불가 — 크림을 깔아 둔 파일이다 (의뢰서 §6)
+    apple: '/brand/apple-touch-icon.png',
+  },
+  appleWebApp: { capable: true, title: SITE_NAME, statusBarStyle: 'default' },
 };
 
 export const viewport: Viewport = {

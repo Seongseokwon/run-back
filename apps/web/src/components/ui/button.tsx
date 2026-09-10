@@ -15,6 +15,12 @@ const variants = {
   outline: 'border-2 border-brand bg-transparent text-brand-ink hover:bg-brand-soft/50',
   soft: 'bg-brand-soft text-brand-ink hover:bg-brand-soft/70',
   ghost: 'border border-line-strong bg-transparent text-ink hover:bg-surface-sunken',
+  /**
+   * 카카오 로그인 전용. 색과 문구는 카카오 디자인 가이드가 정한 것이라 우리가 못 바꾼다.
+   * className 으로 덮지 말 것 — bg-brand 와 bg-kakao 는 특이도가 같아서
+   * 어느 쪽이 이길지는 생성된 CSS 순서에 달린다. variant 로 갈라야 확정된다.
+   */
+  kakao: 'bg-kakao text-on-kakao hover:bg-kakao/85',
 } as const;
 
 type Variant = keyof typeof variants;

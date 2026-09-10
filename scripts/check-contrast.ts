@@ -53,6 +53,9 @@ const CONTRACT: Role[] = [
   { token: 'brand', min: 3, on: ['canvas', 'surface'], note: '채움·테두리 (비텍스트)' },
   { token: 'accent', min: 3, on: ['canvas', 'surface'], note: '아이콘 (비텍스트)' },
   { token: 'line-input', min: 3, on: ['surface', 'surface-raised'], note: '입력 테두리 (비텍스트)' },
+  // 카카오가 색을 정해 준 버튼이라 우리가 조정할 수 없다. 그래도 재 둔다 —
+  // 통과하는지 모르는 것과 통과한다는 걸 아는 것은 다르다
+  { token: 'on-kakao', min: 4.5, on: ['kakao'], note: '카카오 로그인 버튼 글자' },
 ];
 
 /**
@@ -60,6 +63,7 @@ const CONTRACT: Role[] = [
  * 여기 없는 새 토큰이 생기면 아래 미등록 검사에서 걸린다 — 조용히 빠져나가지 못하게 한다.
  */
 const DECORATIVE = new Set([
+  'kakao', // 채움색. 위에 얹히는 글자(on-kakao)로 대비를 잰다
   'canvas',
   'surface',
   'surface-raised',

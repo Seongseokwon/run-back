@@ -7,9 +7,14 @@
  */
 
 import { createHash } from 'node:crypto';
+import type { $Enums } from '../generated/client/index.js';
 import { prisma } from './client.ts';
 
-export type Provider = 'kakao' | 'apple' | 'google';
+/**
+ * 스키마의 enum 에서 파생시킨다. 손으로 적으면 스키마에 값을 추가할 때마다 어긋난다
+ * (실제로 'password' 를 넣으면서 한 번 어긋났다)
+ */
+export type Provider = $Enums.Provider;
 
 export type UserRecord = {
   id: string;

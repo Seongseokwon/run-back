@@ -3,12 +3,13 @@ import type { ReactNode } from 'react';
 import { TitleHeader } from '@/components/layout/app-header';
 import { AppScreen } from '@/components/layout/app-screen';
 import { Badge } from '@/components/ui/badge';
-import { ButtonLink } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { SceneAvatar, SceneBand } from '@/components/ui/scene';
 import { MenuRow } from '@/components/ui/list-row';
 import { Screen } from '@/components/ui/section';
 import { myRaces } from '@/lib/my-races';
+import { currentUser } from '@/lib/session';
+import { KakaoSignInButton, PasswordLoginSection, SignOutButton } from '@/components/auth/auth-buttons';
 import { todayKst } from '@/lib/format';
 
 export const metadata: Metadata = { title: '나' };
@@ -30,8 +31,12 @@ export const dynamic = 'force-dynamic';
  */
 export default async function MePage() {
   const today = todayKst();
-  const races = await myRaces();
+  const [races, user] = await Promise.all([myRaces(), currentUser()]);
   const goal = races[0];
+
+  // 닉네임은 수집하지 않으므로(§9.4) 로그인해도 대개 null 이다.
+  // 카카오 회원번호를 이름 대신 보여 주지 않는다 — 그건 식별자지 이름이 아니다
+  const displayName = user ? (user.nickname ?? '러너') : '게스트';
 
   return (
     <AppScreen header={<TitleHeader title="나" />}>
@@ -40,11 +45,11 @@ export default async function MePage() {
           <SceneAvatar name="profileAvatar" size={72} />
           <div className="min-w-0 flex-1">
             <p className="flex items-center gap-2">
-              <span className="truncate text-card font-extrabold tracking-tight text-ink">게스트</span>
-              <Badge>로그인 전</Badge>
+              <span className="truncate text-card font-extrabold tracking-tight text-ink">{displayName}</span>
+              {user ? null : <Badge>로그인 전</Badge>}
             </p>
             <p className="mt-1 truncate text-body text-ink-muted">
-              {goal ? `${goal.race.nameKo}를 준비하고 있어요.` : '아직 목표 대회가 없습니다.'}
+              {goal ? `${goal.name}를 준비하고 있어요.` : '아직 목표 대회가 없습니다.'}
             </p>
           </div>
         </section>
@@ -55,7 +60,7 @@ export default async function MePage() {
               href="/races"
               icon={<Icon path="M12 3a9 9 0 100 18 9 9 0 000-18zm0 5a4 4 0 100 8 4 4 0 000-8z" />}
               label="러닝 목표"
-              {...(goal ? { value: goal.race.nameKo } : {})}
+              {...(goal ? { value: goal.name } : {})}
             />
             <MenuRow
               href="/plan/new"
@@ -73,22 +78,24 @@ export default async function MePage() {
 
         {/* §9.2 저장 게이트 — 로그인은 플랜 '생성'이 아니라 '저장' 시점에만 요구한다 */}
         <section>
-          <ButtonLink href="/plan/new" size="md" variant="soft">
-            로그인하고 플랜 저장하기
-          </ButtonLink>
-          <p className="mt-2 text-center text-label text-ink-muted">
-            로그인 없이도 링크를 복사해 플랜을 보관할 수 있습니다
-          </p>
+          {user ? (
+            <SignOutButton />
+          ) : (
+            <>
+              <KakaoSignInButton />
+              <p className="mt-2 text-center text-label text-ink-muted">
+                로그인 없이도 링크를 복사해 플랜을 보관할 수 있습니다
+              </p>
+              {/* 플래그가 꺼져 있으면 통째로 사라진다 (AUTH_PASSWORD_LOGIN) */}
+              <div className="mt-6">
+                <PasswordLoginSection />
+              </div>
+            </>
+          )}
         </section>
 
         <Card>
           <ul>
-            <MenuRow
-              icon={<Icon path="M4 7h16M4 12h16M4 17h10" />}
-              label="내 보관함"
-              disabled
-              trailing={<Badge>준비 중</Badge>}
-            />
             <MenuRow
               icon={<Icon path="M12 4v11M8 11l4 4 4-4M5 19h14" />}
               label="데이터 내보내기"

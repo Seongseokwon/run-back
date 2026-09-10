@@ -1,14 +1,23 @@
 /**
  * 현재 로그인 사용자.
  *
- * Phase 2(Auth.js + 카카오)가 붙으면 **이 파일만 바뀐다.** 화면과 어댑터는
- * currentUserId() 하나만 알고 있으면 되도록 좁혀 뒀다.
+ * 화면과 어댑터는 이 두 함수만 안다. 세션의 출처가 바뀌어도 고칠 파일은 여기뿐이다.
  *
- * 지금은 인증이 없어서 .env 의 RUNBACK_DEV_USER_ID 를 읽는다. 도그푸딩용 통로다 —
- * 값이 없으면 null 이고, 그러면 앱 셸 화면들은 '아직 플랜이 없는' 상태로 그려진다.
- * 로그인한 척하는 가짜 세션을 만들지 않는다.
+ * 한때 .env 의 RUNBACK_DEV_USER_ID 를 읽는 개발 통로가 있었는데 걷어냈다.
+ * 비밀번호 로그인이 생겨서 필요가 없어졌고, 무엇보다 **개발 중에 항상 로그인 상태로
+ * 보여서 게스트 경로를 테스트할 수 없었다.** 게스트 흐름은 이 제품의 주 동선이다 (§9.2).
  */
 
+import { auth } from '@/auth';
+
 export async function currentUserId(): Promise<string | null> {
-  return process.env.RUNBACK_DEV_USER_ID ?? null;
+  const session = await auth();
+  return session?.user?.id ?? null;
+}
+
+/** 표시용. 닉네임을 카카오에서 받지 않으므로(§9.4) 대개 null 이다 */
+export async function currentUser(): Promise<{ id: string; nickname: string | null } | null> {
+  const session = await auth();
+  if (!session?.user?.id) return null;
+  return { id: session.user.id, nickname: session.user.nickname };
 }

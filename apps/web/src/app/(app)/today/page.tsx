@@ -85,14 +85,14 @@ export default async function TodayPage() {
     );
   }
 
-  const { plan, race, goalLabel, distanceKm } = mine;
+  const { plan, goalLabel, distanceKm } = mine;
   const status = planStatus(plan, today);
   const startDate = planStartDate(plan);
   const week = currentWeek(plan, today);
   const session = sessionOn(plan, today);
   const daysLeft = daysBetween(today, plan.input.raceDate);
   const pace = session ? plan.paces[session.targetZone] : plan.paces.E;
-  const scheduleHref = `/races/${race.slug}`;
+  const scheduleHref = `/races/${mine.key}`;
 
   return (
     <AppScreen header={<AppHeader />}>
@@ -109,7 +109,7 @@ export default async function TodayPage() {
         {/* 카드 전체가 훈련 일정 상세로 가는 입구다. D-day 를 본 다음 궁금한 건 언제나 '그래서 전체 일정은' 이다 */}
         <Link href={scheduleHref} className="pressable rise block">
           <NextRaceCard
-            raceName={race.nameKo}
+            raceName={mine.name}
             distanceKm={distanceKm}
             daysLeft={daysLeft}
             goalLabel={goalLabel}

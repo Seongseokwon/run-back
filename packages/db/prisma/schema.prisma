@@ -18,6 +18,8 @@ enum Provider {
   kakao
   apple
   google
+  /// 이메일 + 비밀번호. 소셜과 같은 신원 모델을 쓴다 — 아래 User 주석 참조
+  password
 }
 
 enum LogStatus {
@@ -44,6 +46,25 @@ model User {
 
   /// 선택 입력. 없어도 전 기능이 동작한다 (§9.4)
   nickname String?
+
+  // ── 비밀번호 로그인 (provider = password) ───────────────────────────
+  //
+  // ⚠️ 이메일 컬럼이 없는 것은 실수가 아니다. 이메일도 providerUserIdHash 로 들어간다 —
+  // hashProviderUserId('password', 이메일소문자) 이므로 소셜 계정과 **같은 신원 모델**을
+  // 쓰고, 활성 유니크 인덱스도 그대로 재사용된다. 덕분에 §9.4 의 '이메일 미수집'을
+  // 깨지 않고도 비밀번호 로그인이 성립한다.
+  //
+  // 대가: 평문 이메일이 없으므로 **비밀번호 재설정 메일을 보낼 수 없다.** 그게 필요해지면
+  // 평문 컬럼을 추가하고 방침의 처리 항목을 함께 고쳐야 한다 — 컬럼만 늘리면 위반이다.
+
+  /// scrypt 해시. 소셜 로그인 계정은 null 이다
+  passwordHash String?
+
+  /// 연속 로그인 실패 횟수. 성공하면 0 으로 되돌린다
+  failedLoginCount Int @default(0)
+
+  /// 무차별 대입 잠금 해제 시각. 지나면 다시 시도할 수 있다
+  lockedUntil DateTime?
 
   createdAt   DateTime @default(now())
   lastLoginAt DateTime @default(now())

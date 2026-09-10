@@ -11,3 +11,5 @@ export { prisma } from './client.ts';
 export * from './users.ts';
 export * from './plans.ts';
 export * from './logs.ts';
+export * from './password.ts';
+export * from './password-auth.ts';

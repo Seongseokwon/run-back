@@ -12,7 +12,8 @@
     "migrate": "prisma migrate dev",
     "deploy": "prisma migrate deploy",
     "studio": "prisma studio",
-    "seed": "node --env-file=../../.env src/seed.ts"
+    "seed": "node --env-file=../../.env src/seed.ts",
+    "user:create": "node --env-file=../../.env src/cli-user.ts"
   },
   "prisma": {
     "schema": "prisma/schema.prisma"

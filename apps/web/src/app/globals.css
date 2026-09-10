@@ -53,6 +53,14 @@
   --color-verdict-challenging: #986817;
   --color-verdict-unrealistic: #bf4d39;
 
+  /*
+   * 카카오 로그인 버튼. 이 두 색은 우리가 고른 게 아니라 **카카오 디자인 가이드가 정한 값**이다
+   * (노랑 #FEE500, 글자는 검정 85%). 버튼 색을 우리 팔레트로 바꾸면 가이드 위반이라
+   * 여기만 예외로 둔다. 다른 곳에 쓰지 말 것 — 로그인 버튼 전용이다.
+   */
+  --color-kakao: #fee500;
+  --color-on-kakao: #191600;
+
   --color-line: #e8e2d8; /* 구분선 — 장식. 없어도 목록을 읽을 수 있다 */
   --color-line-strong: #ded6ca;
   /* 입력·컨트롤 테두리. WCAG 1.4.11 이 비텍스트 UI 에 3:1 을 요구한다 */

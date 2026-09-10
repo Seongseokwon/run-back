@@ -47,11 +47,11 @@ export default async function MyRacesPage() {
           />
         ) : (
           <>
-            <Link href={`/races/${next.race.slug}`} className="pressable rise block">
+            <Link href={`/races/${next.key}`} className="pressable rise block">
               <NextRaceCard
-                raceName={next.race.nameKo}
+                raceName={next.name}
                 distanceKm={next.distanceKm}
-                daysLeft={daysBetween(today, next.race.date)}
+                daysLeft={daysBetween(today, next.date)}
                 goalLabel={next.goalLabel}
                 progress={planProgress(next.plan, today)}
               />
@@ -60,11 +60,11 @@ export default async function MyRacesPage() {
             <Section title="내 대회" action={<SectionAction href="/race">둘러보기</SectionAction>}>
               <ul className="space-y-3">
                 {races.map((item) => (
-                  <li key={item.race.slug}>
+                  <li key={item.key}>
                     <MyRaceRow
-                      href={`/races/${item.race.slug}`}
-                      name={item.race.nameKo}
-                      date={item.race.date}
+                      href={`/races/${item.key}`}
+                      name={item.name}
+                      date={item.date}
                       distanceKm={item.distanceKm}
                       goalLabel={item.goalLabel}
                     />

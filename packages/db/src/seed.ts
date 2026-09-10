@@ -7,13 +7,21 @@
  * ⚠️ 수행 기록(SessionLog)은 만들지 않는다. 실제로 뛴 거리·페이스가 아직 없고,
  * 없는 걸 있는 것처럼 보여 주면 진행률과 캘린더가 거짓말을 한다 (CLAUDE.md §0-3).
  *
- *   docker compose up -d && pnpm --filter @runback/db seed
+ *   pnpm --filter @runback/db seed -- <이메일>     (기본값: test@runback.kr)
  */
 
 import { prisma } from './client.ts';
+import { hashProviderUserId } from './users.ts';
+import { normalizeEmail } from './password-auth.ts';
 
-/** .env 의 RUNBACK_DEV_USER_ID 와 같은 값이어야 한다 (apps/web/src/lib/session.ts) */
-const DEV_USER_ID = 'dev-user';
+/**
+ * 플랜을 붙일 계정. 먼저 만들어 둬야 한다:
+ *   pnpm --filter @runback/db user:create -- <이메일> <비밀번호10자이상>
+ *
+ * 예전엔 'dev-user' 를 직접 만들어 붙였는데, 그러면 **로그인할 수 없는 계정**에
+ * 플랜이 달려서 실제 화면으로 확인이 안 된다.
+ */
+const DEFAULT_EMAIL = 'test@runback.kr';
 
 /** PRD §12 도그푸딩 — 하프까지 10주는 §7.3 최소 권장 주차에 정확히 걸리는 경계값이다 */
 const PLAN_INPUT = {
@@ -27,20 +35,27 @@ const PLAN_INPUT = {
 };
 
 async function main(): Promise<void> {
-  await prisma.user.upsert({
-    where: { id: DEV_USER_ID },
-    update: {},
-    create: {
-      id: DEV_USER_ID,
-      provider: 'kakao',
-      // 인증 전이라 실제 해시가 아니다. Phase 2 가 붙으면 이 사용자는 지우고 진짜로 로그인한다
-      providerUserIdHash: 'dev-seed-not-a-real-hash',
-      nickname: '도그푸딩',
+  const email = normalizeEmail(process.argv.slice(2).filter((a) => a !== '--')[0] ?? DEFAULT_EMAIL);
+  if (!email) throw new Error('이메일 형식이 올바르지 않습니다');
+
+  const user = await prisma.user.findFirst({
+    where: {
+      provider: 'password',
+      providerUserIdHash: hashProviderUserId('password', email),
+      deletedAt: null,
     },
+    select: { id: true },
   });
 
+  if (!user) {
+    console.error(`계정을 찾을 수 없습니다: ${email}`);
+    console.error("먼저 만드세요:  pnpm --filter @runback/db user:create -- <이메일> <비밀번호>");
+    process.exitCode = 1;
+    return;
+  }
+
   const existing = await prisma.savedPlan.findFirst({
-    where: { userId: DEV_USER_ID, raceSlug: 'mbn-seoul-marathon-2026' },
+    where: { userId: user.id, raceSlug: 'mbn-seoul-marathon-2026' },
   });
   if (existing) {
     console.log('시드 플랜이 이미 있습니다:', existing.id);
@@ -49,7 +64,7 @@ async function main(): Promise<void> {
 
   const plan = await prisma.savedPlan.create({
     data: {
-      userId: DEV_USER_ID,
+      userId: user.id,
       input: PLAN_INPUT,
       // 저장 시점의 엔진 버전 (§9.7). 엔진이 올라가면 이 플랜은 outdated 로 표시된다
       engineVersion: '0.2.0',

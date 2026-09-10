@@ -45,12 +45,12 @@ export default async function RaceSchedulePage({ params }: Props) {
   const mine = await findMyRace(slug);
   if (!mine) notFound();
 
-  const { plan, race, distanceKm, goalLabel } = mine;
+  const { plan, distanceKm, goalLabel } = mine;
   const status = planStatus(plan, today);
   const startDate = planStartDate(plan);
   const week = currentWeek(plan, today);
   const session = sessionOn(plan, today);
-  const daysLeft = daysBetween(today, race.date);
+  const daysLeft = daysBetween(today, mine.date);
   const pace = session ? plan.paces[session.targetZone] : plan.paces.E;
   const progress = sessionProgress(plan, today);
 
@@ -61,13 +61,13 @@ export default async function RaceSchedulePage({ params }: Props) {
             여기서 카드를 한 번 더 쓰면 둘이 같은 무게로 경쟁한다 */}
         <section>
           <p className="truncate text-body font-semibold text-ink-muted">
-            {race.nameKo} · {distanceLabel(distanceKm)}
+            {mine.name} · {distanceLabel(distanceKm)}
           </p>
           <div className="mt-1">
             <BigStat value={formatDday(daysLeft)} size="lg" />
           </div>
           <p className="mt-2 text-body text-ink">
-            <span className="text-ink-muted">{formatRaceDate(race.date)} · 목표 </span>
+            <span className="text-ink-muted">{formatRaceDate(mine.date)} · 목표 </span>
             <span className="tabular font-bold">{goalLabel}</span>
           </p>
         </section>

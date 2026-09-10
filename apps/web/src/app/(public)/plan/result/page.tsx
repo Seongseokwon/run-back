@@ -5,6 +5,7 @@ import { findRace } from '@runback/races';
 import { ButtonLink } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { CopyLinkButton } from '@/components/plan/copy-link';
+import { SavePlanButton } from '@/components/plan/save-plan-button';
 import { PaceTable } from '@/components/plan/pace-table';
 import { VerdictBadge } from '@/components/plan/verdict-badge';
 import { WeekAccordion } from '@/components/plan/week-accordion';
@@ -109,6 +110,9 @@ export default async function PlanResultPage({ searchParams }: Props) {
             ))}
         </Card>
       ) : null}
+
+      {/* §9.2 저장 게이트 — 플랜을 다 본 다음이라 전환율이 가장 높은 지점이다 */}
+      <SavePlanButton encoded={p!} />
 
       <CopyLinkButton />
 

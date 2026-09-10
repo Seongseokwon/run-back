@@ -45,7 +45,27 @@ export type SavePlanArgs = {
   raceSlug?: string | undefined;
 };
 
+/**
+ * 플랜 저장. **멱등하다** — 같은 사용자가 같은 입력을 다시 저장하면 새로 만들지 않고
+ * 원래 것을 돌려준다.
+ *
+ * 이 성질이 필요한 이유: 게스트→회원 전환(§9.5)이 로그인 리다이렉트를 타고 들어오는데,
+ * 사용자가 새로고침하거나 뒤로 갔다 오면 같은 플랜이 두 번 저장될 수 있다.
+ * 목록에 똑같은 대회가 두 줄 뜨는 건 고장으로 읽힌다.
+ *
+ * 입력이 같으면 엔진이 결정론적이라 플랜도 같다 — 그래서 input 일치가 곧 플랜 일치다.
+ */
 export async function savePlan(args: SavePlanArgs): Promise<SavedPlanRecord> {
+  const existing = await prisma.savedPlan.findFirst({
+    where: {
+      userId: args.userId,
+      input: { equals: args.input as never },
+      user: { deletedAt: null },
+    },
+    select: SELECT,
+  });
+  if (existing) return existing;
+
   return prisma.savedPlan.create({
     data: {
       userId: args.userId,

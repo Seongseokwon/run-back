@@ -20,7 +20,18 @@ export type MyRace = {
   /** SavedPlan.id — 수행 기록(F-12)이 이 값에 달린다 */
   planId: string;
   plan: Plan;
-  race: Race;
+  /**
+   * 큐레이션 대회. **없을 수 있다** — 위저드가 날짜 직접 입력을 지원하고(F-01),
+   * 대회 데이터에서 지난 대회가 빠지면 예전에 저장한 플랜의 슬러그도 사라진다.
+   * 화면은 이 값 대신 아래 name/date/key 를 쓴다.
+   */
+  race: Race | undefined;
+  /** 화면에 쓰는 이름. 대회가 없으면 날짜로 만든다 */
+  name: string;
+  /** 대회일. 대회가 없어도 input.raceDate 가 항상 있다 */
+  date: string;
+  /** `/races/[slug]` 의 라우팅 키. 대회가 있으면 slug, 없으면 planId */
+  key: string;
   distanceKm: number;
   /** 목표 표시용. '1:55:00' 또는 '완주' */
   goalLabel: string;
@@ -43,12 +54,15 @@ export async function myRaces(): Promise<MyRace[]> {
   return records
     .map(toMyRace)
     .filter((r): r is MyRace => r !== null)
-    .sort((a, b) => a.race.date.localeCompare(b.race.date));
+    .sort((a, b) => a.date.localeCompare(b.date));
 }
 
-/** 내 대회 하나. 없으면 undefined — 호출부가 404 로 처리한다 */
-export async function findMyRace(slug: string): Promise<MyRace | undefined> {
-  return (await myRaces()).find((r) => r.race.slug === slug);
+/**
+ * 내 대회 하나. 없으면 undefined — 호출부가 404 로 처리한다.
+ * 키는 대회 슬러그이거나, 대회가 없는 플랜이면 planId 다.
+ */
+export async function findMyRace(key: string): Promise<MyRace | undefined> {
+  return (await myRaces()).find((r) => r.key === key);
 }
 
 /** 지금 화면의 기준이 되는 대회 — 가장 가까운 것 */
@@ -57,31 +71,46 @@ export async function primaryRace(): Promise<MyRace | undefined> {
 }
 
 /**
- * 저장 레코드 하나를 화면 모양으로. 되살릴 수 없으면 null 이다.
+ * 저장 레코드 하나를 화면 모양으로. **입력이 깨졌을 때만** null 이다.
  *
- * ⚠️ 대회를 고르지 않고 날짜만 직접 입력한 플랜(raceSlug 없음)은 지금 여기서 떨어진다.
- * 앱 셸의 대회 탭이 Race 를 전제로 짜여 있어서다. 직접 입력 플랜도 보이게 하려면
- * MyRace.race 를 옵셔널로 바꾸고 화면 5개를 같이 손봐야 한다 — O16(다중 목표)과 함께 처리한다.
+ * 대회를 못 찾는 건 떨어뜨릴 이유가 아니다 — 날짜만 직접 입력한 플랜(F-01 폴백)과
+ * 대회 데이터에서 빠진 옛 대회가 여기 걸린다. 사용자가 저장한 플랜이 목록에서
+ * 조용히 사라지는 쪽이 훨씬 나쁘다.
  */
 function toMyRace(record: SavedPlanRecord): MyRace | null {
   const input = parsePlanInput(record.input);
   if (!input) return null;
 
   const race = record.raceSlug ? findRace(record.raceSlug) : undefined;
-  if (!race) return null;
-
   const plan = generatePlan(input);
 
   return {
     planId: record.id,
     plan,
     race,
+    name: race?.nameKo ?? fallbackName(input.raceDate, input.raceDistanceM),
+    date: race?.date ?? input.raceDate,
+    key: race?.slug ?? record.id,
     distanceKm: input.raceDistanceM / 1000,
     goalLabel: input.goal.kind === 'time' ? formatGoal(input.goal.targetSec) : '완주',
     engineVersion: record.engineVersion,
     outdated: record.engineVersion !== ENGINE_VERSION,
   };
 }
+
+/** 대회를 고르지 않은 플랜의 이름. 지어내지 않고 사용자가 넣은 값만 쓴다 */
+function fallbackName(raceDate: string, distanceM: number): string {
+  const [y, m, d] = raceDate.split('-');
+  const label = DISTANCE_NAME[distanceM] ?? `${Math.round(distanceM / 1000)}km`;
+  return `${y}년 ${Number(m)}월 ${Number(d)}일 ${label}`;
+}
+
+const DISTANCE_NAME: Record<number, string> = {
+  5000: '5K',
+  10000: '10K',
+  21097.5: '하프',
+  42195: '풀코스',
+};
 
 function formatGoal(sec: number): string {
   const h = Math.floor(sec / 3600);
