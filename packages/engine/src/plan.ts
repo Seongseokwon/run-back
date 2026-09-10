@@ -68,6 +68,7 @@ export function generatePlan(input: PlanInput): Plan {
     goal: input.goal,
     weeksAvailable: weeks,
     daysPerWeek: input.daysPerWeek,
+    weeklyKm: fitness.weeklyKm,
     conservative: fitness.conservative,
   });
 
@@ -81,9 +82,24 @@ export function generatePlan(input: PlanInput): Plan {
     volumeFactor: verdictVolumeFactor(feasibility.verdict),
   });
 
-  // 5. §7.5 규칙 5 — 피크가 목표에 못 미치면 판정을 한 단계 내린다
+  /*
+   * 5. §7.5 규칙 5 — "계산된 피크가 **목표 달성에 필요한 수준**에 못 미치면 한 단계 하향".
+   *
+   * ⚠️ 한때 `curve.peakShortfall` 로 판정했는데 그건 **거리별 이상적 피크**와의 비교다.
+   * 그러면 이미 목표보다 빠른 사람도 "권장 볼륨에 못 미친다"는 이유로 🔴 가 됐다 —
+   * 10K 45분(하프 1:38 예상) 러너가 하프 1:45 목표로 5주를 잡으면 비현실적이 나왔다.
+   *
+   * PRD 가 말하는 기준은 이상적 볼륨이 아니라 **그 목표에 필요한 볼륨**이다.
+   * 그건 지구력 게이트가 이미 계산해 뒀다 (§7.3 `endurance.requiredWeeklyKm`).
+   *
+   * `peakShortfall` 자체는 없애지 않는다 — 플랜이 권장보다 가볍다는 사실은
+   * notices 로 여전히 알린다 (§7.10 조용히 줄이지 않는다).
+   */
+  const shortOfGoalVolume = curve.peakKm < feasibility.endurance.requiredWeeklyKm;
   const verdict: Verdict =
-    curve.peakShortfall && feasibility.verdict !== 'unrealistic' ? downgradeVerdict(feasibility.verdict) : feasibility.verdict;
+    shortOfGoalVolume && feasibility.verdict !== 'unrealistic'
+      ? downgradeVerdict(feasibility.verdict)
+      : feasibility.verdict;
 
   // 예상 기록 — 현재 실력 기준. 대회 기록 입력이 있으면 Riegel 환산도 반영한다
   const predicted: PredictionRange =

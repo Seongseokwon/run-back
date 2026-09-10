@@ -11,6 +11,7 @@
 
 import { predictRaceTimeSec, vdotFromRace } from './daniels.ts';
 import { trainingCapacity, weeklyGainRate } from './gain.ts';
+import { allocatePhases, buildVolumeCurve } from './periodization.ts';
 import { RACE_DISTANCE_M, clamp, round } from './units.ts';
 import type { GoalInput } from './types.ts';
 
@@ -26,8 +27,41 @@ export const MIN_WEEKS: ReadonlyArray<{ maxDistanceM: number; weeks: number }> =
 
 /** 안정권 경계 — gap 이 capacity 의 이 비율 이하면 안정권 */
 export const SAFE_RATIO = 0.6;
-/** 완주 목표에서 이 비율 미만이면 기간 자체가 비현실적 */
-export const FINISH_MIN_RATIO = 0.6;
+
+/**
+ * 🔴 비현실적 경계. gap 이 capacity 의 이 배수를 넘어야 비로소 '불가능'이라고 말한다.
+ *
+ * **왜 1.0 이 아닌가.** capacity 는 향상률 모델에서 나오는데, PRD §7.3 이 그 값을
+ * "가설 — 실데이터 확보 후 반드시 보정"이라고 못 박아 뒀고 ADR-0002 가 안전계수 0.5 를
+ * 이미 곱해 둔 값이다. 그렇게 보수적인 추정치를 **3초 차이로 넘었다고 "불가능"**이라
+ * 선언하면 모델이 가진 불확실성보다 판정이 더 단정적이게 된다.
+ *
+ * 실제로 하프 1:50 러너가 14주에 1:45 를 목표로 하면 달성가능 예측이 1:45:03 이었다.
+ * 3초 모자란 것을 🔴(생성 차단)로 처리하는 것은 과신이다. 그 구간은 🟡 도전적이 맞다.
+ *
+ * 🔴 는 "대안을 제시하며 목표를 바꾸라"고 말하는 자리다. 그만큼 확신이 있을 때만 쓴다.
+ */
+export const UNREALISTIC_MARGIN = 1.15;
+
+/**
+ * 완주에 필요한 **대회 시점의 주간 거리(km)**.
+ *
+ * 하프·풀 완주는 속도가 아니라 **지구력**의 문제다. VDOT 가 높아도 주간 거리가 없으면
+ * 그 거리를 견디지 못한다. 반대로 이미 충분히 뛰고 있으면 기간이 짧아도 완주는 한다.
+ * 그래서 판정을 달력이 아니라 여기서 낸다.
+ *
+ * 값은 통상적인 코칭 지침 범위의 **하한**이다 — 이 아래면 완주 자체가 위험하다는 선이지,
+ * 권장량이 아니다.
+ */
+export const FINISH_WEEKLY_KM: ReadonlyArray<{ maxDistanceM: number; km: number }> = [
+  { maxDistanceM: RACE_DISTANCE_M['5K'], km: 15 },
+  { maxDistanceM: RACE_DISTANCE_M['10K'], km: 20 },
+  { maxDistanceM: RACE_DISTANCE_M.HALF, km: 30 },
+  { maxDistanceM: RACE_DISTANCE_M.FULL, km: 45 },
+];
+
+/** 대회 시점 예상 주간 거리가 필요량의 이 비율 미만이면 완주 자체가 무리 */
+export const FINISH_READY_MIN = 0.75;
 
 export function minWeeksFor(distanceM: number): number {
   for (const row of MIN_WEEKS) {
@@ -36,12 +70,89 @@ export function minWeeksFor(distanceM: number): number {
   return MIN_WEEKS[MIN_WEEKS.length - 1]!.weeks;
 }
 
+export function finishWeeklyKmFor(distanceM: number): number {
+  for (const row of FINISH_WEEKLY_KM) {
+    if (distanceM <= row.maxDistanceM) return row.km;
+  }
+  return FINISH_WEEKLY_KM[FINISH_WEEKLY_KM.length - 1]!.km;
+}
+
+export type Endurance = {
+  /** 완주에 필요한 대회 시점 주간 거리 */
+  requiredWeeklyKm: number;
+  /** 이 플랜이 실제로 도달할 주간 거리 피크 (볼륨 곡선 기준) */
+  projectedWeeklyKm: number;
+  /** projected / required */
+  ratio: number;
+  verdict: Verdict;
+};
+
+/**
+ * 완주 준비도 — **이 거리를 견딜 몸이 되는가**.
+ *
+ * 기록 목표든 완주 목표든 이 판정보다 좋아질 수 없다 (§7.3). 속도는 있는데 거리를
+ * 못 뛰는 사람에게 "안정권"이라고 말하면 §7.10 안전 규칙과 정면으로 어긋난다.
+ */
+export function assessEndurance(args: {
+  weeklyKm: number;
+  raceDistanceM: number;
+  weeksAvailable: number;
+  daysPerWeek: 3 | 4 | 5 | 6;
+  conservative?: boolean;
+}): Endurance {
+  const { weeklyKm, raceDistanceM, weeksAvailable, daysPerWeek, conservative = false } = args;
+
+  const requiredWeeklyKm = finishWeeklyKmFor(raceDistanceM);
+
+  /*
+   * 증가율을 지어내지 않는다. **엔진이 실제로 만들 볼륨 곡선의 피크**를 그대로 쓴다.
+   *
+   * 그 곡선은 이미 ACWR 1.30 하드 클램프와 4주 중 1회 감량 주차를 반영하고 있어서
+   * "몇 주 뒤에 주 몇 km 를 뛰고 있을까"에 대한 가장 정직한 답이다.
+   * 별도 상수를 두면 곡선이 바뀔 때 판정만 조용히 어긋난다.
+   *
+   * `volumeFactor` 는 1 로 둔다 — 판정 결과에 따라 볼륨을 줄이는 건 이 판정 **다음** 일이라,
+   * 여기서 쓰면 순환이 된다. 묻는 것은 "정상적인 플랜이 완주 준비를 시켜 주는가"다.
+   */
+  const weeks = Math.max(1, Math.floor(weeksAvailable));
+  const curve = buildVolumeCurve({
+    phases: allocatePhases(weeks, raceDistanceM),
+    startKm: Math.max(0, weeklyKm),
+    distanceM: raceDistanceM,
+    daysPerWeek,
+  });
+
+  // 추정 신뢰도가 낮으면 도달 볼륨을 덜 인정한다 (§7.2 novice)
+  const projected = curve.peakKm * (conservative ? 0.85 : 1);
+  const ratio = requiredWeeklyKm === 0 ? 1 : projected / requiredWeeklyKm;
+
+  const verdict: Verdict = ratio >= 1 ? 'safe' : ratio >= FINISH_READY_MIN ? 'challenging' : 'unrealistic';
+
+  return {
+    requiredWeeklyKm,
+    projectedWeeklyKm: round(projected, 1),
+    ratio: round(ratio, 3),
+    verdict,
+  };
+}
+
+/** 둘 중 나쁜 판정. 어떤 근거로도 안전 쪽으로 올라가지 않는다 */
+export function worseVerdict(a: Verdict, b: Verdict): Verdict {
+  const rank: Record<Verdict, number> = { safe: 0, challenging: 1, unrealistic: 2 };
+  return rank[a] >= rank[b] ? a : b;
+}
+
 export type FeasibilityInput = {
   vdot: number;
   raceDistanceM: number;
   goal: GoalInput;
   weeksAvailable: number;
   daysPerWeek: 3 | 4 | 5 | 6;
+  /**
+   * 현재 주간 거리(km). **완주 준비도 판정에 쓴다** — 하프·풀은 속도가 아니라
+   * 지구력이 완주를 가른다. 없으면 VDOT 에서 추정한 값이 들어온다 (§7.2).
+   */
+  weeklyKm: number;
   /** fitness 추정이 보수적으로 다뤄져야 하는 입력인지 (§7.2 novice) */
   conservative?: boolean;
 };
@@ -58,8 +169,10 @@ export type Feasibility = {
   weeklyGain: number;
   weeksAvailable: number;
   minWeeksRecommended: number;
-  /** 최소 권장 주차 미달 여부 */
+  /** 최소 권장 주차 미달 여부. **이것만으로 비현실적이 되지는 않는다** */
   durationShort: boolean;
+  /** 완주 준비도 (§7.3 지구력 게이트) */
+  endurance: Endurance;
   /** 기록 목표 입력 자체를 막아야 하는지 (풀코스 기간 미달, §7.3) */
   timeGoalBlocked: boolean;
   /** 이 판정에 따라 엔진이 실제로 사용할 목표. 차단 시 완주로 강제 전환된다 */
@@ -75,13 +188,14 @@ export type Feasibility = {
 };
 
 export function assessFeasibility(input: FeasibilityInput): Feasibility {
-  const { vdot, raceDistanceM, goal, weeksAvailable, daysPerWeek, conservative = false } = input;
+  const { vdot, raceDistanceM, goal, weeksAvailable, daysPerWeek, weeklyKm, conservative = false } = input;
 
   const minWeeks = minWeeksFor(raceDistanceM);
   const durationShort = weeksAvailable < minWeeks;
   const isFull = raceDistanceM >= RACE_DISTANCE_M.FULL;
   const timeGoalBlocked = durationShort && isFull;
 
+  const endurance = assessEndurance({ weeklyKm, raceDistanceM, weeksAvailable, daysPerWeek, conservative });
   const capacity = trainingCapacity({ vdot, weeks: weeksAvailable, daysPerWeek, conservative });
   const weeklyGain = weeklyGainRate(vdot, daysPerWeek);
 
@@ -103,13 +217,25 @@ export function assessFeasibility(input: FeasibilityInput): Feasibility {
     if (timeGoalBlocked) {
       reasons.push('풀코스는 기간이 부족하면 기록 목표를 세우지 않습니다. 완주 목표로 전환했습니다');
     }
-    const verdict: Verdict = !durationShort
-      ? 'safe'
-      : weeksAvailable >= minWeeks * FINISH_MIN_RATIO
-        ? 'challenging'
-        : 'unrealistic';
-    if (verdict === 'unrealistic') {
-      reasons.push('완주에 필요한 최소 적응 기간에도 못 미칩니다. 다음 대회를 목표로 잡는 편이 안전합니다');
+    /*
+     * 판정은 **지구력**에서 나온다. 기간은 한 단계 낮추기만 한다.
+     *
+     * 예전에는 `weeksAvailable >= minWeeks * 0.6` 이라는 달력 규칙 하나로 판정했는데,
+     * 그러면 실력을 전혀 보지 않아서 **하프를 1:38 에 뛰는 사람과 10K 를 70분에 뛰는
+     * 사람이 똑같이 '비현실적'** 이 됐다. 더 나쁜 건, 같은 사람이 기록 목표를 고르면
+     * '도전적'인데 **더 쉬운 완주 목표를 고르면 '비현실적'** 이 되는 역전이었다.
+     * PRD §7.3 도 기간 미달은 '전환'이라고만 적어 두었지 판정이라고 하지 않는다.
+     */
+    let verdict: Verdict = endurance.verdict;
+    if (durationShort) verdict = downgradeVerdict(verdict);
+
+    if (endurance.verdict === 'unrealistic') {
+      reasons.push(
+        `완주에는 주 ${endurance.requiredWeeklyKm}km 정도가 필요한데, 지금 페이스로 늘려도 대회 때 ` +
+          `주 ${endurance.projectedWeeklyKm}km 입니다. 다음 대회를 목표로 잡는 편이 안전합니다`,
+      );
+    } else if (endurance.verdict === 'challenging') {
+      reasons.push(`완주 거리를 견디려면 주간 거리를 ${endurance.requiredWeeklyKm}km 가까이 올려야 합니다`);
     }
     return {
       verdict,
@@ -121,6 +247,7 @@ export function assessFeasibility(input: FeasibilityInput): Feasibility {
       weeksAvailable,
       minWeeksRecommended: minWeeks,
       durationShort,
+      endurance,
       timeGoalBlocked,
       effectiveGoal: { kind: 'finish' },
       achievableTimeSec,
@@ -143,7 +270,7 @@ export function assessFeasibility(input: FeasibilityInput): Feasibility {
     } else {
       reasons.push('남은 기간 대비 여유가 있습니다. 목표를 높여도 됩니다');
     }
-  } else if (gap <= capacity) {
+  } else if (gap <= capacity * UNREALISTIC_MARGIN) {
     verdict = 'challenging';
     reasons.push(`빠듯합니다. 주 ${daysPerWeek}회를 지키는 게 관건입니다`);
   } else {
@@ -153,6 +280,18 @@ export function assessFeasibility(input: FeasibilityInput): Feasibility {
 
   // 기간 미달이면 한 단계 하향 (풀코스는 위에서 이미 완주로 전환됨)
   if (durationShort && verdict === 'safe') verdict = 'challenging';
+
+  /*
+   * 지구력 상한. 기록 목표라도 **그 거리를 견딜 몸이 아니면** 안정권일 수 없다.
+   * 속도는 있는데 주간 거리가 없는 사람에게 🟢 를 주면 §7.10 안전 규칙과 정면으로 어긋난다.
+   */
+  verdict = worseVerdict(verdict, endurance.verdict);
+  if (endurance.verdict !== 'safe') {
+    reasons.push(
+      `이 거리를 견디려면 주 ${endurance.requiredWeeklyKm}km 정도가 필요합니다 ` +
+        `(대회 때 예상 주 ${endurance.projectedWeeklyKm}km)`,
+    );
+  }
 
   return {
     verdict,
@@ -164,6 +303,7 @@ export function assessFeasibility(input: FeasibilityInput): Feasibility {
     weeksAvailable,
     minWeeksRecommended: minWeeks,
     durationShort,
+    endurance,
     timeGoalBlocked: false,
     effectiveGoal: goal,
     achievableTimeSec,

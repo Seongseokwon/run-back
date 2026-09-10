@@ -12,6 +12,7 @@ import { BigStat } from '@/components/ui/stat';
 import { Screen, Section } from '@/components/ui/section';
 import { findMyRace } from '@/lib/my-races';
 import { SessionCheck } from '@/components/plan/session-check';
+import { CalendarExportButton } from '@/components/plan/calendar-export';
 import { distanceLabel, formatDday, formatPace, formatRaceDate, todayKst } from '@/lib/format';
 import { sessionIllustration } from '@/lib/illustrations';
 import {
@@ -120,6 +121,9 @@ export default async function RaceSchedulePage({ params }: Props) {
         <Section title="전체 주차" description="주차를 누르면 그 주의 세션이 펼쳐집니다.">
           <WeekAccordion weeks={plan.weeks} today={today} />
         </Section>
+
+        {/* F-11 — 저장된 플랜은 key 로 받는다 (게스트는 /plan/result 에서 ?p= 로) */}
+        <CalendarExportButton href={`/api/calendar?plan=${mine.key}`} />
 
         <p className="border-t border-line pt-4 text-micro text-ink-muted">{SAFETY_NOTICE}</p>
       </Screen>

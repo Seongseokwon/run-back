@@ -6,6 +6,7 @@ import { ButtonLink } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { CopyLinkButton } from '@/components/plan/copy-link';
 import { SavePlanButton } from '@/components/plan/save-plan-button';
+import { CalendarExportButton } from '@/components/plan/calendar-export';
 import { TrackEvent } from '@/components/analytics/track-event';
 import { EVENTS, distanceLabel as gaDistance, elapsedBucket } from '@/lib/analytics-events';
 import { PaceTable } from '@/components/plan/pace-table';
@@ -136,6 +137,9 @@ export default async function PlanResultPage({ searchParams }: Props) {
 
       {/* §9.2 저장 게이트 — 플랜을 다 본 다음이라 전환율이 가장 높은 지점이다 */}
       <SavePlanButton encoded={p!} />
+
+      {/* F-11 — 로그인 없이도 받는다. 캘린더는 앱을 열지 않아도 먼저 말을 건다 (§3.2 H1) */}
+      <CalendarExportButton href={`/api/calendar?p=${p}`} />
 
       <CopyLinkButton />
 

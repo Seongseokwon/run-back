@@ -32,4 +32,4 @@ export type Confidence = 'low' | 'medium' | 'high';
  * 엔진 버전. 저장된 플랜을 이 버전으로 고정 렌더링한다 (PRD §9.7, §17 R11).
  * 계수·규칙을 바꾸면 반드시 올린다.
  */
-export const ENGINE_VERSION = '0.2.0';
+export const ENGINE_VERSION = '0.3.0';
