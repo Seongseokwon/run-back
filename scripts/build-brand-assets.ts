@@ -30,6 +30,7 @@ const SRC = join(root, 'docs/brand');
 const OUT = join(root, 'apps/web/public/brand');
 
 type Pipeline = {
+  modulate(o: { brightness?: number; saturation?: number }): Pipeline;
   ensureAlpha(): Pipeline;
   raw(): Pipeline;
   extract(o: { left: number; top: number; width: number; height: number }): Pipeline;
@@ -46,6 +47,13 @@ type Factory = ((input: string | Buffer) => Pipeline) & ((o: Record<string, unkn
 const sharp = createRequire(import.meta.url)(
   join(root, 'node_modules/.pnpm/sharp@0.35.4_@types+node@22.20.1/node_modules/sharp/dist/index.cjs'),
 ) as Factory;
+
+/**
+ * 다크 탭용 밝기 배수. 1.85 는 눈으로 고른 값이 아니라 **재서 정한 값**이다 —
+ * 크롬 다크 탭(rgb 32~53) 대비 3:1 을 넘기는 최소치 근처다.
+ * 색을 바꾸면 `npm run brand` 뒤에 대비를 다시 재라.
+ */
+const DARK_TAB_BRIGHTEN = 1.85;
 
 /** 앱 캔버스와 같은 크림. 불투명이 필요한 자리에만 깐다 */
 const CREAM = { r: 251, g: 247, b: 240, alpha: 1 };
@@ -98,19 +106,34 @@ async function icon(
   name: string,
   size: number,
   padPct: number,
-  background: Record<string, number>,
+  /** null 이면 투명을 유지한다 */
+  background: Record<string, number> | null,
+  /**
+   * 다크 탭용 밝은 변형.
+   *
+   * 브랜드 보라 rgb(105,42,219) 는 어두워서 **크롬 다크 탭(rgb 32~53) 에서 1.7:1** 밖에
+   * 안 나온다 (WCAG 비텍스트 기준 3:1). 라이트 탭에서는 7:1 로 멀쩡하다.
+   * 그래서 색을 하나로 맞추는 대신 **테마별로 다른 파일**을 준다.
+   */
+  brighten = 1,
 ): Promise<void> {
   const inner = Math.round(size * (1 - padPct * 2));
-  const scaled = (await sharp(mark)
-    .resize(inner, inner, { fit: 'contain', background: CLEAR })
+  const base = sharp(mark).resize(inner, inner, { fit: 'contain', background: CLEAR });
+  const scaled = (await (brighten === 1 ? base : base.modulate({ brightness: brighten }))
     .png()
     .toBuffer()) as unknown as Buffer;
 
-  const info = await sharp({
-    create: { width: size, height: size, channels: 4, background: CLEAR },
-  })
-    .composite([{ input: scaled, gravity: 'center' }])
-    .flatten({ background })
+  const canvas = sharp({
+    create: { width: size, height: size, channels: 4, background: background ?? CLEAR },
+  }).composite([{ input: scaled, gravity: 'center' }]);
+
+  /*
+   * ⚠️ `flatten()` 은 **투명을 유지하는 경우에 부르면 안 된다.**
+   * 알파 0 인 배경을 넘겨도 알파 채널 자체를 없애 버려서 마크가 **검정 바닥** 위에 얹힌다.
+   * 실제로 그렇게 만들었다가 파비콘 전체가 검은 사각형이 됐고, 크롬 다크 탭에서
+   * 어두운 보라 그라디언트가 배경에 묻혔다.
+   */
+  const info = await (background ? canvas.flatten({ background }) : canvas)
     .png({ compressionLevel: 9 })
     .toFile(join(OUT, name));
 
@@ -121,14 +144,20 @@ mkdirSync(OUT, { recursive: true });
 
 console.log('아이콘');
 // 파비콘 — 작을수록 꽉 채워야 읽힌다
-await icon('favicon-16.png', 16, 0.08, CLEAR);
-await icon('favicon-32.png', 32, 0.08, CLEAR);
-await icon('favicon-48.png', 48, 0.08, CLEAR);
+await icon('favicon-16.png', 16, 0.08, null);
+await icon('favicon-32.png', 32, 0.08, null);
+await icon('favicon-48.png', 48, 0.08, null);
+
+console.log('');
+console.log('다크 탭용 파비콘 (prefers-color-scheme: dark)');
+await icon('favicon-16-dark.png', 16, 0.08, null, DARK_TAB_BRIGHTEN);
+await icon('favicon-32-dark.png', 32, 0.08, null, DARK_TAB_BRIGHTEN);
+await icon('favicon-48-dark.png', 48, 0.08, null, DARK_TAB_BRIGHTEN);
 // PWA any — 런처가 자기 판을 깔아 준다
-await icon('icon-192.png', 192, 0.12, CLEAR);
-await icon('icon-512.png', 512, 0.12, CLEAR);
+await icon('icon-192.png', 192, 0.12, null);
+await icon('icon-512.png', 512, 0.12, null);
 // 앱 화면에서 쓰는 마크
-await icon('icon-1024.png', 1024, 0.12, CLEAR);
+await icon('icon-1024.png', 1024, 0.12, null);
 // maskable — 안드로이드가 바깥 10% 를 잘라낸다
 await icon('icon-maskable-512.png', 512, 0.18, CREAM);
 // iOS 는 투명을 검정으로 채운다

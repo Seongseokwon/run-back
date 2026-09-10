@@ -12,9 +12,20 @@ export const metadata: Metadata = {
   openGraph: { siteName: SITE_NAME, locale: 'ko_KR', type: 'website' },
   manifest: '/manifest.webmanifest',
   icons: {
-    // 16 을 함께 주는 이유: 브라우저가 32 를 줄이면 얇은 획이 뭉갠다.
-    // 납품 세트에 16 전용 렌더가 있으므로 그걸 쓴다 (의뢰서 §5)
+    /*
+     * 16 을 따로 주는 이유: 브라우저가 32 를 줄이면 얇은 획이 뭉갠다.
+     *
+     * **테마별로 파일이 다르다.** 브랜드 보라는 어두워서 크롬 다크 탭에서 1.7:1 밖에
+     * 안 나온다 (WCAG 비텍스트 기준 3:1). 라이트 탭에서는 7:1 로 멀쩡하다.
+     * 하나로 맞추려 색을 바꾸면 한쪽이 나빠지므로 `media` 로 갈랐다.
+     *
+     * ⚠️ 다크 항목이 **먼저** 와야 한다. 조건 없는 항목이 앞에 오면 일부 브라우저가
+     * 그걸 먼저 채택하고 media 항목을 무시한다.
+     */
     icon: [
+      { url: '/brand/favicon-16-dark.png', sizes: '16x16', type: 'image/png', media: '(prefers-color-scheme: dark)' },
+      { url: '/brand/favicon-32-dark.png', sizes: '32x32', type: 'image/png', media: '(prefers-color-scheme: dark)' },
+      { url: '/brand/favicon-48-dark.png', sizes: '48x48', type: 'image/png', media: '(prefers-color-scheme: dark)' },
       { url: '/brand/favicon-16.png', sizes: '16x16', type: 'image/png' },
       { url: '/brand/favicon-32.png', sizes: '32x32', type: 'image/png' },
       { url: '/brand/favicon-48.png', sizes: '48x48', type: 'image/png' },

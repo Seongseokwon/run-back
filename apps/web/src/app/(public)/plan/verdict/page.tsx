@@ -110,7 +110,13 @@ export default async function VerdictPage({ searchParams }: Props) {
         </div>
       </Card>
 
-      {plan.verdict === 'unrealistic' ? (
+      {/*
+        🔴 에서 **다음에 할 일이 하나로 읽혀야 한다.**
+        기록 목표라면 낮출 여지가 있으므로 대안과 '완주로 바꾸기'를 준다.
+        이미 완주 목표라면 더 낮출 목표가 없다 — 그때 대안 기록을 들이미는 건 모순이다.
+        "완주가 어렵다"고 말해 놓고 "2:32 는 노려볼 만하다"고 하면 사용자는 뭘 믿어야 할지 모른다.
+      */}
+      {plan.verdict === 'unrealistic' && req.input.goal.kind === 'time' ? (
         <section className="space-y-3">
           <h2 className="text-section font-bold text-ink">이 기간에 현실적인 목표</h2>
           <div className="space-y-2">
@@ -125,6 +131,23 @@ export default async function VerdictPage({ searchParams }: Props) {
           </div>
           <ButtonLink href={withGoal(null)} variant="soft">
             완주 목표로 바꾸기
+          </ButtonLink>
+        </section>
+      ) : null}
+
+      {plan.verdict === 'unrealistic' && req.input.goal.kind === 'finish' ? (
+        <section className="space-y-3">
+          <h2 className="text-section font-bold text-ink">무엇을 바꿀 수 있나요</h2>
+          <Card tone="sunken">
+            <ul className="space-y-2 text-body text-ink">
+              <li>· 기간이 더 남은 대회를 고르기</li>
+              <li>· 주당 훈련 일수를 늘리기 (지금 주 {req.input.daysPerWeek}일)</li>
+              <li>· 더 짧은 종목으로 참가하기</li>
+            </ul>
+          </Card>
+          {/* 완주 목표에서는 낮출 목표가 없다. 바꿀 수 있는 건 입력뿐이라 그게 주 동선이다 */}
+          <ButtonLink href="/plan/new" variant="soft">
+            입력 바꿔서 다시 보기
           </ButtonLink>
         </section>
       ) : null}
@@ -145,20 +168,23 @@ export default async function VerdictPage({ searchParams }: Props) {
 
       {/*
         🔴 에서는 '그대로 진행'을 주 버튼에 두지 않는다 (§7.3 생성 차단의 취지).
-        다만 막지도 않는다 — 사용자가 알고 선택하는 것까지 대신 결정할 일은 아니다
+        다만 막지도 않는다 — 사용자가 알고 선택하는 것까지 대신 결정할 일은 아니다.
+
+        문구는 **지금 목표**를 가리킨다. 한때 "그래도 **원래 목표로** 플랜 보기" 로 고정돼
+        있었는데, 완주로 바꾼 뒤에는 그게 이미 '원래 목표'가 아니라 문구가 사실과 달랐다.
+        그리고 밑줄 링크 하나만 있어서 **어디를 눌러야 다음으로 가는지** 읽히지 않았다.
       */}
       <div className="space-y-2">
         {plan.verdict === 'unrealistic' ? (
           <>
-            <Link
-              href={planHref('/plan/result', req)}
-              className="block py-2 text-center text-body font-semibold text-ink-muted underline"
-            >
-              그래도 원래 목표로 플랜 보기
-            </Link>
-            <Link href="/plan/new" className="block py-2 text-center text-body font-semibold text-ink-muted">
-              입력 다시 하기
-            </Link>
+            <ButtonLink href={planHref('/plan/result', req)} variant="ghost" size="md">
+              {req.input.goal.kind === 'finish'
+                ? '그래도 완주 목표로 플랜 보기'
+                : '그래도 이 목표로 플랜 보기'}
+            </ButtonLink>
+            <p className="text-center text-label text-ink-muted">
+              플랜은 만들어지지만 권장하지 않습니다
+            </p>
           </>
         ) : (
           <>
