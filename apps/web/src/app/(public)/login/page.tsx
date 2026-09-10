@@ -51,18 +51,12 @@ export default async function LoginPage({ searchParams }: Props) {
     <div className="mx-auto flex max-w-sm flex-col gap-8 pt-10 pb-4">
       <TrackEvent name={EVENTS.loginPrompted} dedupeKey={trigger} params={{ trigger }} />
       <section className="text-center">
-        {/*
-          워드마크가 아니라 **심벌**을 쓴다. 이유 둘 —
-          상단 헤더가 이미 RUNBACK 워드마크를 들고 있어 두 번 나오고,
-          public/brand/logos/*.png 는 디자인 보드에서 잘라낸 파일이라
-          '로고 조합 (세로형)' 캡션과 잘린 태그라인이 그림 안에 박혀 있다.
-          깨끗한 로고 락업이 납품되면 여기를 그걸로 바꾼다.
-        */}
+        {/* 워드마크가 아니라 마크만 쓴다 — 상단 헤더가 이미 RUNBACK 워드마크를 들고 있다 */}
         <Image
-          src="/brand/icons/RUNBACK_symbol_color.png"
+          src="/brand/icon-512.png"
           alt=""
-          width={260}
-          height={230}
+          width={512}
+          height={512}
           priority
           className="mx-auto h-16 w-auto"
         />

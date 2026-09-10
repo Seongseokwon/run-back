@@ -21,7 +21,8 @@
     "db:seed": "pnpm --filter @runback/db seed",
     "db:studio": "pnpm --filter @runback/db studio",
     "legal": "node scripts/check-legal.ts",
-    "art": "node scripts/optimize-illustrations.ts"
+    "art": "node scripts/optimize-illustrations.ts",
+    "brand": "node scripts/build-brand-assets.ts"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
