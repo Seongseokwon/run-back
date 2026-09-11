@@ -71,11 +71,12 @@ export function ToolPage({ tool, children }: { tool: Tool; children: ReactNode }
           현실적인지 먼저 알려 줍니다.
         </p>
         <ButtonLink href="/plan/new">내 대회로 플랜 만들기</ButtonLink>
-        <p className="text-center text-label text-ink-muted">
-          <Link href="/race" className="font-semibold text-brand-ink">
-            국내 대회 일정 보기
-          </Link>
-        </p>
+        <Link
+          href="/race"
+          className="flex min-h-touch items-center justify-center text-body font-semibold text-brand-ink"
+        >
+          국내 대회 일정 보기
+        </Link>
       </section>
 
       {/* 도구끼리 서로 잇는다. 페이지가 둘뿐이라 목록 허브를 따로 만들지 않았다 */}
