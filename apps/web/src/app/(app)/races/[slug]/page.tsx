@@ -12,6 +12,7 @@ import { BigStat } from '@/components/ui/stat';
 import { Screen, Section } from '@/components/ui/section';
 import { findMyRace } from '@/lib/my-races';
 import { SessionCheck } from '@/components/plan/session-check';
+import { TodaySessionGuide } from '@/components/plan/session-guide';
 import { CalendarExportButton } from '@/components/plan/calendar-export';
 import { distanceLabel, formatDday, formatPace, formatRaceDate, todayKst } from '@/lib/format';
 import { sessionIllustration } from '@/lib/illustrations';
@@ -27,6 +28,7 @@ import {
   weekItems,
 } from '@/lib/plan-view';
 import { SAFETY_NOTICE } from '@/lib/config';
+import { planLevel, showsGuide } from '@/lib/session-guide';
 
 export const metadata: Metadata = { title: '훈련 일정', robots: { index: false } };
 // 오늘이 며칠이냐로 화면 전체가 달라진다
@@ -81,22 +83,29 @@ export default async function RaceSchedulePage({ params }: Props) {
             illustration={sessionIllustration(undefined, 'before')}
           />
         ) : session && session.type !== 'rest' ? (
-          <TodayTrainingCard
-            variant="card"
-            label="오늘의 훈련"
-            typeLabel={sessionTitle(session.type)}
-            distanceKm={session.distanceKm}
-            paceRange={`${formatPace(pace.fastSecPerKm)} ~ ${formatPace(pace.slowSecPerKm)}`}
-            illustration={sessionIllustration(session.type)}
-            {...(session.structure ? { note: session.structure } : {})}
-            action={
-              <SessionCheck
-                planId={mine.planId}
-                date={session.date}
-                status={mine.logs.get(session.date)?.status}
-              />
-            }
-          />
+          /* 가이드는 카드 밖이다. 씬 아래 흰 바닥은 체크 버튼 자리라 셋을 한 상자에
+             넣으면 오늘 뭘 하는지가 안 읽힌다 (§6.5) */
+          <div className="space-y-4">
+            <TodayTrainingCard
+              variant="card"
+              label="오늘의 훈련"
+              typeLabel={sessionTitle(session.type)}
+              distanceKm={session.distanceKm}
+              paceRange={`${formatPace(pace.fastSecPerKm)} ~ ${formatPace(pace.slowSecPerKm)}`}
+              illustration={sessionIllustration(session.type)}
+              {...(session.structure ? { note: session.structure } : {})}
+              action={
+                <SessionCheck
+                  planId={mine.planId}
+                  date={session.date}
+                  status={mine.logs.get(session.date)?.status}
+                />
+              }
+            />
+            {showsGuide(planLevel(plan)) ? (
+              <TodaySessionGuide type={session.type} structure={session.structure} />
+            ) : null}
+          </div>
         ) : (
           <PlanStateCard
             title="오늘은 휴식일입니다"

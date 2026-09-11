@@ -11,12 +11,14 @@ import { CalendarExportButton } from '@/components/plan/calendar-export';
 import { TrackEvent } from '@/components/analytics/track-event';
 import { EVENTS, distanceLabel as gaDistance, elapsedBucket } from '@/lib/analytics-events';
 import { PaceTable } from '@/components/plan/pace-table';
+import { PlanSessionGuide } from '@/components/plan/session-guide';
 import { VerdictBadge } from '@/components/plan/verdict-badge';
 import { WeekAccordion } from '@/components/plan/week-accordion';
 import { decodePlanRequest, planHref } from '@/lib/plan-url';
 import { distanceLabel, formatDday, formatDuration, formatRaceDate, todayKst } from '@/lib/format';
 import { daysBetween } from '@/lib/plan-view';
 import { SAFETY_NOTICE } from '@/lib/config';
+import { planLevel, showsGuide } from '@/lib/session-guide';
 
 export const metadata: Metadata = { title: '내 훈련 플랜', robots: { index: false } };
 
@@ -47,7 +49,7 @@ export default async function PlanResultPage({ searchParams }: Props) {
   const race = req.raceSlug ? findRace(req.raceSlug) : undefined;
   const km = req.input.raceDistanceM / 1000;
   const daysLeft = daysBetween(today, req.input.raceDate);
-  const level = req.input.fitness.kind === 'novice' ? 'novice' : 'full';
+  const level = planLevel(plan);
 
   /*
    * §15 대시보드 1순위가 '생성일 기준 코호트별 재방문 곡선'이다.
@@ -112,6 +114,13 @@ export default async function PlanResultPage({ searchParams }: Props) {
       </section>
 
       <PaceTable paces={plan.paces} level={level} />
+
+      {/*
+        입문자에게는 페이스표 다음에 오는 질문이 '그래서 이걸 어떻게 뛰나'다 (§2 P1).
+        여기까지 화면이 주던 것은 숫자뿐이라 EASY RUN 6km 를 받고도 무엇을 해야 할지
+        알 수 없었다. 경험자에게는 그리지 않는다 — 존을 접는 기준과 같다 (§7.8).
+      */}
+      {showsGuide(level) ? <PlanSessionGuide weeks={plan.weeks} /> : null}
 
       <section>
         <h2 className="text-section font-bold text-ink">주차별 플랜</h2>

@@ -8,6 +8,7 @@ import { NextRaceCard } from '@/components/home/next-race-card';
 import { PlanStateCard } from '@/components/home/plan-state-card';
 import { TodayTrainingCard } from '@/components/home/today-training-card';
 import { SessionCheck } from '@/components/plan/session-check';
+import { TodaySessionGuide } from '@/components/plan/session-guide';
 import { WeekList } from '@/components/home/week-list';
 import { EmptyState } from '@/components/ui/empty-state';
 import { primaryRace } from '@/lib/my-races';
@@ -24,6 +25,7 @@ import {
   weekItems,
 } from '@/lib/plan-view';
 import { SAFETY_NOTICE } from '@/lib/config';
+import { planLevel, showsGuide } from '@/lib/session-guide';
 
 export const metadata: Metadata = { title: '오늘' };
 // '오늘' 화면은 굳히면 안 된다. 계정이 붙으면 사용자별로도 갈린다
@@ -134,6 +136,13 @@ export default async function TodayPage() {
               illustration={sessionIllustration(session.type)}
               {...(session.structure ? { note: session.structure } : {})}
             />
+            {/*
+              입문자는 'EASY RUN 6km' 를 읽고도 무엇을 해야 할지 모른다.
+              체크 버튼 **위**에 둔다 — 뛰기 전에 읽는 것이지 뛰고 나서 읽는 게 아니다.
+            */}
+            {showsGuide(planLevel(plan)) ? (
+              <TodaySessionGuide type={session.type} structure={session.structure} />
+            ) : null}
             {/*
               목업의 '오늘 달리기' 자리. 러닝 트래킹은 여전히 없지만, 이제 **뛴 뒤에 남길 것**은
               있다 (F-12). 그래서 이 자리는 체크가 가져가고, 전체 일정은 아래 링크로 뺀다.
