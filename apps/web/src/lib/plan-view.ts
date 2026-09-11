@@ -6,6 +6,7 @@
  */
 
 import type { Plan, PlanSession, PlanWeek, SessionType } from '@runback/engine';
+import { monthDays, type MonthKey } from './month-grid.ts';
 import type { WeekItem } from '@/components/home/week-list';
 import type { RowStatus } from '@/components/ui/list-row';
 
@@ -51,17 +52,12 @@ export const PHASE_LABEL: Record<PlanWeek['phase'], string> = {
 const DOW = ['일', '월', '화', '수', '목', '금', '토'];
 
 /** 달력 열 머리 — 월요일 시작 */
-export const DOW_MON_FIRST = ['월', '화', '수', '목', '금', '토', '일'];
-
-const MONTH_EN = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December',
-];
-
-/** '2026-09' → 'September 2026'. 목업이 영문 월 이름을 쓴다 */
-export function monthLabel(month: MonthKey): string {
-  return `${MONTH_EN[Number(month.slice(5, 7)) - 1]} ${month.slice(0, 4)}`;
-}
+/*
+ * 달력의 뼈대(월요일 시작·앞뒤 채우기·월 이름)는 `month-grid.ts` 한 곳에 있다.
+ * 훈련 달력과 대회 달력이 같은 규칙을 써야 해서 여기서는 다시 내보내기만 한다.
+ */
+export { DOW_MON_FIRST, monthLabel } from './month-grid.ts';
+export type { MonthKey } from './month-grid.ts';
 
 /** 오늘이 속한 주차. 아직 시작 전이면 첫 주, 이미 끝났으면 마지막 주 */
 export function currentWeek(plan: Plan, today: string): PlanWeek {
@@ -195,9 +191,6 @@ export type CalendarCell = {
   zone?: string;
 };
 
-/** 'YYYY-MM' */
-export type MonthKey = string;
-
 export function monthKeyOf(iso: string): MonthKey {
   return iso.slice(0, 7);
 }
@@ -233,21 +226,13 @@ export function monthGrid(
   const sessions = new Map(allSessions(plan).map((s) => [s.date, s]));
   const planStart = planStartDate(plan);
   const planEnd = plan.input.raceDate;
-  const firstOfMonth = `${month}-01`;
-  const daysInMonth = new Date(Date.UTC(year(month), monthIndex(month) + 1, 0)).getUTCDate();
-  // 월요일=0 이 되도록 민다 (getUTCDay 는 일요일=0)
-  const leading = (new Date(`${firstOfMonth}T00:00:00Z`).getUTCDay() + 6) % 7;
 
-  const start = addDays(firstOfMonth, -leading);
-  const total = Math.ceil((leading + daysInMonth) / 7) * 7;
-
-  return Array.from({ length: total }, (_, i) => {
-    const date = addDays(start, i);
+  return monthDays(month).map(({ date, day, inMonth }) => {
     const session = sessions.get(date);
     return {
       date,
-      day: Number(date.slice(8, 10)),
-      inMonth: date.slice(0, 7) === month,
+      day,
+      inMonth,
       inPlan: date >= planStart && date <= planEnd,
       isToday: date === today,
       status: calendarStatus(session, date, today, logs),

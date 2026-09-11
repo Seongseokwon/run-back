@@ -45,14 +45,42 @@ test.describe('§5 SEO', () => {
 
   test('5-3 고유 콘텐츠 없는 대회는 상세로 보내지 않는다 (§13.2)', async ({ page }) => {
     await page.goto('/race');
-    const links = page.locator('a[href^="/race/"], a[href^="/plan/new?race="]');
-    await expect(links.first()).toBeVisible();
 
-    const detailCount = await page.locator('a[href^="/race/"]').count();
-    const directCount = await page.locator('a[href^="/plan/new?race="]').count();
-    // 82개 전부가 상세로 가면 안 된다
-    expect(detailCount).toBeLessThanOrEqual(16);
-    expect(detailCount + directCount).toBeGreaterThan(16);
+    /*
+     * 달력과 전체 목록에 같은 대회가 두 번 나온다. **고유 주소**로 센다 —
+     * 중복은 사람이 보는 화면의 사정이고, 여기서 보는 것은 링크 그래프다.
+     */
+    const unique = async (prefix: string): Promise<Set<string>> =>
+      new Set(await page.locator(`a[href^="${prefix}"]`).evaluateAll((els) => els.map((e) => e.getAttribute('href')!)));
+
+    const detail = await unique('/race/');
+    const direct = await unique('/plan/new?race=');
+
+    // 82개 전부가 상세로 가면 안 된다 (저품질 대량생성 방어)
+    expect(detail.size).toBeLessThanOrEqual(16);
+    expect(detail.size + direct.size).toBeGreaterThan(16);
+  });
+
+  /*
+   * 달력은 **탐색 보조**이지 목록의 대체가 아니다.
+   * 한 번에 한 달치 링크만 남으면 크롤러가 16개 상세에 도달할 길이 끊긴다 (§13).
+   */
+  test('5-3b 달력이 있어도 전체 일정이 HTML 에 그대로 있다', async ({ browser }) => {
+    const context = await browser.newContext({ javaScriptEnabled: false });
+    const page = await context.newPage();
+    await page.goto('/race');
+
+    const detail = new Set(
+      await page.locator('a[href^="/race/"]').evaluateAll((els) => els.map((e) => e.getAttribute('href')!)),
+    );
+    const direct = new Set(
+      await page.locator('a[href^="/plan/new?race="]').evaluateAll((els) => els.map((e) => e.getAttribute('href')!)),
+    );
+
+    expect(detail.size, 'SSG 대상 16개로 가는 링크가 끊겼다').toBe(16);
+    expect(detail.size + direct.size, '다가오는 대회 전부가 HTML 에 있어야 한다').toBeGreaterThan(50);
+    await expect(page.getByRole('heading', { name: '전체 일정' })).toBeVisible();
+    await context.close();
   });
 
   test('5-4 대회 상세에 구조화 데이터가 있다 (§13.3)', async ({ page, request }) => {
